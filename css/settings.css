@@ -86,7 +86,7 @@
 .engine-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
 .engine-name { font-weight: 500; font-size: var(--font-size-sm); }
 .engine-url-preview { font-size: var(--font-size-xs); color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.engine-actions { display: flex; gap: var(--spacing-xs); flex-shrink: 0; }
+.engine-actions { display: flex; gap: var(--spacing-xs); flex-shrink: 0; align-items: center; }
 .current-badge { font-size: var(--font-size-xs); color: var(--color-primary); padding: 2px 8px; border: 1px solid var(--color-primary); border-radius: var(--radius-full); }
 .btn-small { padding: 2px 8px; font-size: var(--font-size-xs); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; color: var(--color-text); }
 .btn-small:hover { background: var(--color-border); }
@@ -114,7 +114,7 @@
 .form-actions button { padding: var(--spacing-sm) var(--spacing-md); border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; background: var(--color-bg); color: var(--color-text); font-size: var(--font-size-sm); }
 .form-actions .btn-save { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 
-/* ========== 同步样式 ========== */
+/* 同步相关样式（已包含） */
 .sync-section {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -122,62 +122,163 @@
   margin-bottom: var(--spacing-lg);
   background: var(--color-bg);
 }
-.sync-section h3 {
-  font-size: var(--font-size-md);
-  margin-bottom: var(--spacing-sm);
+.sync-section h3 { font-size: var(--font-size-md); margin-bottom: var(--spacing-sm); display: flex; align-items: center; gap: 6px; }
+.sync-section h4 { font-size: 14px; margin: 8px 0; }
+.sync-sub { margin-bottom: var(--spacing-md); }
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.checkbox-label { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; padding: 4px 8px; border: 1px solid var(--color-border); border-radius: 20px; transition: background-color var(--transition-speed); }
+.checkbox-label:hover { background-color: var(--color-border); }
+.sync-config-form { display: flex; flex-direction: column; gap: 8px; }
+.sync-input { width: 100%; padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 13px; transition: border-color var(--transition-speed); }
+.sync-input:focus { border-color: var(--color-primary); outline: none; }
+.sync-btn-group { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+
+/* ============ 建议源 Tab ============ */
+.setting-section-header { margin-bottom: var(--spacing-md); }
+.setting-section-header h3 { margin: 0 0 2px 0; font-size: var(--font-size-md); font-weight: 600; }
+.setting-section-desc { font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+
+.suggest-list { display: flex; flex-direction: column; gap: 6px; }
+
+.suggest-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-.sync-section h4 {
-  font-size: 14px;
-  margin: 8px 0;
-}
-.sync-sub {
-  margin-bottom: var(--spacing-md);
-}
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-}
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 4px 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
-  transition: background-color var(--transition-speed);
-}
-.checkbox-label:hover {
-  background-color: var(--color-border);
-}
-.sync-config-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.sync-input {
-  width: 100%;
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  transition: all var(--transition-speed);
   background: var(--color-bg);
-  color: var(--color-text);
-  font-size: 13px;
+  position: relative;
+}
+.suggest-item:hover { border-color: var(--color-primary); background: var(--color-bg-elevated); }
+.suggest-item.active { border-color: var(--color-primary); background: var(--color-bg-elevated); }
+.suggest-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: var(--color-primary);
+  border-radius: 0 2px 2px 0;
+}
+
+.suggest-item-indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: border-color var(--transition-speed);
 }
-.sync-input:focus {
+.suggest-item.active .suggest-item-indicator { border-color: var(--color-primary); }
+.suggest-item.active .suggest-item-indicator::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.suggest-item-body { flex: 1; min-width: 0; }
+.suggest-item-name { font-size: var(--font-size-sm); font-weight: 500; display: block; color: var(--color-text); }
+.suggest-item-url { font-size: 11px; color: var(--color-text-secondary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+
+.suggest-item-actions { display: flex; gap: 2px; flex-shrink: 0; }
+
+.btn-icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  transition: all var(--transition-speed);
+  padding: 0;
+}
+.btn-icon:hover { background: var(--color-border); color: var(--color-text); }
+.btn-icon-danger { color: #dc3545; }
+.btn-icon-danger:hover { background: rgba(220, 53, 69, 0.08); color: #dc3545; }
+
+.suggest-actions-row { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); }
+.suggest-actions-row .btn-add-source { margin-top: 0; flex: 1; }
+
+/* 表单优化 */
+.source-form-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+.source-form-header h4 { margin: 0; font-size: var(--font-size-md); font-weight: 600; }
+
+.form-field { margin-bottom: var(--spacing-md); }
+.form-field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  box-sizing: border-box;
+}
+.form-field input:focus,
+.form-field select:focus {
   border-color: var(--color-primary);
   outline: none;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
 }
-.sync-btn-group {
+.form-field input::placeholder { color: var(--color-text-secondary); opacity: 0.6; }
+
+.form-hint {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: -4px;
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.5;
+}
+
+.form-actions {
   display: flex;
-  gap: 6px;
-  margin-top: 12px;
-  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  margin-top: var(--spacing-md);
 }
+.form-actions button {
+  padding: 8px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all var(--transition-speed);
+}
+.form-actions .btn-save { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.form-actions .btn-save:hover { opacity: 0.9; }
+.form-actions .btn-cancel:hover { background: var(--color-border); }
