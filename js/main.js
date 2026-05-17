@@ -2,6 +2,7 @@ import { initSearch } from './search.js';
 import { initSettings } from './settings.js';
 import { initLayoutToggle } from './layout-toggle.js';
 import { initWallpaper } from './wallpaper.js';
+import { initClock } from './clock.js';
 import { isMobile, createElement } from './utils.js';
 import { initBookmarkPanel } from './bookmark-panel.js';
 
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettings();
   initLayoutToggle();
   initWallpaper();
+  initClock();
 
   document.addEventListener('source-changed', () => {
     initSearch(searchSection);
