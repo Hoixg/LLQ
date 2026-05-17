@@ -1,0 +1,161 @@
+/* 壁纸设置样式 */
+.wallpaper-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wallpaper-section .setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.wallpaper-section .setting-row label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 开关样式 */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--color-border, #ccc);
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.toggle-switch .slider::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked + .slider {
+  background-color: var(--color-primary, #0d6efd);
+}
+
+.toggle-switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* 壁纸模式选择 */
+.wallpaper-mode-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.wallpaper-mode-group label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.wallpaper-mode-group label:has(input:checked) {
+  background-color: var(--color-primary, #0d6efd);
+  color: #fff;
+  border-color: var(--color-primary, #0d6efd);
+}
+
+.wallpaper-mode-group input[type="radio"] {
+  display: none;
+}
+
+/* 壁纸URL输入区 */
+.wallpaper-url-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wallpaper-url-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wallpaper-url-item .label-with-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wallpaper-url-item .label-with-button label {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.wallpaper-url-item .input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wallpaper-url-item input[type="url"] {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 6px;
+  background: var(--color-bg, #fff);
+  color: var(--color-text, #333);
+  font-size: 13px;
+}
+
+.wallpaper-url-item .preview-box {
+  width: 60px;
+  height: 40px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-border, #eee);
+  border: 1px solid var(--color-border, #ddd);
+  flex-shrink: 0;
+}
+
+.wallpaper-url-item .btn-clear {
+  background: none;
+  border: none;
+  color: var(--color-danger, #dc3545);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.wallpaper-url-item .btn-clear:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.wallpaper-url-item .hint {
+  font-size: 12px;
+  color: var(--color-text-secondary, #888);
+}
