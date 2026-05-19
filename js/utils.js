@@ -2,6 +2,13 @@ const BOOLEAN_ATTRS = new Set([
   'checked', 'disabled', 'readonly', 'selected', 'multiple', 'autofocus', 'required',
 ]);
 
+export function applyTheme(theme) {
+  const isDark = theme === 'auto'
+    ? window.matchMedia('(prefers-color-scheme: dark)').matches
+    : theme === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+}
+
 export function getFromStorage(key, defaultValue = null) {
   try {
     const item = localStorage.getItem(key);

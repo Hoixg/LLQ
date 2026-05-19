@@ -19,16 +19,12 @@ function saveWallpaperConfig(config) {
 }
 
 function setBackgroundImage(url) {
+  const layer = document.getElementById('wallpaperLayer');
+  if (!layer) return;
   if (url && url.trim()) {
-    document.body.style.backgroundImage = `url("${url.trim()}")`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
+    layer.style.backgroundImage = `url("${url.trim()}")`;
   } else {
-    document.body.style.backgroundImage = '';
-    document.body.style.backgroundSize = '';
-    document.body.style.backgroundPosition = '';
-    document.body.style.backgroundRepeat = '';
+    layer.style.backgroundImage = '';
   }
 }
 

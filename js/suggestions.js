@@ -1,5 +1,28 @@
 import { getCurrentSource } from './suggest-sources.js';
 
+const PARSERS = {
+  generic_array(data) {
+    if (!Array.isArray(data)) return [];
+    if (data.length > 1 && Array.isArray(data[1])) return data[1].slice(0, 8);
+    if (data.every(item => typeof item === 'string')) return data.slice(0, 8);
+    return [];
+  },
+  baidu(data) {
+    if (data && data.s && Array.isArray(data.s)) return data.s.slice(0, 8);
+    if (data && data.g && Array.isArray(data.g)) return data.g.map(item => item.q).slice(0, 8);
+    return [];
+  },
+  ddg(data) {
+    if (!Array.isArray(data)) return [];
+    return data.map(item => item.phrase || item.text || '').filter(Boolean).slice(0, 8);
+  },
+  string_array(data) {
+    if (Array.isArray(data) && data.every(item => typeof item === 'string')) return data.slice(0, 8);
+    return [];
+  },
+  none: () => [],
+};
+
 let currentRequestId = 0;
 let activeDropdown = null;
 let activeOverlay = null;
@@ -8,15 +31,7 @@ let selectedIndex = -1;
 let closeSuggestionsHandler = () => {};
 
 export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
-  // 清理之前可能残留的 dropdown 和 overlay
-  if (activeDropdown) {
-    activeDropdown.remove();
-    activeDropdown = null;
-  }
-  if (activeOverlay) {
-    activeOverlay.remove();
-    activeOverlay = null;
-  }
+  cleanupExisting();
 
   if (!searchBox.style.position || searchBox.style.position === 'static') {
     searchBox.style.position = 'relative';
@@ -26,31 +41,10 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
 
   const dropdown = document.createElement('div');
   dropdown.className = 'suggestions-dropdown';
-  Object.assign(dropdown.style, {
-    position: 'absolute',
-    top: 'calc(100% + 8px)',
-    left: '0',
-    right: '0',
-    backgroundColor: 'var(--color-bg-elevated, #fff)',
-    border: '1px solid var(--color-border, #dee2e6)',
-    borderRadius: '12px',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-    zIndex: '110',
-    maxHeight: '300px',
-    overflowY: 'auto',
-    display: 'none',
-  });
   searchBox.appendChild(dropdown);
 
   const overlay = document.createElement('div');
   overlay.className = 'suggestions-overlay';
-  Object.assign(overlay.style, {
-    position: 'fixed',
-    inset: '0',
-    background: 'transparent',
-    zIndex: '105',
-    display: 'none',
-  });
   overlay.addEventListener('click', () => closeSuggestionsHandler());
   document.body.appendChild(overlay);
 
@@ -68,9 +62,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       closeSuggestionsHandler();
       return;
     }
-    debounceTimer = setTimeout(() => {
-      fetchAndShow(query);
-    }, 300);
+    debounceTimer = setTimeout(() => fetchAndShow(query), 300);
   });
 
   inputEl.addEventListener('keydown', (e) => {
@@ -123,19 +115,25 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
 
     const requestId = ++currentRequestId;
     const callbackName = '__suggest_cb_' + Date.now() + '_' + requestId;
-    let scriptRemoved = false;
+    let settled = false;
+    let timeoutId;
+
+    function cleanup() {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
+      delete window[callbackName];
+      const el = document.getElementById('suggest_script_' + callbackName);
+      if (el) el.remove();
+    }
 
     window[callbackName] = function (data) {
-      if (requestId !== currentRequestId) {
-        delete window[callbackName];
-        return;
-      }
-      if (!scriptRemoved) removeScript();
+      if (requestId !== currentRequestId) { cleanup(); return; }
+      cleanup();
       const suggestions = parseSuggestions(data, source.parser);
       if (requestId === currentRequestId) {
         showSuggestions(suggestions, query);
       }
-      delete window[callbackName];
     };
 
     const url = source.url
@@ -146,54 +144,18 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     script.src = url;
     script.id = 'suggest_script_' + callbackName;
     script.onerror = () => {
-      delete window[callbackName];
-      removeScript();
+      if (requestId !== currentRequestId) { cleanup(); return; }
+      cleanup();
       closeSuggestionsHandler();
     };
     document.body.appendChild(script);
 
-    const timeoutId = setTimeout(() => {
-      if (!scriptRemoved) {
-        delete window[callbackName];
-        removeScript();
-        closeSuggestionsHandler();
+    timeoutId = setTimeout(() => {
+      if (!settled) {
+        cleanup();
+        if (requestId === currentRequestId) closeSuggestionsHandler();
       }
     }, 5000);
-
-    function removeScript() {
-      scriptRemoved = true;
-      clearTimeout(timeoutId);
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-  }
-
-  function parseSuggestions(data, parser) {
-    try {
-      switch (parser) {
-        case 'generic_array':
-          if (Array.isArray(data)) {
-            if (data.length > 1 && Array.isArray(data[1])) return data[1].slice(0, 8);
-            if (data.every(item => typeof item === 'string')) return data.slice(0, 8);
-          }
-          return [];
-        case 'baidu':
-          if (data && data.s && Array.isArray(data.s)) return data.s.slice(0, 8);
-          if (data && data.g && Array.isArray(data.g)) {
-            return data.g.map(item => item.q).slice(0, 8);
-          }
-          return [];
-        case 'ddg':
-          if (Array.isArray(data)) {
-            return data.map(item => item.phrase || item.text || '').filter(Boolean).slice(0, 8);
-          }
-          return [];
-        default:
-          return parseSuggestions(data, 'generic_array');
-      }
-    } catch (e) {
-      console.warn('建议解析失败', e);
-      return [];
-    }
   }
 
   function showSuggestions(suggestions, query) {
@@ -204,26 +166,10 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     currentSuggestions = suggestions;
     selectedIndex = -1;
     dropdown.innerHTML = '';
-    suggestions.forEach((text, i) => {
+    suggestions.forEach(text => {
       const item = document.createElement('div');
       item.className = 'suggestion-item';
       item.textContent = text;
-      Object.assign(item.style, {
-        padding: '8px 16px',
-        cursor: 'pointer',
-        fontSize: '14px',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        color: 'var(--color-text, #212529)',
-        transition: 'background-color 0.2s',
-      });
-      item.addEventListener('mouseenter', () => {
-        item.style.backgroundColor = 'var(--color-border, #dee2e6)';
-      });
-      item.addEventListener('mouseleave', () => {
-        item.style.backgroundColor = '';
-      });
       item.addEventListener('mousedown', (e) => {
         e.preventDefault();
         closeSuggestionsHandler();
@@ -242,13 +188,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
 
   function updateHighlight(items) {
     items.forEach((item, i) => {
-      if (i === selectedIndex) {
-        item.style.backgroundColor = 'var(--color-border, #dee2e6)';
-        item.classList.add('active');
-      } else {
-        item.style.backgroundColor = '';
-        item.classList.remove('active');
-      }
+      item.classList.toggle('active', i === selectedIndex);
     });
   }
 
@@ -267,6 +207,27 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
   };
 }
 
+function parseSuggestions(data, parser) {
+  const parserFn = PARSERS[parser] || PARSERS.generic_array;
+  try {
+    return parserFn(data);
+  } catch (e) {
+    console.warn('建议解析失败', e);
+    return [];
+  }
+}
+
 export function closeSuggestionsNow() {
   if (closeSuggestionsHandler) closeSuggestionsHandler();
+}
+
+function cleanupExisting() {
+  if (activeDropdown) {
+    activeDropdown.remove();
+    activeDropdown = null;
+  }
+  if (activeOverlay) {
+    activeOverlay.remove();
+    activeOverlay = null;
+  }
 }

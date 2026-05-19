@@ -1,4 +1,5 @@
 import { getFromStorage, setToStorage } from './utils.js';
+import { createSourceManager } from './source-manager.js';
 
 const STORAGE_KEY = 'suggest_settings';
 const STORAGE_KEY_HIDDEN = 'hidden_suggest_presets';
@@ -13,74 +14,29 @@ const PRESETS = [
   { id: 'none', name: '无建议 (关闭)', url: '', parser: 'none' },
 ];
 
-let currentId, customSources, hiddenPresets, modifiedPresets;
+const manager = createSourceManager(PRESETS, { defaultId: 'sug_google', idPrefix: 'usug_' });
 
-function load() {
-  const saved = getFromStorage(STORAGE_KEY, {});
-  currentId = saved.currentSourceId || 'sug_google';
-  customSources = saved.customSources || [];
-  hiddenPresets = getFromStorage(STORAGE_KEY_HIDDEN, []);
-  modifiedPresets = getFromStorage(STORAGE_KEY_MODIFIED, {});
-}
-function save() { setToStorage(STORAGE_KEY, { currentSourceId: currentId, customSources }); }
-function saveHidden() { setToStorage(STORAGE_KEY_HIDDEN, hiddenPresets); }
-function saveModified() { setToStorage(STORAGE_KEY_MODIFIED, modifiedPresets); }
-load();
+const saved = getFromStorage(STORAGE_KEY, {});
+manager.init({
+  currentId: saved.currentSourceId || 'sug_google',
+  customSources: saved.customSources || [],
+  hiddenPresets: getFromStorage(STORAGE_KEY_HIDDEN, []),
+  modifiedPresets: getFromStorage(STORAGE_KEY_MODIFIED, {}),
+}, (state) => {
+  setToStorage(STORAGE_KEY, { currentSourceId: state.currentId, customSources: state.customSources });
+  setToStorage(STORAGE_KEY_HIDDEN, state.hiddenPresets);
+  setToStorage(STORAGE_KEY_MODIFIED, state.modifiedPresets);
+});
 
-export function getAllSources() {
-  const presets = PRESETS
-    .filter(p => !hiddenPresets.includes(p.id))
-    .map(p => modifiedPresets[p.id] ? { ...p, ...modifiedPresets[p.id] } : p);
-  return [...presets, ...customSources];
-}
-
-export function getCurrentSource() {
-  return getAllSources().find(s => s.id === currentId) || getAllSources()[0] || PRESETS[0];
-}
-
-export function getCurrentSourceId() { return currentId; }
-export function setCurrentSource(id) { currentId = id; save(); }
-
-export function addCustomSource(src) {
-  src.id = 'usug_' + Date.now();
-  customSources.push(src);
-  save();
-}
-
-export function removeCustomSource(id) {
-  customSources = customSources.filter(s => s.id !== id);
-  save();
-}
-
-export function updateCustomSource(id, data) {
-  const idx = customSources.findIndex(s => s.id === id);
-  if (idx !== -1) {
-    customSources[idx] = { ...customSources[idx], ...data };
-    save();
-  }
-}
-
-export function modifyPreset(id, data) {
-  modifiedPresets[id] = data;
-  saveModified();
-}
-
-export function hidePreset(id) {
-  if (!hiddenPresets.includes(id)) {
-    hiddenPresets.push(id);
-    saveHidden();
-  }
-}
-
-export function resetSuggestPresets() {
-  hiddenPresets = [];
-  modifiedPresets = {};
-  saveHidden();
-  saveModified();
-}
-
-export function isPresetSource(id) {
-  return PRESETS.some(s => s.id === id);
-}
-
-export function getCustomSources() { return customSources; }
+export const getAllSources = () => manager.getAllSources();
+export const getCurrentSource = () => manager.getCurrentSource();
+export const getCurrentSourceId = () => manager.getCurrentSourceId();
+export const setCurrentSource = (id) => manager.setCurrentSource(id);
+export const addCustomSource = (src) => manager.addCustomSource(src);
+export const removeCustomSource = (id) => manager.removeCustomSource(id);
+export const updateCustomSource = (id, data) => manager.updateCustomSource(id, data);
+export const modifyPreset = (id, data) => manager.modifyPreset(id, data);
+export const hidePreset = (id) => manager.hidePreset(id);
+export const resetSuggestPresets = () => manager.resetPresets();
+export const isPresetSource = (id) => manager.isPresetSource(id);
+export const getCustomSources = () => manager.getCustomSources();

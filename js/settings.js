@@ -1,4 +1,4 @@
-import { createElement } from './utils.js';
+import { createElement, applyTheme } from './utils.js';
 import { getCurrentSource, setCurrentSource, getAllSources, addCustomSource, removeCustomSource, updateCustomSource, isPresetSource, modifyPreset, hidePreset } from './search-sources.js';
 import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSource as setCurrentSuggest, addCustomSource as addCustomSuggest, removeCustomSource as removeCustomSuggest, updateCustomSource as updateCustomSuggest, isPresetSource as isSuggestPreset, modifyPreset as modifySuggestPreset, hidePreset as hideSuggestPreset } from './suggest-sources.js';
 import { renderWallpaperTab } from './wallpaper.js';
@@ -34,11 +34,6 @@ function closeSettings() {
 document.addEventListener('close-all-panels', (e) => {
   if (e.detail?.source !== 'settings') closeSettings();
 });
-
-function applyTheme(theme) {
-  const isDark = theme === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : theme === 'dark';
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-}
 
 function renderPanel(tab) {
   panelEl.innerHTML = '';
@@ -99,9 +94,9 @@ function renderEngines(container) {
 
     actions.appendChild(createElement('button', { className: 'btn-small', onclick: () => {
       if (isPresetSource(src.id)) {
-        showPresetEditForm(src, container);
+        renderEngineForm(container, src, { isPreset: true });
       } else {
-        showEditForm(src, container);
+        renderEngineForm(container, src, {});
       }
     } }, '\u270e'));
 
@@ -128,71 +123,36 @@ function renderEngines(container) {
     list.appendChild(li);
   });
   container.appendChild(list);
-  container.appendChild(createElement('button', { className: 'btn-add-source', onclick: () => showAddForm(container) }, '+ 添加搜索引擎'));
+  container.appendChild(createElement('button', { className: 'btn-add-source', onclick: () => renderEngineForm(container, null, { isAdd: true }) }, '+ 添加搜索引擎'));
 }
 
-function showAddForm(container) {
+function renderEngineForm(container, src, { isAdd, isPreset } = {}) {
   container.innerHTML = '';
   const form = createElement('div', { className: 'source-form' });
-  const nameInp = createElement('input', { type: 'text', placeholder: '名称' });
-  const urlInp = createElement('input', { type: 'text', placeholder: '搜索URL（{query}占位符）' });
-  const iconInp = createElement('input', { type: 'text', placeholder: '图标URL（可选）' });
-  const save = () => {
-    const name = nameInp.value.trim(), url = urlInp.value.trim(), icon = iconInp.value.trim();
-    if (!name || !url) return alert('名称和URL必填');
-    if (!url.includes('{query}')) return alert('需含{query}');
-    addCustomSource({ name, url, iconType: icon ? 'url' : 'text', iconValue: name.charAt(0), iconUrl: icon || undefined, iconBg: '#6c757d', iconColor: '#fff' });
-    document.dispatchEvent(new CustomEvent('source-changed'));
-    renderEngines(container);
-  };
-  form.append(createElement('label', {}, '名称'), nameInp, createElement('label', {}, 'URL'), urlInp, createElement('label', {}, '图标URL'), iconInp);
-  form.appendChild(createElement('div', { className: 'form-actions' }, [
-    createElement('button', { className: 'btn-save', onclick: save }, '保存'),
-    createElement('button', { className: 'btn-cancel', onclick: () => renderEngines(container) }, '取消'),
-  ]));
-  container.appendChild(form);
-}
+  const nameInp = createElement('input', { type: 'text', placeholder: '名称', value: src ? src.name : '' });
+  const urlInp = createElement('input', { type: 'text', placeholder: '搜索URL（{query}占位符）', value: src ? src.url : '' });
+  const iconInp = createElement('input', { type: 'text', placeholder: '图标URL（可选）', value: (src && src.iconUrl) ? src.iconUrl : '' });
 
-function showEditForm(src, container) {
-  container.innerHTML = '';
-  const form = createElement('div', { className: 'source-form' });
-  const nameInp = createElement('input', { type: 'text', value: src.name });
-  const urlInp = createElement('input', { type: 'text', value: src.url });
-  const iconInp = createElement('input', { type: 'text', value: src.iconUrl || '' });
   const save = () => {
     const name = nameInp.value.trim(), url = urlInp.value.trim(), icon = iconInp.value.trim();
     if (!name || !url) return alert('名称和URL必填');
     if (!url.includes('{query}')) return alert('需含{query}');
     const data = { name, url, iconType: icon ? 'url' : 'text', iconValue: name.charAt(0), iconUrl: icon || undefined, iconBg: '#6c757d', iconColor: '#fff' };
-    updateCustomSource(src.id, data);
+    if (isAdd) addCustomSource(data);
+    else if (isPreset) modifyPreset(src.id, data);
+    else updateCustomSource(src.id, data);
     document.dispatchEvent(new CustomEvent('source-changed'));
     renderEngines(container);
   };
-  form.append(createElement('label', {}, '名称'), nameInp, createElement('label', {}, 'URL'), urlInp, createElement('label', {}, '图标URL'), iconInp);
-  form.appendChild(createElement('div', { className: 'form-actions' }, [
-    createElement('button', { className: 'btn-save', onclick: save }, '保存'),
-    createElement('button', { className: 'btn-cancel', onclick: () => renderEngines(container) }, '取消'),
-  ]));
-  container.appendChild(form);
-}
 
-function showPresetEditForm(src, container) {
-  container.innerHTML = '';
-  const form = createElement('div', { className: 'source-form' });
-  const nameInp = createElement('input', { type: 'text', value: src.name });
-  const urlInp = createElement('input', { type: 'text', value: src.url });
-  const iconInp = createElement('input', { type: 'text', value: src.iconUrl || '' });
-  const save = () => {
-    const name = nameInp.value.trim(), url = urlInp.value.trim(), icon = iconInp.value.trim();
-    if (!name || !url) return alert('名称和URL必填');
-    if (!url.includes('{query}')) return alert('需含{query}');
-    const data = { name, url, iconType: icon ? 'url' : 'text', iconValue: name.charAt(0), iconUrl: icon || undefined, iconBg: '#6c757d', iconColor: '#fff' };
-    modifyPreset(src.id, data);
-    document.dispatchEvent(new CustomEvent('source-changed'));
-    renderEngines(container);
-  };
-  form.append(createElement('label', {}, '名称'), nameInp, createElement('label', {}, 'URL'), urlInp, createElement('label', {}, '图标URL'), iconInp);
-  form.appendChild(createElement('p', { style: { fontSize: '12px', color: 'var(--color-text-secondary)' } }, '修改预设引擎将保存为本地自定义数据，可通过"恢复默认"撤销。'));
+  form.append(
+    createElement('label', {}, '名称'), nameInp,
+    createElement('label', {}, 'URL'), urlInp,
+    createElement('label', {}, '图标URL'), iconInp,
+  );
+  if (isPreset) {
+    form.appendChild(createElement('p', { style: { fontSize: '12px', color: 'var(--color-text-secondary)' } }, '修改预设引擎将保存为本地自定义数据，可通过"恢复默认"撤销。'));
+  }
   form.appendChild(createElement('div', { className: 'form-actions' }, [
     createElement('button', { className: 'btn-save', onclick: save }, '保存'),
     createElement('button', { className: 'btn-cancel', onclick: () => renderEngines(container) }, '取消'),
@@ -237,9 +197,9 @@ function renderSuggestTab(container) {
       onclick: (e) => {
         e.stopPropagation();
         if (isSuggestPreset(src.id)) {
-          showPresetSuggestEditForm(src, container);
+          renderSuggestSourceForm(container, src, { isPreset: true });
         } else {
-          showEditSuggestForm(src, container);
+          renderSuggestSourceForm(container, src, {});
         }
       }
     }, '\u270e'));
@@ -273,17 +233,18 @@ function renderSuggestTab(container) {
   const actionsRow = createElement('div', { className: 'suggest-actions-row' });
   actionsRow.appendChild(createElement('button', {
     className: 'btn-add-source',
-    onclick: () => showAddSuggestForm(container)
+    onclick: () => renderSuggestSourceForm(container, null, { isAdd: true })
   }, '+ 添加自定义建议源'));
   container.appendChild(actionsRow);
 }
 
-function showAddSuggestForm(container) {
+function renderSuggestSourceForm(container, src, { isAdd, isPreset } = {}) {
   container.innerHTML = '';
 
+  const title = isAdd ? '添加自定义建议源' : isPreset ? '编辑预设建议源' : '编辑自定义建议源';
   container.appendChild(createElement('div', { className: 'source-form-header' }, [
     createElement('button', { className: 'btn-icon', onclick: () => renderSuggestTab(container) }, '\u2190'),
-    createElement('h4', {}, '添加自定义建议源'),
+    createElement('h4', {}, title),
   ]));
 
   const form = createElement('div', { className: 'source-form' });
@@ -291,140 +252,45 @@ function showAddSuggestForm(container) {
   const nameField = createElement('div', { className: 'form-field' }, [
     createElement('span', { className: 'form-field-label' }, '名称'),
   ]);
-  const nameInp = createElement('input', { type: 'text', placeholder: '例如：我的搜索建议' });
+  const nameInp = createElement('input', { type: 'text', placeholder: '例如：我的搜索建议', value: src ? src.name : '' });
   nameField.appendChild(nameInp);
 
   const urlField = createElement('div', { className: 'form-field' }, [
     createElement('span', { className: 'form-field-label' }, '接口 URL'),
   ]);
-  const urlInp = createElement('input', { type: 'text', placeholder: 'https://example.com/suggest?q={query}&cb={callback}' });
+  const urlInp = createElement('input', { type: 'text', placeholder: 'https://example.com/suggest?q={query}&cb={callback}', value: src ? src.url : '' });
   urlField.appendChild(urlInp);
 
   const parserField = createElement('div', { className: 'form-field' }, [
     createElement('span', { className: 'form-field-label' }, '解析器'),
   ]);
-  const parserSel = createElement('select', {}, [
-    createElement('option', { value: 'generic_array' }, '通用 (generic_array)'),
-    createElement('option', { value: 'baidu' }, '百度 (baidu)'),
-    createElement('option', { value: 'ddg' }, 'DuckDuckGo (ddg)'),
-    createElement('option', { value: 'string_array' }, '纯字符串数组 (string_array)'),
-  ]);
+  const parserOptions = [
+    { value: 'generic_array', label: '通用 (generic_array)' },
+    { value: 'baidu', label: '百度 (baidu)' },
+    { value: 'ddg', label: 'DuckDuckGo (ddg)' },
+    { value: 'string_array', label: '纯字符串数组 (string_array)' },
+  ];
+  const parserSel = createElement('select', {}, parserOptions.map(opt =>
+    createElement('option', { value: opt.value, selected: src && src.parser === opt.value }, opt.label)
+  ));
   parserField.appendChild(parserSel);
 
   form.append(nameField, urlField, parserField);
   form.appendChild(createElement('p', { className: 'form-hint' }, 'URL 中需包含 {query} 和 {callback} 占位符。{query} 被替换为搜索词，{callback} 被替换为 JSONP 回调函数名。'));
 
-  const save = () => {
-    const name = nameInp.value.trim(), url = urlInp.value.trim(), parser = parserSel.value;
-    if (!name || !url) return alert('名称和URL必填');
-    if (!url.includes('{query}')) return alert('URL 需包含 {query} 占位符');
-    if (!url.includes('{callback}') && parser !== 'none') return alert('URL 需包含 {callback} 占位符');
-    addCustomSuggest({ name, url, parser });
-    renderSuggestTab(container);
-  };
-
-  form.appendChild(createElement('div', { className: 'form-actions' }, [
-    createElement('button', { className: 'btn-cancel', onclick: () => renderSuggestTab(container) }, '取消'),
-    createElement('button', { className: 'btn-save', onclick: save }, '保存'),
-  ]));
-
-  container.appendChild(form);
-}
-
-function showEditSuggestForm(src, container) {
-  container.innerHTML = '';
-
-  container.appendChild(createElement('div', { className: 'source-form-header' }, [
-    createElement('button', { className: 'btn-icon', onclick: () => renderSuggestTab(container) }, '\u2190'),
-    createElement('h4', {}, '编辑自定义建议源'),
-  ]));
-
-  const form = createElement('div', { className: 'source-form' });
-
-  const nameField = createElement('div', { className: 'form-field' }, [
-    createElement('span', { className: 'form-field-label' }, '名称'),
-  ]);
-  const nameInp = createElement('input', { type: 'text', value: src.name });
-  nameField.appendChild(nameInp);
-
-  const urlField = createElement('div', { className: 'form-field' }, [
-    createElement('span', { className: 'form-field-label' }, '接口 URL'),
-  ]);
-  const urlInp = createElement('input', { type: 'text', value: src.url });
-  urlField.appendChild(urlInp);
-
-  const parserField = createElement('div', { className: 'form-field' }, [
-    createElement('span', { className: 'form-field-label' }, '解析器'),
-  ]);
-  const parserSel = createElement('select', {}, [
-    createElement('option', { value: 'generic_array', selected: src.parser === 'generic_array' }, '通用 (generic_array)'),
-    createElement('option', { value: 'baidu', selected: src.parser === 'baidu' }, '百度 (baidu)'),
-    createElement('option', { value: 'ddg', selected: src.parser === 'ddg' }, 'DuckDuckGo (ddg)'),
-    createElement('option', { value: 'string_array', selected: src.parser === 'string_array' }, '纯字符串数组 (string_array)'),
-  ]);
-  parserField.appendChild(parserSel);
-
-  form.append(nameField, urlField, parserField);
+  if (isPreset) {
+    form.appendChild(createElement('p', { className: 'form-hint' }, '修改预设建议源将保存为本地数据，可通过"恢复所有预设"撤销。'));
+  }
 
   const save = () => {
     const name = nameInp.value.trim(), url = urlInp.value.trim(), parser = parserSel.value;
     if (!name || !url) return alert('名称和URL必填');
     if (!url.includes('{query}')) return alert('URL 需包含 {query} 占位符');
     if (!url.includes('{callback}') && parser !== 'none') return alert('URL 需包含 {callback} 占位符');
-    updateCustomSuggest(src.id, { name, url, parser });
-    renderSuggestTab(container);
-  };
-
-  form.appendChild(createElement('div', { className: 'form-actions' }, [
-    createElement('button', { className: 'btn-cancel', onclick: () => renderSuggestTab(container) }, '取消'),
-    createElement('button', { className: 'btn-save', onclick: save }, '保存'),
-  ]));
-
-  container.appendChild(form);
-}
-
-function showPresetSuggestEditForm(src, container) {
-  container.innerHTML = '';
-
-  container.appendChild(createElement('div', { className: 'source-form-header' }, [
-    createElement('button', { className: 'btn-icon', onclick: () => renderSuggestTab(container) }, '\u2190'),
-    createElement('h4', {}, '编辑预设建议源'),
-  ]));
-
-  const form = createElement('div', { className: 'source-form' });
-
-  const nameField = createElement('div', { className: 'form-field' }, [
-    createElement('span', { className: 'form-field-label' }, '名称'),
-  ]);
-  const nameInp = createElement('input', { type: 'text', value: src.name });
-  nameField.appendChild(nameInp);
-
-  const urlField = createElement('div', { className: 'form-field' }, [
-    createElement('span', { className: 'form-field-label' }, '接口 URL'),
-  ]);
-  const urlInp = createElement('input', { type: 'text', value: src.url });
-  urlField.appendChild(urlInp);
-
-  const parserField = createElement('div', { className: 'form-field' }, [
-    createElement('span', { className: 'form-field-label' }, '解析器'),
-  ]);
-  const parserSel = createElement('select', {}, [
-    createElement('option', { value: 'generic_array', selected: src.parser === 'generic_array' }, '通用 (generic_array)'),
-    createElement('option', { value: 'baidu', selected: src.parser === 'baidu' }, '百度 (baidu)'),
-    createElement('option', { value: 'ddg', selected: src.parser === 'ddg' }, 'DuckDuckGo (ddg)'),
-    createElement('option', { value: 'string_array', selected: src.parser === 'string_array' }, '纯字符串数组 (string_array)'),
-  ]);
-  parserField.appendChild(parserSel);
-
-  form.append(nameField, urlField, parserField);
-  form.appendChild(createElement('p', { className: 'form-hint' }, '修改预设建议源将保存为本地数据，可通过"恢复所有预设"撤销。'));
-
-  const save = () => {
-    const name = nameInp.value.trim(), url = urlInp.value.trim(), parser = parserSel.value;
-    if (!name || !url) return alert('名称和URL必填');
-    if (!url.includes('{query}')) return alert('URL 需包含 {query} 占位符');
-    if (!url.includes('{callback}') && parser !== 'none') return alert('URL 需包含 {callback} 占位符');
-    modifySuggestPreset(src.id, { name, url, parser });
+    const data = { name, url, parser };
+    if (isAdd) addCustomSuggest(data);
+    else if (isPreset) modifySuggestPreset(src.id, data);
+    else updateCustomSuggest(src.id, data);
     renderSuggestTab(container);
   };
 

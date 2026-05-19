@@ -1,4 +1,4 @@
-import { getFromStorage, setToStorage, createElement } from './utils.js';
+import { getFromStorage, setToStorage, createElement, applyTheme } from './utils.js';
 
 const DATA_KEYS = [
   { key: 'custom_sources',        label: '自定义搜索引擎', icon: '🔍' },
@@ -76,13 +76,8 @@ function applyImport(selectedKeys, jsonStr) {
   // 主题即时生效
   if (selectedKeys.includes('theme')) {
     const theme = getFromStorage('theme', 'light');
-    applyThemeFromSync(theme);
+    applyTheme(theme);
   }
-}
-
-function applyThemeFromSync(theme) {
-  const isDark = theme === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : theme === 'dark';
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 }
 
 // ==================== 同步日志 ====================
