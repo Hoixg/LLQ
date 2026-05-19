@@ -1,9 +1,18 @@
-html, body {
+html {
   height: 100%;
   font-family: var(--font-family);
   background-color: var(--color-bg);
   color: var(--color-text);
   transition: background-color var(--transition-speed), color var(--transition-speed);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  height: 100%;
+  font-family: var(--font-family);
+  background-color: transparent;
+  color: var(--color-text);
+  transition: color var(--transition-speed);
   -webkit-text-size-adjust: 100%;
 }
 
