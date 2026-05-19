@@ -23,8 +23,12 @@ function setBackgroundImage(url) {
   if (!layer) return;
   if (url && url.trim()) {
     layer.style.backgroundImage = `url("${url.trim()}")`;
+    document.documentElement.style.backgroundColor = 'transparent';
+    document.body.style.backgroundColor = 'transparent';
   } else {
     layer.style.backgroundImage = '';
+    document.documentElement.style.backgroundColor = '';
+    document.body.style.backgroundColor = '';
   }
 }
 
