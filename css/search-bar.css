@@ -38,6 +38,36 @@
   background-color: var(--color-border);
 }
 
+.track-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--search-icon-size);
+  height: var(--search-icon-size);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  padding: 0;
+  margin-right: var(--spacing-xs);
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.track-toggle-btn:hover {
+  background-color: var(--color-border);
+  color: var(--color-primary);
+}
+
+.track-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+  flex-shrink: 0;
+  margin-right: var(--spacing-sm);
+}
+
 .source-icon {
   display: inline-flex;
   align-items: center;

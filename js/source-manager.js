@@ -8,10 +8,11 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
   };
 
   let onSave = null;
+  let idCounter = 0;
 
   function init(initial, saveCallback) {
     if (initial) {
-      state.currentId = initial.currentId || defaultId;
+      state.currentId = initial.currentId ?? defaultId;
       state.customSources = initial.customSources || [];
       state.hiddenPresets = initial.hiddenPresets || [];
       state.modifiedPresets = initial.modifiedPresets || {};
@@ -49,10 +50,13 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
 
   function getCurrentSourceId() { return state.currentId; }
 
-  function setCurrentSource(id) { state.currentId = id; save(); }
+  function setCurrentSource(id) {
+    if (!getAllSources().some(s => s.id === id)) return;
+    state.currentId = id; save();
+  }
 
   function addCustomSource(src) {
-    src.id = idPrefix + Date.now();
+    src.id = idPrefix + Date.now() + '_' + (++idCounter);
     const maxOrder = Object.keys(state.engineOrder).length
       ? Math.max(...Object.values(state.engineOrder))
       : -1;
@@ -70,6 +74,11 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
 
   function removeCustomSource(id) {
     state.customSources = state.customSources.filter(s => s.id !== id);
+    delete state.engineOrder[id];
+    if (state.currentId === id) {
+      const sources = getAllSources();
+      state.currentId = sources[0]?.id || defaultId;
+    }
     save();
   }
 
@@ -82,13 +91,17 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
   }
 
   function modifyPreset(id, data) {
-    state.modifiedPresets[id] = data;
+    state.modifiedPresets[id] = { ...data };
     save();
   }
 
   function hidePreset(id) {
     if (!state.hiddenPresets.includes(id)) {
       state.hiddenPresets.push(id);
+      if (state.currentId === id) {
+        const sources = getAllSources();
+        state.currentId = sources.find(s => s.id !== id)?.id || defaultId;
+      }
       save();
     }
   }
@@ -103,10 +116,10 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
     return presets.some(s => s.id === id);
   }
 
-  function getCustomSources() { return state.customSources; }
+  function getCustomSources() { return [...state.customSources]; }
   function getHiddenPresets() { return [...state.hiddenPresets]; }
   function getModifiedPresets() { return { ...state.modifiedPresets }; }
-  function getRawState() { return { ...state }; }
+  function getRawState() { return structuredClone(state); }
 
   return {
     init,

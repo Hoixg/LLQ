@@ -1,5 +1,5 @@
 import { createElement, applyTheme } from './utils.js';
-import { getCurrentSource, setCurrentSource, getAllSources, addCustomSource, removeCustomSource, updateCustomSource, isPresetSource, modifyPreset, hidePreset, reorderEngines } from './search-sources.js';
+import { getCurrentSource, setCurrentSource, getAllSources, addCustomSource, removeCustomSource, updateCustomSource, isPresetSource, modifyPreset, hidePreset, reorderEngines, getSourcesByTrack, getCurrentTrack } from './search-sources.js';
 import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSource as setCurrentSuggest, addCustomSource as addCustomSuggest, removeCustomSource as removeCustomSuggest, updateCustomSource as updateCustomSuggest, isPresetSource as isSuggestPreset, modifyPreset as modifySuggestPreset, hidePreset as hideSuggestPreset, reorderEngines as reorderSuggestEngines } from './suggest-sources.js';
 import { renderWallpaperTab } from './wallpaper.js';
 import { renderSyncTab } from './sync.js';
@@ -40,7 +40,7 @@ function renderPanel(tab) {
   const header = createElement('div', { className: 'settings-header' }, [
     createElement('div', { className: 'title-group' }, [
       createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.61 (拖拽排序 + 修复)'),
+      createElement('span', { className: 'version-info' }, 'v0.65 (双轨搜索)'),
     ]),
     createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
   ]);
@@ -75,101 +75,160 @@ function renderGeneral(container) {
 }
 
 // ===================== 搜索引擎 =====================
+const TRACK_NAMES = { engine: '常规搜索', platform: '平台搜索' };
+
+function getCollapseKey(track) { return `settings_collapse_${track}`; }
+function isCollapsed(track) { return localStorage.getItem(getCollapseKey(track)) === 'true'; }
+function setCollapsed(track, v) { localStorage.setItem(getCollapseKey(track), v); }
+
 function renderEngines(container) {
   container.innerHTML = '';
-  const sources = getAllSources(), current = getCurrentSource();
-  const list = createElement('ul', { className: 'engine-list', id: 'engineSortList' });
+  renderTrackSection(container, 'engine');
+  renderTrackSection(container, 'platform');
+}
+
+function renderTrackSection(container, track) {
+  const label = TRACK_NAMES[track];
+  const collapsed = isCollapsed(track);
+  const curSource = getCurrentSource();
+  const curTrack = getCurrentTrack();
+
+  const header = createElement('div', {
+    className: 'section-toggle-header',
+    onclick: () => {
+      setCollapsed(track, !isCollapsed(track));
+      renderEngines(container);
+    },
+  }, [
+    createElement('span', { className: 'toggle-arrow' + (collapsed ? ' collapsed' : '') }, collapsed ? '\u25b6' : '\u25bc'),
+    createElement('span', { className: 'section-title' }, label),
+  ]);
+
+  const content = createElement('div', { className: 'track-section-content' });
+  if (collapsed) {
+    container.appendChild(header);
+    container.appendChild(content);
+    return;
+  }
+
+  const listId = `engineSortList-${track}`;
+  const list = createElement('ul', { className: 'engine-list', id: listId });
+
+  const sources = getSourcesByTrack(track);
   sources.forEach(src => {
-    const li = createElement('li', { className: 'engine-item', draggable: 'true', data: { engineId: src.id } });
+    const isCurrentSource = curTrack === track && src.id === curSource.id;
+    const li = createElement('li', {
+      className: 'engine-item',
+      draggable: 'true',
+      data: { engineId: src.id, engineTrack: track },
+    });
 
     const handle = createElement('span', { className: 'drag-handle', title: '拖拽排序' }, '\u2630');
 
     const info = createElement('div', { className: 'engine-info' }, [
       createElement('span', { className: 'engine-name' }, src.name),
-      createElement('span', { className: 'engine-url-preview' }, src.url.substring(0,50)+'...'),
+      createElement('span', { className: 'engine-url-preview' }, src.url.substring(0, 50) + '...'),
     ]);
+
     const actions = createElement('div', { className: 'engine-actions' });
-    if (src.id === current.id) {
+    if (isCurrentSource) {
       actions.appendChild(createElement('span', { className: 'current-badge' }, '当前'));
     }
 
-    actions.appendChild(createElement('button', { className: 'btn-small', onclick: () => {
-      if (isPresetSource(src.id)) {
-        renderEngineForm(container, src, { isPreset: true });
-      } else {
-        renderEngineForm(container, src, {});
-      }
-    } }, '\u270e'));
-
-    if (src.id !== current.id) {
-      actions.appendChild(createElement('button', { className: 'btn-small btn-delete', onclick: () => {
+    actions.appendChild(createElement('button', {
+      className: 'btn-small',
+      onclick: () => {
         if (isPresetSource(src.id)) {
-          if (confirm('确定隐藏预设引擎"' + src.name + '"？\n可通过"恢复默认"重新显示。')) {
-            hidePreset(src.id);
-            document.dispatchEvent(new CustomEvent('source-changed'));
-            renderEngines(container);
-          }
+          renderEngineForm(container, src, { isPreset: true, track });
         } else {
-          if (confirm('确定删除自定义引擎"' + src.name + '"？')) {
-            removeCustomSource(src.id);
-            document.dispatchEvent(new CustomEvent('source-changed'));
-            renderEngines(container);
+          renderEngineForm(container, src, { track });
+        }
+      }
+    }, '\u270e'));
+
+    if (!isCurrentSource) {
+      actions.appendChild(createElement('button', {
+        className: 'btn-small btn-delete',
+        onclick: () => {
+          if (isPresetSource(src.id)) {
+            if (confirm('确定隐藏预设引擎"' + src.name + '"？\n可通过"恢复默认"重新显示。')) {
+              hidePreset(src.id);
+              document.dispatchEvent(new CustomEvent('source-changed'));
+              renderEngines(container);
+            }
+          } else {
+            if (confirm('确定删除自定义引擎"' + src.name + '"？')) {
+              removeCustomSource(src.id);
+              document.dispatchEvent(new CustomEvent('source-changed'));
+              renderEngines(container);
+            }
           }
         }
-      } }, '\u2715'));
+      }, '\u2715'));
     } else {
-      actions.appendChild(createElement('span', { style: { fontSize: '12px', color: 'var(--color-text-secondary)', padding: '2px 4px' } }, '当前'));
+      actions.appendChild(createElement('span', {
+        style: { fontSize: '12px', color: 'var(--color-text-secondary)', padding: '2px 4px' }
+      }, '当前'));
     }
+
     li.append(handle, info, actions);
 
-    li.addEventListener('dragstart', handleDragStart);
-    li.addEventListener('dragend', handleDragEnd);
-    li.addEventListener('dragover', handleDragOver);
-    li.addEventListener('dragleave', handleDragLeave);
-    li.addEventListener('drop', (e) => handleDrop(e, container));
+    li.addEventListener('dragstart', handleEngineDragStart);
+    li.addEventListener('dragend', handleEngineDragEnd);
+    li.addEventListener('dragover', handleEngineDragOver);
+    li.addEventListener('dragleave', handleEngineDragLeave);
+    li.addEventListener('drop', (e) => handleEngineDrop(e, container, track));
 
     list.appendChild(li);
   });
-  container.appendChild(list);
-  container.appendChild(createElement('button', { className: 'btn-add-source', onclick: () => renderEngineForm(container, null, { isAdd: true }) }, '+ 添加搜索引擎'));
+
+  content.appendChild(list);
+  content.appendChild(createElement('button', {
+    className: 'btn-add-source',
+    onclick: () => renderEngineForm(container, null, { isAdd: true, track })
+  }, '+ 添加' + label));
+
+  container.appendChild(header);
+  container.appendChild(content);
 }
 
-let draggedEl = null;
+let draggedEngineEl = null;
 
-function handleDragStart(e) {
-  draggedEl = this;
+function handleEngineDragStart(e) {
+  draggedEngineEl = this;
   this.classList.add('dragging');
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', this.dataset.engineId);
 }
 
-function handleDragEnd(e) {
+function handleEngineDragEnd(e) {
   this.classList.remove('dragging');
   document.querySelectorAll('.engine-item.drag-over').forEach(el => el.classList.remove('drag-over'));
-  draggedEl = null;
+  draggedEngineEl = null;
 }
 
-function handleDragOver(e) {
+function handleEngineDragOver(e) {
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
-  if (this !== draggedEl) {
+  if (this !== draggedEngineEl) {
     this.classList.add('drag-over');
   }
 }
 
-function handleDragLeave(e) {
+function handleEngineDragLeave(e) {
   this.classList.remove('drag-over');
 }
 
-function handleDrop(e, container) {
+function handleEngineDrop(e, container, track) {
   e.preventDefault();
   e.stopPropagation();
   const target = e.currentTarget;
   target.classList.remove('drag-over');
-  if (draggedEl && draggedEl !== target) {
-    const items = [...document.querySelectorAll('#engineSortList .engine-item')];
+  if (draggedEngineEl && draggedEngineEl !== target) {
+    const listId = `engineSortList-${track}`;
+    const items = [...document.querySelectorAll(`#${listId} .engine-item`)];
     const orderedIds = items.map(item => item.dataset.engineId);
-    const draggedId = draggedEl.dataset.engineId;
+    const draggedId = draggedEngineEl.dataset.engineId;
     const targetId = target.dataset.engineId;
     const draggedIdx = orderedIds.indexOf(draggedId);
     orderedIds.splice(draggedIdx, 1);
@@ -183,7 +242,7 @@ function handleDrop(e, container) {
   }
 }
 
-function renderEngineForm(container, src, { isAdd, isPreset } = {}) {
+function renderEngineForm(container, src, { isAdd, isPreset, track } = {}) {
   container.innerHTML = '';
   const form = createElement('div', { className: 'source-form' });
   const nameInp = createElement('input', { type: 'text', placeholder: '名称', value: src ? src.name : '' });
@@ -194,7 +253,7 @@ function renderEngineForm(container, src, { isAdd, isPreset } = {}) {
     const name = nameInp.value.trim(), url = urlInp.value.trim(), icon = iconInp.value.trim();
     if (!name || !url) return alert('名称和URL必填');
     if (!url.includes('{query}')) return alert('需含{query}');
-    const data = { name, url, iconType: icon ? 'url' : 'text', iconValue: name.charAt(0), iconUrl: icon || undefined, iconBg: '#6c757d', iconColor: '#fff' };
+    const data = { name, url, track: track || src?.track || 'engine', iconType: icon ? 'url' : 'text', iconValue: name.charAt(0), iconUrl: icon || undefined, iconBg: '#6c757d', iconColor: '#fff' };
     if (isAdd) addCustomSource(data);
     else if (isPreset) modifyPreset(src.id, data);
     else updateCustomSource(src.id, data);
@@ -207,6 +266,7 @@ function renderEngineForm(container, src, { isAdd, isPreset } = {}) {
     createElement('label', {}, 'URL'), urlInp,
     createElement('label', {}, '图标URL'), iconInp,
   );
+  form.appendChild(createElement('p', { style: { fontSize: '12px', color: 'var(--color-text-secondary)' } }, '提示：在目标网站搜索任意关键词，复制地址栏完整 URL，将搜索词替换为 {query} 即可。'));
   if (isPreset) {
     form.appendChild(createElement('p', { style: { fontSize: '12px', color: 'var(--color-text-secondary)' } }, '修改预设引擎将保存为本地自定义数据，可通过"恢复默认"撤销。'));
   }

@@ -106,6 +106,40 @@
 }
 .btn-add-source:hover { background: var(--color-border); }
 
+.section-toggle-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-sm);
+}
+
+.section-toggle-header:hover .section-title {
+  color: var(--color-primary);
+}
+
+.toggle-arrow {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  width: 18px;
+  text-align: center;
+  transition: transform var(--transition-speed);
+}
+
+.section-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  transition: color var(--transition-speed);
+}
+
+.track-section-content {
+  margin-bottom: var(--spacing-lg);
+}
+
 .source-form { display: flex; flex-direction: column; gap: var(--spacing-md); }
 .source-form label { font-size: var(--font-size-sm); display: flex; flex-direction: column; gap: 4px; }
 .source-form input,

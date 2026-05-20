@@ -1,9 +1,13 @@
 import { createElement, isMobile } from './utils.js';
-import { getCurrentSource, setCurrentSource, getAllSources } from './search-sources.js';
+import { getCurrentSource, setCurrentSource, getSourcesByTrack, getCurrentTrack, setCurrentTrack } from './search-sources.js';
 import { initSuggestions } from './suggestions.js';
+
+const TRACK_LABELS = { engine: '搜索引擎', platform: '平台搜索' };
+const TRACK_TITLES = { engine: '切换到平台搜索', platform: '切换到搜索引擎' };
 
 let documentClickHandler = null;
 let currentSource = getCurrentSource();
+let currentTrack = getCurrentTrack();
 let updateSourceDisplay = null;
 
 export function getUpdateSourceDisplay() {
@@ -16,7 +20,6 @@ export function initSearch(container) {
     documentClickHandler = null;
   }
 
-  // 清理可能残留的移动端面板
   const existingOverlay = document.getElementById('mobile-source-overlay');
   if (existingOverlay) existingOverlay.remove();
   const existingSheet = document.querySelector('.mobile-source-sheet');
@@ -28,9 +31,17 @@ export function initSearch(container) {
 
   const searchBox = createElement('div', { className: 'search-box' });
 
+  const trackToggleBtn = createElement('button', {
+    className: 'track-toggle-btn',
+    title: TRACK_TITLES[currentTrack],
+    innerHTML: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>`,
+  });
+
+  const trackDivider = createElement('span', { className: 'track-divider' });
+
   const sourceIconBtn = createElement('button', {
     className: 'source-icon-btn',
-    title: '切换搜索引擎',
+    title: '切换' + TRACK_LABELS[currentTrack],
   });
   updateSourceIcon(sourceIconBtn, currentSource);
 
@@ -47,6 +58,8 @@ export function initSearch(container) {
     innerHTML: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>`,
   });
 
+  searchBox.appendChild(trackToggleBtn);
+  searchBox.appendChild(trackDivider);
   searchBox.appendChild(sourceIconBtn);
   searchBox.appendChild(input);
   searchBox.appendChild(toggleBtn);
@@ -64,6 +77,21 @@ export function initSearch(container) {
     const overlay = document.getElementById('mobile-source-overlay');
     if (overlay) overlay.remove();
   }
+
+  function switchTrack() {
+    currentTrack = currentTrack === 'engine' ? 'platform' : 'engine';
+    setCurrentTrack(currentTrack);
+    currentSource = getCurrentSource();
+    updateSourceIcon(sourceIconBtn, currentSource);
+    input.placeholder = `${currentSource.name} 搜索`;
+    trackToggleBtn.title = TRACK_TITLES[currentTrack];
+    sourceIconBtn.title = '切换' + TRACK_LABELS[currentTrack];
+  }
+
+  trackToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    switchTrack();
+  });
 
   sourceIconBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -91,7 +119,7 @@ export function initSearch(container) {
 
     mobileSheet = createElement('div', { className: 'mobile-source-sheet' });
     const sheetContent = createElement('div', { className: 'sheet-content' });
-    sheetContent.appendChild(createElement('div', { className: 'sheet-title' }, '选择搜索引擎'));
+    sheetContent.appendChild(createElement('div', { className: 'sheet-title' }, '选择' + TRACK_LABELS[currentTrack]));
     const listContainer = createElement('div', { className: 'source-list-mobile' });
     renderList(listContainer);
     sheetContent.appendChild(listContainer);
@@ -103,7 +131,7 @@ export function initSearch(container) {
 
   function renderList(container) {
     container.innerHTML = '';
-    const sources = getAllSources();
+    const sources = getSourcesByTrack(currentTrack);
     sources.forEach(src => {
       const item = createElement('div', {
         className: `source-item ${src.id === currentSource.id ? 'active' : ''}`,
