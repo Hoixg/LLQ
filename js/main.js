@@ -1,4 +1,5 @@
-import { initSearch } from './search.js';
+import { initSearch, getUpdateSourceDisplay } from './search.js';
+import { getCurrentSource } from './search-sources.js';
 import { initSettings } from './settings.js';
 import { initLayoutToggle } from './layout-toggle.js';
 import { initWallpaper } from './wallpaper.js';
@@ -30,7 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initClock();
 
   document.addEventListener('source-changed', () => {
-    initSearch(searchSection);
+    const input = document.querySelector('.search-input');
+    const text = input?.value || '';
+    const updateFn = getUpdateSourceDisplay();
+    if (updateFn) {
+      updateFn(getCurrentSource());
+      if (input) input.value = text;
+    }
   });
 
   // 创建收藏按钮（⭐ 图标）

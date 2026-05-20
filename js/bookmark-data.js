@@ -101,6 +101,22 @@ export function moveBookmark(bookmarkId, targetCategoryId) {
   return true;
 }
 
+export function reorderBookmarks(orderedIds) {
+  orderedIds.forEach((id, idx) => {
+    const bm = data.bookmarks.find(b => b.id === id);
+    if (bm) bm.order = idx;
+  });
+  save();
+}
+
+export function reorderCategories(orderedIds) {
+  orderedIds.forEach((id, idx) => {
+    const cat = data.categories.find(c => c.id === id);
+    if (cat && !cat.isDefault) cat.order = idx;
+  });
+  save();
+}
+
 export function getCategoryById(id) {
   return data.categories.find(c => c.id === id);
 }

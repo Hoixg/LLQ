@@ -319,3 +319,19 @@
     top: calc(var(--spacing-md) + 48px + 8px);
   }
 }
+
+.bookmark-item.dragging {
+  opacity: 0.4;
+}
+
+.bookmark-item.drag-over {
+  border-top: 2px solid var(--color-primary);
+}
+
+.category-item.dragging {
+  opacity: 0.4;
+}
+
+.category-item.drag-over {
+  border-top: 2px solid var(--color-primary);
+}

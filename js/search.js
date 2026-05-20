@@ -4,6 +4,11 @@ import { initSuggestions } from './suggestions.js';
 
 let documentClickHandler = null;
 let currentSource = getCurrentSource();
+let updateSourceDisplay = null;
+
+export function getUpdateSourceDisplay() {
+  return updateSourceDisplay;
+}
 
 export function initSearch(container) {
   if (documentClickHandler) {
@@ -16,6 +21,8 @@ export function initSearch(container) {
   if (existingOverlay) existingOverlay.remove();
   const existingSheet = document.querySelector('.mobile-source-sheet');
   if (existingSheet) existingSheet.remove();
+
+  const savedValue = container.querySelector('.search-input')?.value || '';
 
   container.innerHTML = '';
 
@@ -32,6 +39,7 @@ export function initSearch(container) {
     className: 'search-input',
     placeholder: `${currentSource.name} 搜索`,
   });
+  if (savedValue) input.value = savedValue;
 
   const toggleBtn = createElement('button', {
     className: 'search-btn',
@@ -100,12 +108,13 @@ export function initSearch(container) {
       const item = createElement('div', {
         className: `source-item ${src.id === currentSource.id ? 'active' : ''}`,
         onclick: () => {
+          const text = input.value;
           setCurrentSource(src.id);
           currentSource = src;
           updateSourceIcon(sourceIconBtn, src);
           input.placeholder = `${src.name} 搜索`;
+          input.value = text;
           closeAll();
-          document.dispatchEvent(new CustomEvent('source-changed'));
         },
       });
       item.appendChild(createSourceIcon(src));
@@ -142,6 +151,12 @@ export function initSearch(container) {
   });
 
   initSuggestions(searchBox, input, toggleBtn, performSearch);
+
+  updateSourceDisplay = (src) => {
+    updateSourceIcon(sourceIconBtn, src);
+    input.placeholder = `${src.name} 搜索`;
+  };
+
   container.appendChild(searchBox);
 }
 

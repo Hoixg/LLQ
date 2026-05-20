@@ -5,6 +5,7 @@ const STORAGE_KEY_SOURCES = 'custom_sources';
 const STORAGE_KEY_CURRENT = 'current_source_id';
 const STORAGE_KEY_HIDDEN = 'hidden_presets';
 const STORAGE_KEY_MODIFIED = 'modified_presets';
+const STORAGE_KEY_ENGINE_ORDER = 'engine_order';
 
 const PRESET_SOURCES = [
   { id: 'google', name: 'Google', url: 'https://www.google.com/search?q={query}', iconType: 'text', iconValue: 'G', iconBg: '#4285F4', iconColor: '#ffffff' },
@@ -21,11 +22,13 @@ manager.init({
   customSources: getFromStorage(STORAGE_KEY_SOURCES, []),
   hiddenPresets: getFromStorage(STORAGE_KEY_HIDDEN, []),
   modifiedPresets: getFromStorage(STORAGE_KEY_MODIFIED, {}),
+  engineOrder: getFromStorage(STORAGE_KEY_ENGINE_ORDER, {}),
 }, (state) => {
   setToStorage(STORAGE_KEY_CURRENT, state.currentId);
   setToStorage(STORAGE_KEY_SOURCES, state.customSources);
   setToStorage(STORAGE_KEY_HIDDEN, state.hiddenPresets);
   setToStorage(STORAGE_KEY_MODIFIED, state.modifiedPresets);
+  setToStorage(STORAGE_KEY_ENGINE_ORDER, state.engineOrder);
 });
 
 export const getAllSources = () => manager.getAllSources();
@@ -39,5 +42,7 @@ export const modifyPreset = (id, data) => manager.modifyPreset(id, data);
 export const hidePreset = (id) => manager.hidePreset(id);
 export const resetPresets = () => manager.resetPresets();
 export const isPresetSource = (id) => manager.isPresetSource(id);
+export const reorderEngines = (orderedIds) => manager.reorderEngines(orderedIds);
+export const getEngineOrder = () => manager.getEngineOrder();
 export const getHiddenPresets = () => manager.getHiddenPresets();
 export const getModifiedPresets = () => manager.getModifiedPresets();

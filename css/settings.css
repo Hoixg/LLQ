@@ -282,3 +282,27 @@
 .form-actions .btn-save { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 .form-actions .btn-save:hover { opacity: 0.9; }
 .form-actions .btn-cancel:hover { background: var(--color-border); }
+
+.drag-handle {
+  cursor: grab;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 6px;
+  user-select: none;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity var(--transition-speed), color var(--transition-speed);
+}
+.drag-handle:hover { opacity: 1; color: var(--color-text); }
+.drag-handle:active { cursor: grabbing; }
+
+.engine-item.dragging,
+.suggest-item.dragging {
+  opacity: 0.4;
+}
+
+.engine-item.drag-over,
+.suggest-item.drag-over {
+  border-top: 2px solid var(--color-primary);
+}

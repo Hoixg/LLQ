@@ -1,6 +1,6 @@
 import { createElement, applyTheme } from './utils.js';
-import { getCurrentSource, setCurrentSource, getAllSources, addCustomSource, removeCustomSource, updateCustomSource, isPresetSource, modifyPreset, hidePreset } from './search-sources.js';
-import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSource as setCurrentSuggest, addCustomSource as addCustomSuggest, removeCustomSource as removeCustomSuggest, updateCustomSource as updateCustomSuggest, isPresetSource as isSuggestPreset, modifyPreset as modifySuggestPreset, hidePreset as hideSuggestPreset } from './suggest-sources.js';
+import { getCurrentSource, setCurrentSource, getAllSources, addCustomSource, removeCustomSource, updateCustomSource, isPresetSource, modifyPreset, hidePreset, reorderEngines } from './search-sources.js';
+import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSource as setCurrentSuggest, addCustomSource as addCustomSuggest, removeCustomSource as removeCustomSuggest, updateCustomSource as updateCustomSuggest, isPresetSource as isSuggestPreset, modifyPreset as modifySuggestPreset, hidePreset as hideSuggestPreset, reorderEngines as reorderSuggestEngines } from './suggest-sources.js';
 import { renderWallpaperTab } from './wallpaper.js';
 import { renderSyncTab } from './sync.js';
 
@@ -40,7 +40,7 @@ function renderPanel(tab) {
   const header = createElement('div', { className: 'settings-header' }, [
     createElement('div', { className: 'title-group' }, [
       createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.5++ (引擎管理增强)'),
+      createElement('span', { className: 'version-info' }, 'v0.61 (拖拽排序 + 修复)'),
     ]),
     createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
   ]);
@@ -78,17 +78,18 @@ function renderGeneral(container) {
 function renderEngines(container) {
   container.innerHTML = '';
   const sources = getAllSources(), current = getCurrentSource();
-  const list = createElement('ul', { className: 'engine-list' });
+  const list = createElement('ul', { className: 'engine-list', id: 'engineSortList' });
   sources.forEach(src => {
-    const li = createElement('li', { className: 'engine-item' });
+    const li = createElement('li', { className: 'engine-item', draggable: 'true', data: { engineId: src.id } });
+
+    const handle = createElement('span', { className: 'drag-handle', title: '拖拽排序' }, '\u2630');
+
     const info = createElement('div', { className: 'engine-info' }, [
       createElement('span', { className: 'engine-name' }, src.name),
       createElement('span', { className: 'engine-url-preview' }, src.url.substring(0,50)+'...'),
     ]);
     const actions = createElement('div', { className: 'engine-actions' });
-    if (src.id !== current.id) {
-      actions.appendChild(createElement('button', { className: 'btn-small', onclick: () => { setCurrentSource(src.id); document.dispatchEvent(new CustomEvent('source-changed')); renderEngines(container); } }, '设为默认'));
-    } else {
+    if (src.id === current.id) {
       actions.appendChild(createElement('span', { className: 'current-badge' }, '当前'));
     }
 
@@ -119,11 +120,67 @@ function renderEngines(container) {
     } else {
       actions.appendChild(createElement('span', { style: { fontSize: '12px', color: 'var(--color-text-secondary)', padding: '2px 4px' } }, '当前'));
     }
-    li.append(info, actions);
+    li.append(handle, info, actions);
+
+    li.addEventListener('dragstart', handleDragStart);
+    li.addEventListener('dragend', handleDragEnd);
+    li.addEventListener('dragover', handleDragOver);
+    li.addEventListener('dragleave', handleDragLeave);
+    li.addEventListener('drop', (e) => handleDrop(e, container));
+
     list.appendChild(li);
   });
   container.appendChild(list);
   container.appendChild(createElement('button', { className: 'btn-add-source', onclick: () => renderEngineForm(container, null, { isAdd: true }) }, '+ 添加搜索引擎'));
+}
+
+let draggedEl = null;
+
+function handleDragStart(e) {
+  draggedEl = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', this.dataset.engineId);
+}
+
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.engine-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+  draggedEl = null;
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (this !== draggedEl) {
+    this.classList.add('drag-over');
+  }
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+function handleDrop(e, container) {
+  e.preventDefault();
+  e.stopPropagation();
+  const target = e.currentTarget;
+  target.classList.remove('drag-over');
+  if (draggedEl && draggedEl !== target) {
+    const items = [...document.querySelectorAll('#engineSortList .engine-item')];
+    const orderedIds = items.map(item => item.dataset.engineId);
+    const draggedId = draggedEl.dataset.engineId;
+    const targetId = target.dataset.engineId;
+    const draggedIdx = orderedIds.indexOf(draggedId);
+    orderedIds.splice(draggedIdx, 1);
+    let targetIdx = orderedIds.indexOf(targetId);
+    const rect = target.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    const insertIdx = e.clientY < midY ? targetIdx : targetIdx + 1;
+    orderedIds.splice(insertIdx, 0, draggedId);
+    reorderEngines(orderedIds);
+    renderEngines(container);
+  }
 }
 
 function renderEngineForm(container, src, { isAdd, isPreset } = {}) {
@@ -160,6 +217,55 @@ function renderEngineForm(container, src, { isAdd, isPreset } = {}) {
   container.appendChild(form);
 }
 
+let draggedSuggestEl = null;
+
+function handleSuggestDragStart(e) {
+  draggedSuggestEl = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', this.dataset.suggestId);
+}
+
+function handleSuggestDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.suggest-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+  draggedSuggestEl = null;
+}
+
+function handleSuggestDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (this !== draggedSuggestEl) {
+    this.classList.add('drag-over');
+  }
+}
+
+function handleSuggestDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+function handleSuggestDrop(e, container) {
+  e.preventDefault();
+  e.stopPropagation();
+  const target = e.currentTarget;
+  target.classList.remove('drag-over');
+  if (draggedSuggestEl && draggedSuggestEl !== target) {
+    const items = [...document.querySelectorAll('#suggestSortList .suggest-item')];
+    const orderedIds = items.map(item => item.dataset.suggestId);
+    const draggedId = draggedSuggestEl.dataset.suggestId;
+    const targetId = target.dataset.suggestId;
+    const draggedIdx = orderedIds.indexOf(draggedId);
+    orderedIds.splice(draggedIdx, 1);
+    let targetIdx = orderedIds.indexOf(targetId);
+    const rect = target.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    const insertIdx = e.clientY < midY ? targetIdx : targetIdx + 1;
+    orderedIds.splice(insertIdx, 0, draggedId);
+    reorderSuggestEngines(orderedIds);
+    renderSuggestTab(container);
+  }
+}
+
 // ===================== 搜索建议源 =====================
 function renderSuggestTab(container) {
   container.innerHTML = '';
@@ -170,12 +276,14 @@ function renderSuggestTab(container) {
     createElement('span', { className: 'setting-section-desc' }, '选择搜索时获取建议的来源，点击卡片切换'),
   ]));
 
-  const list = createElement('div', { className: 'suggest-list' });
+  const list = createElement('div', { className: 'suggest-list', id: 'suggestSortList' });
   sources.forEach(src => {
     const isActive = src.id === curId;
 
     const card = createElement('div', {
       className: 'suggest-item' + (isActive ? ' active' : ''),
+      draggable: 'true',
+      data: { suggestId: src.id },
       onclick: () => {
         if (!isActive) {
           setCurrentSuggest(src.id);
@@ -183,6 +291,8 @@ function renderSuggestTab(container) {
         }
       }
     });
+
+    const handle = createElement('span', { className: 'drag-handle', title: '拖拽排序', onclick: (e) => e.stopPropagation() }, '\u2630');
 
     const indicator = createElement('span', { className: 'suggest-item-indicator' });
     const body = createElement('div', { className: 'suggest-item-body' }, [
@@ -225,7 +335,14 @@ function renderSuggestTab(container) {
       }, '\u2715'));
     }
 
-    card.append(indicator, body, actions);
+    card.append(handle, indicator, body, actions);
+
+    card.addEventListener('dragstart', handleSuggestDragStart);
+    card.addEventListener('dragend', handleSuggestDragEnd);
+    card.addEventListener('dragover', handleSuggestDragOver);
+    card.addEventListener('dragleave', handleSuggestDragLeave);
+    card.addEventListener('drop', (e) => handleSuggestDrop(e, container));
+
     list.appendChild(card);
   });
   container.appendChild(list);

@@ -4,6 +4,7 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
     customSources: [],
     hiddenPresets: [],
     modifiedPresets: {},
+    engineOrder: {},
   };
 
   let onSave = null;
@@ -14,6 +15,7 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
       state.customSources = initial.customSources || [];
       state.hiddenPresets = initial.hiddenPresets || [];
       state.modifiedPresets = initial.modifiedPresets || {};
+      state.engineOrder = initial.engineOrder || {};
     }
     onSave = saveCallback;
   }
@@ -24,6 +26,7 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
       customSources: state.customSources,
       hiddenPresets: state.hiddenPresets,
       modifiedPresets: state.modifiedPresets,
+      engineOrder: state.engineOrder,
     });
   }
 
@@ -31,7 +34,13 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
     const visible = presets
       .filter(p => !state.hiddenPresets.includes(p.id))
       .map(p => state.modifiedPresets[p.id] ? { ...p, ...state.modifiedPresets[p.id] } : p);
-    return [...visible, ...state.customSources];
+    const all = [...visible, ...state.customSources];
+    all.sort((a, b) => {
+      const oa = state.engineOrder[a.id] ?? 9999;
+      const ob = state.engineOrder[b.id] ?? 9999;
+      return oa - ob;
+    });
+    return all;
   }
 
   function getCurrentSource() {
@@ -44,9 +53,20 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
 
   function addCustomSource(src) {
     src.id = idPrefix + Date.now();
+    const maxOrder = Object.keys(state.engineOrder).length
+      ? Math.max(...Object.values(state.engineOrder))
+      : -1;
+    state.engineOrder[src.id] = maxOrder + 1;
     state.customSources.push(src);
     save();
   }
+
+  function reorderEngines(orderedIds) {
+    orderedIds.forEach((id, idx) => { state.engineOrder[id] = idx; });
+    save();
+  }
+
+  function getEngineOrder() { return { ...state.engineOrder }; }
 
   function removeCustomSource(id) {
     state.customSources = state.customSources.filter(s => s.id !== id);
@@ -101,6 +121,8 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
     hidePreset,
     resetPresets,
     isPresetSource,
+    reorderEngines,
+    getEngineOrder,
     getCustomSources,
     getHiddenPresets,
     getModifiedPresets,

@@ -4,6 +4,7 @@ import { createSourceManager } from './source-manager.js';
 const STORAGE_KEY = 'suggest_settings';
 const STORAGE_KEY_HIDDEN = 'hidden_suggest_presets';
 const STORAGE_KEY_MODIFIED = 'modified_suggest_presets';
+const STORAGE_KEY_ENGINE_ORDER = 'suggest_engine_order';
 
 const PRESETS = [
   { id: 'sug_google', name: 'Google 建议', url: 'https://suggestqueries.google.com/complete/search?client=chrome&q={query}&callback={callback}', parser: 'generic_array' },
@@ -22,10 +23,12 @@ manager.init({
   customSources: saved.customSources || [],
   hiddenPresets: getFromStorage(STORAGE_KEY_HIDDEN, []),
   modifiedPresets: getFromStorage(STORAGE_KEY_MODIFIED, {}),
+  engineOrder: getFromStorage(STORAGE_KEY_ENGINE_ORDER, {}),
 }, (state) => {
   setToStorage(STORAGE_KEY, { currentSourceId: state.currentId, customSources: state.customSources });
   setToStorage(STORAGE_KEY_HIDDEN, state.hiddenPresets);
   setToStorage(STORAGE_KEY_MODIFIED, state.modifiedPresets);
+  setToStorage(STORAGE_KEY_ENGINE_ORDER, state.engineOrder);
 });
 
 export const getAllSources = () => manager.getAllSources();
@@ -39,4 +42,6 @@ export const modifyPreset = (id, data) => manager.modifyPreset(id, data);
 export const hidePreset = (id) => manager.hidePreset(id);
 export const resetSuggestPresets = () => manager.resetPresets();
 export const isPresetSource = (id) => manager.isPresetSource(id);
+export const reorderEngines = (orderedIds) => manager.reorderEngines(orderedIds);
+export const getEngineOrder = () => manager.getEngineOrder();
 export const getCustomSources = () => manager.getCustomSources();

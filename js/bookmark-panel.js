@@ -3,7 +3,7 @@ import {
   getData, addCategory, updateCategory, deleteCategory,
   addBookmark, updateBookmark, deleteBookmark,
   getBookmarksByCategory, searchBookmarks, getAllCategories,
-  getCategoryById
+  getCategoryById, reorderBookmarks, reorderCategories
 } from './bookmark-data.js';
 
 let panelEl = null;
@@ -91,7 +91,7 @@ function renderCategoryItem(cat) {
   const count = bookmarks.length;
   const isDefault = cat.id === 'default';
 
-  const item = createElement('div', { className: 'category-item' });
+  const item = createElement('div', { className: 'category-item', draggable: isDefault ? 'false' : 'true', data: { catId: cat.id } });
   const header = createElement('div', { className: 'category-header' });
 
   const expandIcon = createElement('span', { className: 'expand-icon' }, '▶');
@@ -131,6 +131,13 @@ function renderCategoryItem(cat) {
 
   item.appendChild(header);
   item.appendChild(bookmarkContainer);
+
+  item.addEventListener('dragstart', handleCatDragStart);
+  item.addEventListener('dragend', handleCatDragEnd);
+  item.addEventListener('dragover', handleCatDragOver);
+  item.addEventListener('dragleave', handleCatDragLeave);
+  item.addEventListener('drop', handleCatDrop);
+
   return item;
 }
 
@@ -141,7 +148,8 @@ function renderBookmarksList(container, catId) {
     container.appendChild(createElement('div', { className: 'empty-hint' }, '暂无收藏'));
   } else {
     bookmarks.forEach(bm => {
-      const bmItem = createElement('div', { className: 'bookmark-item' });
+      const bmItem = createElement('div', { className: 'bookmark-item', draggable: 'true', data: { bmId: bm.id, catId: catId } });
+      const handle = createElement('span', { className: 'drag-handle', title: '拖拽排序' }, '\u2630');
       const icon = createElement('img', {
         className: 'bookmark-icon',
         src: bm.iconUrl || getFaviconUrl(bm.url),
@@ -167,9 +175,17 @@ function renderBookmarksList(container, catId) {
         onclick: (e) => { e.stopPropagation(); deleteBookmarkHandler(bm.id, catId); }
       }, '✕'));
 
+      bmItem.appendChild(handle);
       bmItem.appendChild(icon);
       bmItem.appendChild(info);
       bmItem.appendChild(actions);
+
+      bmItem.addEventListener('dragstart', handleBmDragStart);
+      bmItem.addEventListener('dragend', handleBmDragEnd);
+      bmItem.addEventListener('dragover', handleBmDragOver);
+      bmItem.addEventListener('dragleave', handleBmDragLeave);
+      bmItem.addEventListener('drop', handleBmDrop);
+
       container.appendChild(bmItem);
     });
   }
@@ -325,4 +341,102 @@ export function initBookmarkPanel(triggerBtn) {
     if (isOpen) closePanel();
     else openPanel();
   });
+}
+
+let draggedBmEl = null;
+
+function handleBmDragStart(e) {
+  draggedBmEl = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', this.dataset.bmId);
+}
+
+function handleBmDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.bookmark-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+  draggedBmEl = null;
+}
+
+function handleBmDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (this !== draggedBmEl) {
+    this.classList.add('drag-over');
+  }
+}
+
+function handleBmDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+function handleBmDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  this.classList.remove('drag-over');
+  if (!draggedBmEl || draggedBmEl === this) return;
+  const parent = this.parentElement;
+  const items = [...parent.querySelectorAll('.bookmark-item')];
+  const orderedIds = items.map(item => item.dataset.bmId);
+  const draggedId = draggedBmEl.dataset.bmId;
+  const targetId = this.dataset.bmId;
+  const draggedIdx = orderedIds.indexOf(draggedId);
+  orderedIds.splice(draggedIdx, 1);
+  let targetIdx = orderedIds.indexOf(targetId);
+  const rect = this.getBoundingClientRect();
+  const midY = rect.top + rect.height / 2;
+  const insertIdx = e.clientY < midY ? targetIdx : targetIdx + 1;
+  orderedIds.splice(insertIdx, 0, draggedId);
+  reorderBookmarks(orderedIds);
+  const catId = this.dataset.catId;
+  parent.querySelector('.btn-add-bookmark')?.remove();
+  renderBookmarksList(parent, catId);
+}
+
+let draggedCatEl = null;
+
+function handleCatDragStart(e) {
+  if (this.dataset.catId === 'default') { e.preventDefault(); return; }
+  draggedCatEl = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', this.dataset.catId);
+}
+
+function handleCatDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.category-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+  draggedCatEl = null;
+}
+
+function handleCatDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (this !== draggedCatEl && this.dataset.catId !== 'default') {
+    this.classList.add('drag-over');
+  }
+}
+
+function handleCatDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+function handleCatDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  this.classList.remove('drag-over');
+  if (!draggedCatEl || draggedCatEl === this) return;
+  const items = [...document.querySelectorAll('.category-item')];
+  const orderedIds = items.map(item => item.dataset.catId);
+  const draggedId = draggedCatEl.dataset.catId;
+  const targetId = this.dataset.catId;
+  const draggedIdx = orderedIds.indexOf(draggedId);
+  orderedIds.splice(draggedIdx, 1);
+  let targetIdx = orderedIds.indexOf(targetId);
+  const rect = this.getBoundingClientRect();
+  const midY = rect.top + rect.height / 2;
+  const insertIdx = e.clientY < midY ? targetIdx : targetIdx + 1;
+  orderedIds.splice(insertIdx, 0, draggedId);
+  reorderCategories(orderedIds);
+  renderMainView();
 }

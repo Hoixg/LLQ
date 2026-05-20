@@ -49,20 +49,32 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
   document.body.appendChild(overlay);
 
   let debounceTimer;
-  let lastQuery = '';
+  let blurTimer;
 
   document.addEventListener('close-suggestions', () => closeSuggestionsHandler());
 
   inputEl.addEventListener('input', () => {
     const query = inputEl.value.trim();
-    if (query === lastQuery) return;
-    lastQuery = query;
     clearTimeout(debounceTimer);
     if (query.length === 0) {
       closeSuggestionsHandler();
       return;
     }
     debounceTimer = setTimeout(() => fetchAndShow(query), 300);
+  });
+
+  function tryFetchOnFocus() {
+    clearTimeout(blurTimer);
+    const query = inputEl.value.trim();
+    if (query.length === 0) return;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => fetchAndShow(query), 150);
+  }
+
+  inputEl.addEventListener('focus', tryFetchOnFocus);
+  inputEl.addEventListener('click', tryFetchOnFocus);
+  inputEl.addEventListener('touchend', (e) => {
+    setTimeout(tryFetchOnFocus, 0);
   });
 
   inputEl.addEventListener('keydown', (e) => {
@@ -99,7 +111,8 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
   });
 
   inputEl.addEventListener('blur', () => {
-    setTimeout(() => {
+    clearTimeout(blurTimer);
+    blurTimer = setTimeout(() => {
       if (!document.activeElement || !searchBox.contains(document.activeElement)) {
         closeSuggestionsHandler();
       }
