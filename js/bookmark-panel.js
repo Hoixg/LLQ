@@ -9,6 +9,7 @@ import {
 let panelEl = null;
 let overlayEl = null;
 let isOpen = false;
+let closeTimer = null;
 
 function getFaviconUrl(url) {
   try {
@@ -24,18 +25,18 @@ export function closePanel() {
   isOpen = false;
   if (panelEl) panelEl.classList.add('closing');
   if (overlayEl) overlayEl.classList.add('closing');
-  setTimeout(() => {
-    if (panelEl) panelEl.classList.remove('open');
-    if (overlayEl) overlayEl.classList.remove('open');
-    setTimeout(() => {
-      if (panelEl) panelEl.classList.remove('closing');
-      if (overlayEl) overlayEl.classList.remove('closing');
-    }, 350);
-  }, 200);
+  closeTimer = setTimeout(() => {
+    closeTimer = null;
+    if (panelEl) panelEl.classList.remove('open', 'closing');
+    if (overlayEl) overlayEl.classList.remove('open', 'closing');
+  }, 250);
 }
 
 export function openPanel() {
   if (isOpen) return;
+  clearTimeout(closeTimer);
+  if (panelEl) panelEl.classList.remove('closing');
+  if (overlayEl) overlayEl.classList.remove('closing');
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'bookmarks' } }));
   isOpen = true;
   if (!panelEl) {
@@ -102,7 +103,7 @@ function renderCategoryItem(cat) {
   const item = createElement('div', { className: 'category-item', draggable: isDefault ? 'false' : 'true', data: { catId: cat.id } });
   const header = createElement('div', { className: 'category-header' });
 
-  const expandIcon = createElement('span', { className: 'expand-icon' }, '▶');
+  const expandIcon = createElement('span', { className: 'expand-icon collapsed' }, '▼');
   const nameSpan = createElement('span', { className: 'category-name' }, `${cat.name} (${count})`);
   const actions = createElement('div', { className: 'category-actions' });
 
@@ -121,18 +122,26 @@ function renderCategoryItem(cat) {
   header.appendChild(nameSpan);
   header.appendChild(actions);
 
-  const bookmarkContainer = createElement('div', { className: 'bookmark-list' });
-  bookmarkContainer.style.display = 'none';
+  const bookmarkContainer = createElement('div', { className: 'bookmark-list collapsed' });
+  const inner = createElement('div', { className: 'bookmark-list-inner' });
+  bookmarkContainer.appendChild(inner);
 
   header.addEventListener('click', () => {
-    const isVisible = bookmarkContainer.style.display === 'block';
-    document.querySelectorAll('.bookmark-list').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.expand-icon').forEach(el => el.textContent = '▶');
-    if (!isVisible) {
-      bookmarkContainer.style.display = 'block';
-      expandIcon.textContent = '▼';
-      if (bookmarkContainer.children.length === 0) {
-        renderBookmarksList(bookmarkContainer, cat.id);
+    const isExpanded = !bookmarkContainer.classList.contains('collapsed');
+    document.querySelectorAll('.bookmark-list:not(.collapsed)').forEach(el => {
+      if (el !== bookmarkContainer) el.classList.add('collapsed');
+    });
+    document.querySelectorAll('.expand-icon:not(.collapsed)').forEach(el => {
+      if (el !== expandIcon) el.classList.add('collapsed');
+    });
+    if (isExpanded) {
+      bookmarkContainer.classList.add('collapsed');
+      expandIcon.classList.add('collapsed');
+    } else {
+      bookmarkContainer.classList.remove('collapsed');
+      expandIcon.classList.remove('collapsed');
+      if (inner.children.length === 0) {
+        renderBookmarksList(inner, cat.id);
       }
     }
   });

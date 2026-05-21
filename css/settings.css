@@ -28,27 +28,42 @@
   z-index: 100;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-speed) var(--transition-easing-smooth);
+  transition: opacity 0.3s var(--transition-easing-smooth);
 }
 .settings-overlay.open { opacity: 1; pointer-events: auto; }
+.settings-overlay.closing { opacity: 0; transition: opacity 0.15s ease-in; }
 
 .settings-panel {
   position: fixed;
   top: 0;
-  right: -100%;
+  right: 0;
   width: 360px;
   max-width: 85vw;
   height: 100vh;
   background: var(--color-bg-elevated);
   z-index: 101;
   box-shadow: -4px 0 20px var(--color-shadow);
-  transition: right var(--transition-speed) var(--transition-easing-smooth);
+  transition: transform 0.3s var(--transition-easing-smooth), opacity 0.25s var(--transition-easing);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  will-change: right;
+  will-change: transform;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
 }
-.settings-panel.open { right: 0; will-change: auto; }
+.settings-panel.open {
+  transform: translateX(0);
+  opacity: 1;
+  will-change: auto;
+  pointer-events: auto;
+}
+.settings-panel.closing {
+  transition: transform 0.18s ease-in, opacity 0.15s ease-in;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
 
 .settings-header {
   display: flex;
@@ -128,7 +143,11 @@
   color: var(--color-text-secondary);
   width: 18px;
   text-align: center;
-  transition: transform var(--transition-speed);
+  transition: transform 0.25s var(--transition-easing);
+  display: inline-block;
+}
+.toggle-arrow.collapsed {
+  transform: rotate(-90deg);
 }
 
 .section-title {
@@ -139,7 +158,17 @@
 }
 
 .track-section-content {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s var(--transition-easing);
   margin-bottom: var(--spacing-lg);
+}
+.track-section-content.collapsed {
+  grid-template-rows: 0fr;
+  margin-bottom: 0;
+}
+.track-section-inner {
+  overflow: hidden;
 }
 
 .source-form { display: flex; flex-direction: column; gap: var(--spacing-md); }

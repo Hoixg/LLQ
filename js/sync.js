@@ -3,12 +3,25 @@ import { getFromStorage, setToStorage, createElement, applyTheme } from './utils
 const DATA_KEYS = [
   { key: 'custom_sources',        label: '自定义搜索引擎', icon: '🔍' },
   { key: 'current_source_id',     label: '当前默认搜索引擎', icon: '🏷️' },
+  { key: 'hidden_presets',        label: '已隐藏的预设引擎', icon: '🚫' },
+  { key: 'modified_presets',      label: '已修改的预设引擎', icon: '📝' },
+  { key: 'engine_order',          label: '搜索引擎排序', icon: '↕️' },
+  { key: 'current_track',         label: '当前搜索轨道', icon: '🔄' },
+  { key: 'track_last_source',     label: '轨道最后选中源', icon: '📌' },
   { key: 'suggest_settings',      label: '搜索建议源', icon: '💡' },
+  { key: 'hidden_suggest_presets', label: '已隐藏的预设建议源', icon: '🙈' },
+  { key: 'modified_suggest_presets', label: '已修改的预设建议源', icon: '📝' },
+  { key: 'suggest_engine_order',  label: '建议源排序', icon: '↕️' },
   { key: 'wallpaperSettings',     label: '壁纸设置', icon: '🖼️' },
   { key: 'bookmarks',             label: '收藏夹', icon: '⭐' },
   { key: 'theme',                 label: '主题', icon: '🎨' },
   { key: 'defaultExpand',         label: '默认展开状态', icon: '📂' },
   { key: 'layout_expanded',       label: '当前展开状态', icon: '📐' },
+  { key: 'webdav_config',         label: 'WebDAV 配置', icon: '☁️' },
+  { key: 'gist_config',           label: 'Gist 配置', icon: '🐙' },
+  { key: 'sync_log',              label: '同步日志', icon: '📋' },
+  { key: 'settings_collapse_engine', label: '引擎区域折叠', icon: '📁' },
+  { key: 'settings_collapse_platform', label: '平台区域折叠', icon: '📁' },
 ];
 
 // ==================== 导出 ====================
@@ -58,6 +71,20 @@ function previewImportData(jsonStr) {
       summary = `模式: ${value?.mode || '默认'}, 自动切换: ${value?.autoSwitch ? '是' : '否'}`;
     } else if (key === 'theme') {
       summary = value;
+    } else if (key === 'current_track') {
+      summary = value === 'platform' ? '平台搜索' : '常规搜索';
+    } else if (key === 'hidden_presets' && Array.isArray(value)) {
+      summary = `${value.length} 个已隐藏`;
+    } else if (key === 'hidden_suggest_presets' && Array.isArray(value)) {
+      summary = `${value.length} 个已隐藏`;
+    } else if (key === 'modified_presets' && typeof value === 'object') {
+      summary = `${Object.keys(value).length} 个已修改`;
+    } else if (key === 'modified_suggest_presets' && typeof value === 'object') {
+      summary = `${Object.keys(value).length} 个已修改`;
+    } else if (key === 'webdav_config' && value?.url) {
+      summary = value.url;
+    } else if (key === 'gist_config' && value?.token) {
+      summary = `Gist: ${value.gistId || '自动创建'}`;
     } else {
       summary = JSON.stringify(value).substring(0, 80);
     }
@@ -68,12 +95,13 @@ function previewImportData(jsonStr) {
 function applyImport(selectedKeys, jsonStr) {
   const parsed = JSON.parse(jsonStr);
   selectedKeys.forEach(key => { if (key in parsed.data) setToStorage(key, parsed.data[key]); });
-  document.dispatchEvent(new CustomEvent('source-changed'));
-  // 壁纸即时生效
+  const engineKeys = ['custom_sources', 'current_source_id', 'hidden_presets', 'modified_presets', 'engine_order', 'current_track', 'track_last_source'];
+  if (selectedKeys.some(k => engineKeys.includes(k))) {
+    document.dispatchEvent(new CustomEvent('source-changed'));
+  }
   if (selectedKeys.includes('wallpaperSettings')) {
     setTimeout(() => document.dispatchEvent(new CustomEvent('wallpaper-update')), 50);
   }
-  // 主题即时生效
   if (selectedKeys.includes('theme')) {
     const theme = getFromStorage('theme', 'light');
     applyTheme(theme);

@@ -178,6 +178,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       closeSuggestionsHandler();
       return;
     }
+    const wasActive = !!activeDropdown;
     currentSuggestions = suggestions;
     selectedIndex = -1;
     dropdown.innerHTML = '';
@@ -199,6 +200,9 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     dropdown.offsetHeight;
     dropdown.classList.add('active');
     activeDropdown = dropdown;
+    if (!wasActive) {
+      document.dispatchEvent(new CustomEvent('suggestions-open'));
+    }
     if (window.innerWidth <= 768) {
       clearTimeout(closeOverlayTimer);
       closeOverlayTimer = null;
@@ -216,6 +220,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
   }
 
   closeSuggestionsHandler = () => {
+    const hadActive = !!activeDropdown;
     if (activeDropdown) {
       activeDropdown.classList.remove('active');
       const dropdownRef = activeDropdown;
@@ -239,6 +244,9 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     }
     currentSuggestions = [];
     selectedIndex = -1;
+    if (hadActive) {
+      document.dispatchEvent(new CustomEvent('suggestions-close'));
+    }
   };
 }
 

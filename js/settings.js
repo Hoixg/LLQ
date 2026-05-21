@@ -4,7 +4,7 @@ import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSo
 import { renderWallpaperTab } from './wallpaper.js';
 import { renderSyncTab } from './sync.js';
 
-let panelEl, overlayEl, isOpen = false;
+let panelEl, overlayEl, isOpen = false, closeTimer = null;
 
 export function initSettings() {
   panelEl = document.getElementById('settingsPanel');
@@ -17,6 +17,9 @@ export function initSettings() {
 
 function openSettings(tab = 'general') {
   if (isOpen) return;
+  clearTimeout(closeTimer);
+  panelEl.classList.remove('closing');
+  overlayEl.classList.remove('closing');
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
   renderPanel(tab);
@@ -29,14 +32,11 @@ function closeSettings() {
   isOpen = false;
   panelEl.classList.add('closing');
   overlayEl.classList.add('closing');
-  setTimeout(() => {
-    panelEl.classList.remove('open');
-    overlayEl.classList.remove('open');
-    setTimeout(() => {
-      panelEl.classList.remove('closing');
-      overlayEl.classList.remove('closing');
-    }, 350);
-  }, 200);
+  closeTimer = setTimeout(() => {
+    closeTimer = null;
+    panelEl.classList.remove('open', 'closing');
+    overlayEl.classList.remove('open', 'closing');
+  }, 250);
 }
 
 document.addEventListener('close-all-panels', (e) => {
@@ -48,7 +48,7 @@ function renderPanel(tab) {
   const header = createElement('div', { className: 'settings-header' }, [
     createElement('div', { className: 'title-group' }, [
       createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.67 (交互动画)'),
+      createElement('span', { className: 'version-info' }, 'v0.68 (动画优化)'),
     ]),
     createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
   ]);
@@ -103,21 +103,23 @@ function renderTrackSection(container, track) {
 
   const header = createElement('div', {
     className: 'section-toggle-header',
-    onclick: () => {
-      setCollapsed(track, !isCollapsed(track));
-      renderEngines(container);
+    onclick: function() {
+      const newCollapsed = !isCollapsed(track);
+      setCollapsed(track, newCollapsed);
+      const arrow = this.querySelector('.toggle-arrow');
+      if (arrow) arrow.classList.toggle('collapsed', newCollapsed);
+      const sectionContent = this.nextElementSibling;
+      if (sectionContent) sectionContent.classList.toggle('collapsed', newCollapsed);
     },
   }, [
-    createElement('span', { className: 'toggle-arrow' + (collapsed ? ' collapsed' : '') }, collapsed ? '\u25b6' : '\u25bc'),
+    createElement('span', { className: 'toggle-arrow' + (collapsed ? ' collapsed' : '') }, '\u25bc'),
     createElement('span', { className: 'section-title' }, label),
   ]);
 
-  const content = createElement('div', { className: 'track-section-content' });
-  if (collapsed) {
-    container.appendChild(header);
-    container.appendChild(content);
-    return;
-  }
+  const content = createElement('div', {
+    className: 'track-section-content' + (collapsed ? ' collapsed' : '')
+  });
+  const inner = createElement('div', { className: 'track-section-inner' });
 
   const listId = `engineSortList-${track}`;
   const list = createElement('ul', { className: 'engine-list', id: listId });
@@ -186,12 +188,13 @@ function renderTrackSection(container, track) {
     list.appendChild(li);
   });
 
-  content.appendChild(list);
-  content.appendChild(createElement('button', {
+  inner.appendChild(list);
+  inner.appendChild(createElement('button', {
     className: 'btn-add-source',
     onclick: () => renderEngineForm(container, null, { isAdd: true, track })
   }, '+ 添加' + label));
 
+  content.appendChild(inner);
   container.appendChild(header);
   container.appendChild(content);
 }

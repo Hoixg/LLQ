@@ -5,6 +5,11 @@
     border-radius: var(--radius-lg);
   }
 
+  .search-box.collapsed {
+    max-width: 100%;
+    transform: none;
+  }
+
   /* 桌面下拉在移动端强制隐藏（改用底部面板） */
   .source-dropdown.active {
     display: none !important;
@@ -19,7 +24,7 @@
     max-height: 80vh;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     transform: translateY(100%);
-    transition: transform var(--transition-speed) var(--transition-easing-smooth);
+    transition: transform 0.3s var(--transition-easing-smooth), opacity 0.25s var(--transition-easing);
     width: 100%;
     max-width: 100%;
     will-change: transform;
@@ -29,6 +34,12 @@
     transform: translateY(0);
     will-change: auto;
   }
+
+  .settings-panel.closing {
+     transition: transform 0.18s ease-in, opacity 0.15s ease-in;
+     transform: translateY(100%);
+     opacity: 0;
+   }
 
   .toggle-bar {
     padding-bottom: calc(var(--spacing-md) + var(--safe-inset-bottom));

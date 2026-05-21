@@ -55,6 +55,7 @@ function initClock() {
 
 function start() {
   const searchSection = document.querySelector('.search-section');
+  if (!searchSection) return;
   initSearch(searchSection);
   initSettings();
   initLayoutToggle();

@@ -5,6 +5,7 @@ const STORAGE_KEY = 'layout_expanded';
 export function initLayoutToggle() {
   const toggleBtn = document.getElementById('toggleBtn');
   const expandable = document.getElementById('expandableArea');
+  if (!toggleBtn || !expandable) return;
   const label = toggleBtn.querySelector('.toggle-label');
 
   let isExpanded = getFromStorage(STORAGE_KEY);

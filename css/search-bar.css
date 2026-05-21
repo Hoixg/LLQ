@@ -10,7 +10,12 @@
   border-radius: var(--radius-full);
   box-shadow: var(--search-shadow);
   padding: 0 var(--spacing-sm);
-  transition: box-shadow var(--transition-speed), border-color var(--transition-speed);
+  transition: box-shadow var(--transition-speed), border-color var(--transition-speed), max-width 0.35s var(--transition-easing), transform 0.35s var(--transition-easing);
+}
+
+.search-box.collapsed {
+  max-width: 480px;
+  transform: scale(0.97);
 }
 
 .search-box:focus-within {

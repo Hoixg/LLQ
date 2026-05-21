@@ -29,6 +29,8 @@ export function initSearch(container) {
 
   container.innerHTML = '';
 
+  if (!currentSource) return;
+
   const searchBox = createElement('div', { className: 'search-box' });
 
   const trackToggleBtn = createElement('button', {
@@ -68,7 +70,44 @@ export function initSearch(container) {
   searchBox.appendChild(dropdown);
   let mobileSheet = null;
 
+  searchBox.classList.add('collapsed');
+
+  let expandReasons = 0;
+  let collapseTimeout = null;
+
+  function expandSearchBox() {
+    expandReasons++;
+    if (collapseTimeout) {
+      clearTimeout(collapseTimeout);
+      collapseTimeout = null;
+    }
+    searchBox.classList.remove('collapsed');
+  }
+
+  function tryCollapseSearchBox() {
+    expandReasons--;
+    if (expandReasons <= 0) {
+      expandReasons = 0;
+      collapseTimeout = setTimeout(() => {
+        collapseTimeout = null;
+        if (expandReasons <= 0) {
+          searchBox.classList.add('collapsed');
+        }
+      }, 200);
+    }
+  }
+
+  input.addEventListener('focus', expandSearchBox);
+  input.addEventListener('blur', () => {
+    setTimeout(() => tryCollapseSearchBox(), 100);
+  });
+
+  document.addEventListener('suggestions-open', expandSearchBox);
+  document.addEventListener('suggestions-close', tryCollapseSearchBox);
+
   function closeAll() {
+    const hadDropdown = dropdown.classList.contains('active');
+    const hadMobile = !!mobileSheet;
     dropdown.classList.remove('active');
     dropdown.style.display = '';
     if (mobileSheet) {
@@ -77,12 +116,16 @@ export function initSearch(container) {
     }
     const overlay = document.getElementById('mobile-source-overlay');
     if (overlay) overlay.remove();
+    if (hadDropdown || hadMobile) {
+      tryCollapseSearchBox();
+    }
   }
 
   function switchTrack() {
     currentTrack = currentTrack === 'engine' ? 'platform' : 'engine';
     setCurrentTrack(currentTrack);
     currentSource = getCurrentSource();
+    if (!currentSource) return;
     updateSourceIcon(sourceIconBtn, currentSource);
     input.placeholder = `${currentSource.name} 搜索`;
     trackToggleBtn.title = TRACK_TITLES[currentTrack];
@@ -104,6 +147,7 @@ export function initSearch(container) {
     const active = dropdown.classList.contains('active');
     closeAll();
     if (!active) {
+      expandSearchBox();
       renderList(dropdown);
       dropdown.style.display = 'block';
       dropdown.offsetHeight;
@@ -113,6 +157,7 @@ export function initSearch(container) {
 
   function openMobile() {
     closeAll();
+    expandSearchBox();
     const overlay = createElement('div', {
       id: 'mobile-source-overlay',
       className: 'mobile-overlay',
@@ -146,6 +191,7 @@ export function initSearch(container) {
           input.placeholder = `${src.name} 搜索`;
           input.value = text;
           closeAll();
+          input.focus();
         },
       });
       item.appendChild(createSourceIcon(src));
@@ -185,6 +231,7 @@ export function initSearch(container) {
   initSuggestions(searchBox, input, toggleBtn, performSearch);
 
   updateSourceDisplay = (src) => {
+    if (!src) return;
     updateSourceIcon(sourceIconBtn, src);
     input.placeholder = `${src.name} 搜索`;
   };

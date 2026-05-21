@@ -33,27 +33,3 @@
   0% { background-position: 0% 50%; }
   100% { background-position: 300% 50%; }
 }
-
-/* ============ Panel Close Shrink ============ */
-
-@keyframes panelShrink {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(0.95); opacity: 0.7; }
-}
-
-@keyframes panelFade {
-  from { opacity: 1; }
-  to { opacity: 0.7; }
-}
-
-.settings-panel.closing,
-.bookmarks-panel.closing {
-  animation: panelShrink 0.2s ease forwards;
-}
-
-@media (max-width: 768px) {
-  .settings-panel.closing,
-  .bookmarks-panel.closing {
-    animation: panelFade 0.2s ease forwards;
-  }
-}

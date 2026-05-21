@@ -50,10 +50,12 @@ export const getSourceById = (id) => manager.getAllSources().find(s => s.id === 
 
 export function getCurrentSource() {
   const lastId = trackLastSource[currentTrack];
-  const src = manager.getAllSources().find(s => s.id === lastId);
+  const allSources = manager.getAllSources();
+  if (allSources.length === 0) return null;
+  const src = allSources.find(s => s.id === lastId);
   if (src) return src;
-  const trackSources = manager.getAllSources().filter(s => s.track === currentTrack);
-  return trackSources[0] || manager.getAllSources()[0];
+  const trackSources = allSources.filter(s => s.track === currentTrack);
+  return trackSources[0] || allSources[0];
 }
 
 export function setCurrentSource(id) {
