@@ -33,8 +33,12 @@
   --search-icon-size: 32px;
   --search-shadow: 0 2px 12px var(--color-shadow);
 
-  --transition-speed: 0.25s;
+  --transition-speed: 0.2s;
+  --transition-speed-fast: 0.12s;
+  --transition-speed-slow: 0.35s;
   --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-easing-smooth: cubic-bezier(0.32, 0.72, 0, 1);
+  --transition-easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   --safe-inset-top: env(safe-area-inset-top);
   --safe-inset-bottom: env(safe-area-inset-bottom);

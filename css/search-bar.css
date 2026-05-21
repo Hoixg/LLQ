@@ -15,7 +15,18 @@
 
 .search-box:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+  animation: shadowPulse 2s ease-in-out infinite;
+}
+
+.search-box:focus-within::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #0d6efd, #8b5cf6, #ec4899, #0d6efd);
+  background-size: 300% 100%;
+  z-index: -1;
+  animation: borderGlow 3s linear infinite;
 }
 
 .source-icon-btn {
@@ -31,11 +42,16 @@
   flex-shrink: 0;
   padding: 0;
   margin-right: var(--spacing-sm);
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), transform var(--transition-speed-fast) var(--transition-easing-bounce);
 }
 
 .source-icon-btn:hover {
   background-color: var(--color-border);
+  transform: scale(1.08);
+}
+
+.source-icon-btn:active {
+  transform: scale(0.95);
 }
 
 .track-toggle-btn {
@@ -52,12 +68,17 @@
   padding: 0;
   margin-right: var(--spacing-xs);
   color: var(--color-text-secondary);
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  transition: background-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed-fast) var(--transition-easing-bounce);
 }
 
 .track-toggle-btn:hover {
   background-color: var(--color-border);
   color: var(--color-primary);
+  transform: scale(1.08);
+}
+
+.track-toggle-btn:active {
+  transform: scale(0.95);
 }
 
 .track-divider {
@@ -114,14 +135,30 @@
   cursor: pointer;
   border-radius: 50%;
   flex-shrink: 0;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  transition: background-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed-fast) var(--transition-easing-bounce);
   font-size: 18px;
   line-height: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(13, 110, 253, 0.2);
+  transform: scale(0);
+  animation: rippleEffect 0.6s ease-out forwards;
+  pointer-events: none;
 }
 
 .search-btn:hover {
   background-color: var(--color-border);
   color: var(--color-primary);
+  transform: scale(1.08);
+}
+
+.search-btn:active {
+  transform: scale(0.95);
 }
 
 /* ---------- 搜索建议 ---------- */
@@ -138,6 +175,16 @@
   max-height: 300px;
   overflow-y: auto;
   display: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-speed-fast) var(--transition-easing),
+              transform var(--transition-speed-fast) var(--transition-easing);
+}
+
+.suggestions-dropdown.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .suggestion-item {
@@ -149,6 +196,22 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  position: relative;
+}
+
+.suggestion-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(13, 110, 253, 0.06), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+  pointer-events: none;
+}
+
+.suggestion-item:hover::before,
+.suggestion-item.active::before {
+  transform: translateX(100%);
 }
 
 .suggestion-item:hover,
@@ -162,6 +225,14 @@
   background: transparent;
   z-index: 105;
   display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-speed-fast) var(--transition-easing);
+}
+
+.suggestions-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* ---------- 源下拉 ---------- */
@@ -179,10 +250,16 @@
   z-index: 100;
   display: none;
   padding: var(--spacing-sm) 0;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-speed-fast) var(--transition-easing),
+              transform var(--transition-speed-fast) var(--transition-easing);
 }
 
 .source-dropdown.active {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .source-item {
@@ -191,6 +268,22 @@
   padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   transition: background-color var(--transition-speed);
+  position: relative;
+  overflow: hidden;
+}
+
+.source-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(13, 110, 253, 0.06), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+  pointer-events: none;
+}
+
+.source-item:hover::before {
+  transform: translateX(100%);
 }
 
 .source-item:hover {
@@ -235,7 +328,7 @@
   background: var(--color-overlay);
   z-index: 200;
   opacity: 0;
-  animation: fadeIn 0.2s forwards;
+  animation: fadeIn var(--transition-speed-fast) var(--transition-easing) forwards;
 }
 
 .mobile-source-sheet {
@@ -247,15 +340,18 @@
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   z-index: 201;
   transform: translateY(100%);
-  transition: transform var(--transition-speed) var(--transition-easing);
+  transition: transform var(--transition-speed) var(--transition-easing-smooth);
   max-height: 70vh;
   overflow-y: auto;
   padding: var(--spacing-md);
   padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .mobile-source-sheet.active {
   transform: translateY(0);
+  will-change: auto;
 }
 
 .sheet-title {
@@ -272,5 +368,11 @@
 }
 
 @keyframes fadeIn {
+  from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

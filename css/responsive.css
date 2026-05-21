@@ -19,13 +19,15 @@
     max-height: 80vh;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     transform: translateY(100%);
-    transition: transform var(--transition-speed) var(--transition-easing);
+    transition: transform var(--transition-speed) var(--transition-easing-smooth);
     width: 100%;
     max-width: 100%;
+    will-change: transform;
   }
 
   .settings-panel.open {
     transform: translateY(0);
+    will-change: auto;
   }
 
   .toggle-bar {

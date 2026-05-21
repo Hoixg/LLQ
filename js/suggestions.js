@@ -29,6 +29,8 @@ let activeOverlay = null;
 let currentSuggestions = [];
 let selectedIndex = -1;
 let closeSuggestionsHandler = () => {};
+let closeDropdownTimer = null;
+let closeOverlayTimer = null;
 
 export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
   cleanupExisting();
@@ -82,7 +84,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       closeSuggestionsHandler();
       return;
     }
-    const dropdownVisible = activeDropdown && activeDropdown.style.display === 'block';
+    const dropdownVisible = activeDropdown && activeDropdown.classList.contains('active');
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       if (!dropdownVisible) return;
       e.preventDefault();
@@ -145,7 +147,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       cleanup();
       const suggestions = parseSuggestions(data, source.parser);
       if (requestId === currentRequestId) {
-        showSuggestions(suggestions, query);
+        showSuggestions(suggestions);
       }
     };
 
@@ -171,7 +173,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     }, 5000);
   }
 
-  function showSuggestions(suggestions, query) {
+  function showSuggestions(suggestions) {
     if (suggestions.length === 0) {
       closeSuggestionsHandler();
       return;
@@ -191,10 +193,18 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       });
       dropdown.appendChild(item);
     });
+    clearTimeout(closeDropdownTimer);
+    closeDropdownTimer = null;
     dropdown.style.display = 'block';
+    dropdown.offsetHeight;
+    dropdown.classList.add('active');
     activeDropdown = dropdown;
     if (window.innerWidth <= 768) {
+      clearTimeout(closeOverlayTimer);
+      closeOverlayTimer = null;
       overlay.style.display = 'block';
+      overlay.offsetHeight;
+      overlay.classList.add('active');
       activeOverlay = overlay;
     }
   }
@@ -207,13 +217,25 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
 
   closeSuggestionsHandler = () => {
     if (activeDropdown) {
-      activeDropdown.style.display = 'none';
-      activeDropdown.innerHTML = '';
+      activeDropdown.classList.remove('active');
+      const dropdownRef = activeDropdown;
       activeDropdown = null;
+      clearTimeout(closeDropdownTimer);
+      closeDropdownTimer = setTimeout(() => {
+        closeDropdownTimer = null;
+        dropdownRef.style.display = 'none';
+        dropdownRef.innerHTML = '';
+      }, 150);
     }
     if (activeOverlay) {
-      activeOverlay.style.display = 'none';
+      activeOverlay.classList.remove('active');
+      const overlayRef = activeOverlay;
       activeOverlay = null;
+      clearTimeout(closeOverlayTimer);
+      closeOverlayTimer = setTimeout(() => {
+        closeOverlayTimer = null;
+        overlayRef.style.display = 'none';
+      }, 150);
     }
     currentSuggestions = [];
     selectedIndex = -1;
@@ -235,6 +257,10 @@ export function closeSuggestionsNow() {
 }
 
 function cleanupExisting() {
+  clearTimeout(closeDropdownTimer);
+  closeDropdownTimer = null;
+  clearTimeout(closeOverlayTimer);
+  closeOverlayTimer = null;
   if (activeDropdown) {
     activeDropdown.remove();
     activeDropdown = null;

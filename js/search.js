@@ -70,6 +70,7 @@ export function initSearch(container) {
 
   function closeAll() {
     dropdown.classList.remove('active');
+    dropdown.style.display = '';
     if (mobileSheet) {
       mobileSheet.remove();
       mobileSheet = null;
@@ -104,6 +105,8 @@ export function initSearch(container) {
     closeAll();
     if (!active) {
       renderList(dropdown);
+      dropdown.style.display = 'block';
+      dropdown.offsetHeight;
       dropdown.classList.add('active');
     }
   }
@@ -168,7 +171,8 @@ export function initSearch(container) {
     window.open(url, '_blank');
   }
 
-  toggleBtn.addEventListener('click', () => {
+  toggleBtn.addEventListener('click', (e) => {
+    addRipple(e, toggleBtn);
     const query = input.value.trim();
     if (query) {
       performSearch(query);
@@ -204,4 +208,16 @@ function createSourceIcon(source) {
     span.appendChild(img);
   }
   return span;
+}
+
+function addRipple(e, element) {
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const rect = element.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+  element.appendChild(ripple);
+  ripple.addEventListener('animationend', () => ripple.remove());
 }

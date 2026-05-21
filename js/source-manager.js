@@ -119,7 +119,6 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
   function getCustomSources() { return [...state.customSources]; }
   function getHiddenPresets() { return [...state.hiddenPresets]; }
   function getModifiedPresets() { return { ...state.modifiedPresets }; }
-  function getRawState() { return structuredClone(state); }
 
   return {
     init,
@@ -139,6 +138,5 @@ export function createSourceManager(presets, { defaultId, idPrefix = 'custom_' }
     getCustomSources,
     getHiddenPresets,
     getModifiedPresets,
-    getRawState,
   };
 }

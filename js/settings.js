@@ -1,4 +1,4 @@
-import { createElement, applyTheme } from './utils.js';
+import { createElement, applyTheme, getFromStorage, setToStorage } from './utils.js';
 import { getCurrentSource, setCurrentSource, getAllSources, addCustomSource, removeCustomSource, updateCustomSource, isPresetSource, modifyPreset, hidePreset, reorderEngines, getSourcesByTrack, getCurrentTrack } from './search-sources.js';
 import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSource as setCurrentSuggest, addCustomSource as addCustomSuggest, removeCustomSource as removeCustomSuggest, updateCustomSource as updateCustomSuggest, isPresetSource as isSuggestPreset, modifyPreset as modifySuggestPreset, hidePreset as hideSuggestPreset, reorderEngines as reorderSuggestEngines } from './suggest-sources.js';
 import { renderWallpaperTab } from './wallpaper.js';
@@ -27,8 +27,16 @@ function openSettings(tab = 'general') {
 function closeSettings() {
   if (!isOpen) return;
   isOpen = false;
-  panelEl.classList.remove('open');
-  overlayEl.classList.remove('open');
+  panelEl.classList.add('closing');
+  overlayEl.classList.add('closing');
+  setTimeout(() => {
+    panelEl.classList.remove('open');
+    overlayEl.classList.remove('open');
+    setTimeout(() => {
+      panelEl.classList.remove('closing');
+      overlayEl.classList.remove('closing');
+    }, 350);
+  }, 200);
 }
 
 document.addEventListener('close-all-panels', (e) => {
@@ -40,7 +48,7 @@ function renderPanel(tab) {
   const header = createElement('div', { className: 'settings-header' }, [
     createElement('div', { className: 'title-group' }, [
       createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.65 (双轨搜索)'),
+      createElement('span', { className: 'version-info' }, 'v0.67 (交互动画)'),
     ]),
     createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
   ]);
@@ -60,16 +68,16 @@ function renderPanel(tab) {
 function renderGeneral(container) {
   container.innerHTML = '';
   const themeSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '主题')]);
-  const select = createElement('select', { onchange: (e) => { applyTheme(e.target.value); localStorage.setItem('theme', e.target.value); } }, [
+  const select = createElement('select', { onchange: (e) => { applyTheme(e.target.value); setToStorage('theme', e.target.value); } }, [
     createElement('option', { value: 'light' }, '浅色'),
     createElement('option', { value: 'dark' }, '深色'),
     createElement('option', { value: 'auto' }, '跟随系统'),
   ]);
-  select.value = localStorage.getItem('theme') || 'light';
+  select.value = getFromStorage('theme', 'light');
   themeSec.appendChild(select);
   const expandSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '默认展开扩展区')]);
-  const cb = createElement('input', { type: 'checkbox', onchange: (e) => localStorage.setItem('defaultExpand', e.target.checked) });
-  cb.checked = localStorage.getItem('defaultExpand') === 'true';
+  const cb = createElement('input', { type: 'checkbox', onchange: (e) => setToStorage('defaultExpand', e.target.checked) });
+  cb.checked = getFromStorage('defaultExpand', false);
   expandSec.appendChild(cb);
   container.append(themeSec, expandSec);
 }
@@ -78,8 +86,8 @@ function renderGeneral(container) {
 const TRACK_NAMES = { engine: '常规搜索', platform: '平台搜索' };
 
 function getCollapseKey(track) { return `settings_collapse_${track}`; }
-function isCollapsed(track) { return localStorage.getItem(getCollapseKey(track)) === 'true'; }
-function setCollapsed(track, v) { localStorage.setItem(getCollapseKey(track), v); }
+function isCollapsed(track) { return getFromStorage(getCollapseKey(track), false); }
+function setCollapsed(track, v) { setToStorage(getCollapseKey(track), v); }
 
 function renderEngines(container) {
   container.innerHTML = '';
@@ -165,10 +173,6 @@ function renderTrackSection(container, track) {
           }
         }
       }, '\u2715'));
-    } else {
-      actions.appendChild(createElement('span', {
-        style: { fontSize: '12px', color: 'var(--color-text-secondary)', padding: '2px 4px' }
-      }, '当前'));
     }
 
     li.append(handle, info, actions);

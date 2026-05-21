@@ -5,6 +5,9 @@ html {
   color: var(--color-text);
   transition: background-color var(--transition-speed), color var(--transition-speed);
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -43,17 +46,19 @@ body {
   width: 100%;
   max-width: var(--search-max-width);
   margin-top: var(--spacing-lg);
-  transition: max-height var(--transition-speed) var(--transition-easing),
-              opacity var(--transition-speed) var(--transition-easing);
+  transition: max-height var(--transition-speed-slow) var(--transition-easing-smooth),
+              opacity var(--transition-speed) var(--transition-easing-smooth);
   overflow: hidden;
   max-height: 0;
   opacity: 0;
+  will-change: max-height, opacity;
 }
 
 .expandable-area.expanded {
   max-height: 2000px;
   opacity: 1;
   padding: var(--spacing-md) 0;
+  will-change: auto;
 }
 
 .toggle-bar {

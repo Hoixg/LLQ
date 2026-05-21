@@ -14,7 +14,8 @@ export function getFromStorage(key, defaultValue = null) {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
   } catch {
-    return defaultValue;
+    const item = localStorage.getItem(key);
+    return item || defaultValue;
   }
 }
 

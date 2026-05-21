@@ -1,0 +1,59 @@
+/* ============ ⭐ Bounce Pop ============ */
+
+@keyframes bouncePop {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.8); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.bookmarks-trigger.bouncing {
+  animation: bouncePop 0.5s var(--transition-easing);
+}
+
+/* ============ 🔍 Search Button Ripple ============ */
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ============ Focus Shadow Pulse ============ */
+
+@keyframes shadowPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15); }
+  50% { box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.06); }
+}
+
+/* ============ Border Glow ============ */
+
+@keyframes borderGlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* ============ Panel Close Shrink ============ */
+
+@keyframes panelShrink {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.95); opacity: 0.7; }
+}
+
+@keyframes panelFade {
+  from { opacity: 1; }
+  to { opacity: 0.7; }
+}
+
+.settings-panel.closing,
+.bookmarks-panel.closing {
+  animation: panelShrink 0.2s ease forwards;
+}
+
+@media (max-width: 768px) {
+  .settings-panel.closing,
+  .bookmarks-panel.closing {
+    animation: panelFade 0.2s ease forwards;
+  }
+}

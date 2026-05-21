@@ -20,7 +20,7 @@ function save() {
 }
 
 function genId(prefix) {
-  return prefix + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+  return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
 }
 
 export function getData() {

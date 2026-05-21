@@ -3,15 +3,13 @@ import { getCurrentSource } from './search-sources.js';
 import { initSettings } from './settings.js';
 import { initLayoutToggle } from './layout-toggle.js';
 import { initWallpaper } from './wallpaper.js';
-import { initClock } from './clock.js';
-import { isMobile, createElement, applyTheme } from './utils.js';
+import { isMobile, createElement, applyTheme, getFromStorage } from './utils.js';
 import { initBookmarkPanel } from './bookmark-panel.js';
 
-const savedTheme = localStorage.getItem('theme') || 'light';
-applyTheme(savedTheme);
+applyTheme(getFromStorage('theme', 'light'));
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if (localStorage.getItem('theme') === 'auto') {
+  if (getFromStorage('theme') === 'auto') {
     applyTheme('auto');
   }
 });
@@ -22,7 +20,40 @@ function setDeviceClass() {
 setDeviceClass();
 window.addEventListener('resize', setDeviceClass);
 
-document.addEventListener('DOMContentLoaded', () => {
+let timerId = null;
+const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+function pad(n) { return n.toString().padStart(2, '0'); }
+
+function initClock() {
+  const clockEl = document.getElementById('clock');
+  if (!clockEl) return;
+  if (timerId) clearInterval(timerId);
+  clockEl.innerHTML = '';
+
+  const cardRow = createElement('div', { className: 'clock-card-row' });
+  const hourCard = createElement('span', { className: 'clock-card' });
+  const colon1 = createElement('span', { className: 'clock-colon' }, ':');
+  const minCard = createElement('span', { className: 'clock-card' });
+  const colon2 = createElement('span', { className: 'clock-colon' }, ':');
+  const secCard = createElement('span', { className: 'clock-card clock-card-sec' });
+  cardRow.append(hourCard, colon1, minCard, colon2, secCard);
+
+  const dateLine = createElement('div', { className: 'clock-date' });
+  clockEl.append(cardRow, dateLine);
+
+  function update() {
+    const now = new Date();
+    hourCard.textContent = pad(now.getHours());
+    minCard.textContent = pad(now.getMinutes());
+    secCard.textContent = pad(now.getSeconds());
+    dateLine.textContent = (now.getMonth() + 1) + '\u6708' + now.getDate() + '\u65e5 ' + WEEKDAYS[now.getDay()];
+  }
+  update();
+  timerId = setInterval(update, 1000);
+}
+
+function start() {
   const searchSection = document.querySelector('.search-section');
   initSearch(searchSection);
   initSettings();
@@ -32,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('source-changed', () => {
     const input = document.querySelector('.search-input');
-    const text = input?.value || '';
+    const text = input ? input.value : '';
     const updateFn = getUpdateSourceDisplay();
     if (updateFn) {
       updateFn(getCurrentSource());
@@ -40,11 +71,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 创建收藏按钮（⭐ 图标）
   const bookmarkBtn = createElement('button', {
     className: 'bookmarks-trigger',
     title: '收藏夹',
-  }, '⭐');
+  }, '\u2B50');
   document.body.appendChild(bookmarkBtn);
   initBookmarkPanel(bookmarkBtn);
-});
+
+  bookmarkBtn.addEventListener('click', function bounce() {
+    this.classList.remove('bouncing');
+    void this.offsetWidth;
+    this.classList.add('bouncing');
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', start);
+} else {
+  start();
+}

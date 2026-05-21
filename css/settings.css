@@ -15,10 +15,11 @@
   justify-content: center;
   cursor: pointer;
   color: var(--color-text);
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), transform var(--transition-speed-fast) var(--transition-easing-bounce), box-shadow var(--transition-speed);
   line-height: 1;
 }
-.settings-trigger:hover { background-color: var(--color-border); }
+.settings-trigger:hover { background-color: var(--color-border); transform: scale(1.08) rotate(90deg); }
+.settings-trigger:active { transform: scale(0.95); }
 
 .settings-overlay {
   position: fixed;
@@ -27,7 +28,7 @@
   z-index: 100;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-speed);
+  transition: opacity var(--transition-speed) var(--transition-easing-smooth);
 }
 .settings-overlay.open { opacity: 1; pointer-events: auto; }
 
@@ -41,12 +42,13 @@
   background: var(--color-bg-elevated);
   z-index: 101;
   box-shadow: -4px 0 20px var(--color-shadow);
-  transition: right var(--transition-speed) var(--transition-easing);
+  transition: right var(--transition-speed) var(--transition-easing-smooth);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  will-change: right;
 }
-.settings-panel.open { right: 0; }
+.settings-panel.open { right: 0; will-change: auto; }
 
 .settings-header {
   display: flex;
@@ -71,7 +73,7 @@
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-text-secondary);
-  transition: all var(--transition-speed);
+  transition: color var(--transition-speed), border-bottom-color var(--transition-speed), background-color var(--transition-speed);
   white-space: nowrap;
 }
 .tab-btn.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
@@ -144,11 +146,7 @@
 .source-form label { font-size: var(--font-size-sm); display: flex; flex-direction: column; gap: 4px; }
 .source-form input,
 .source-form select { padding: var(--spacing-sm); border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: var(--font-size-sm); background: var(--color-bg); color: var(--color-text); }
-.form-actions { display: flex; gap: var(--spacing-sm); justify-content: flex-end; }
-.form-actions button { padding: var(--spacing-sm) var(--spacing-md); border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; background: var(--color-bg); color: var(--color-text); font-size: var(--font-size-sm); }
-.form-actions .btn-save { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 
-/* 同步相关样式（已包含） */
 .sync-section {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -182,7 +180,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--transition-speed);
+  transition: border-color var(--transition-speed), background-color var(--transition-speed), box-shadow var(--transition-speed);
   background: var(--color-bg);
   position: relative;
 }
@@ -237,7 +235,7 @@
   cursor: pointer;
   color: var(--color-text-secondary);
   font-size: 15px;
-  transition: all var(--transition-speed);
+  transition: background-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed-fast);
   padding: 0;
 }
 .btn-icon:hover { background: var(--color-border); color: var(--color-text); }
@@ -311,7 +309,7 @@
   color: var(--color-text);
   font-size: var(--font-size-sm);
   font-weight: 500;
-  transition: all var(--transition-speed);
+  transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed), opacity var(--transition-speed);
 }
 .form-actions .btn-save { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 .form-actions .btn-save:hover { opacity: 0.9; }

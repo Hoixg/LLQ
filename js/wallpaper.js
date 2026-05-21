@@ -63,6 +63,7 @@ function listenOrientation() {
 export function initWallpaper() {
   applyWallpaper();
   listenOrientation();
+  document.addEventListener('wallpaper-update', applyWallpaper);
 }
 
 export function updateWallpaperConfig(partial) {

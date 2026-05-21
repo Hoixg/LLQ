@@ -10,14 +10,25 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   box-shadow: 0 1px 4px var(--color-shadow);
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), transform var(--transition-speed-fast) var(--transition-easing-bounce);
 }
 
 .toggle-btn:hover {
   background: var(--color-border);
+  transform: scale(1.05);
+}
+
+.toggle-btn:active {
+  transform: scale(0.95);
 }
 
 .toggle-icon {
+  display: inline-block;
   font-size: var(--font-size-sm);
   line-height: 1;
+  transition: transform 0.3s var(--transition-easing);
+}
+
+.toggle-btn.expanded .toggle-icon {
+  transform: rotate(180deg);
 }

@@ -14,13 +14,18 @@
   justify-content: center;
   cursor: pointer;
   color: var(--color-text);
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), transform var(--transition-speed-fast) var(--transition-easing-bounce), box-shadow var(--transition-speed);
   line-height: 1;
   top: calc(var(--spacing-md) + 48px + 8px);
 }
 
 .bookmarks-trigger:hover {
   background-color: var(--color-border);
+  transform: scale(1.08);
+}
+
+.bookmarks-trigger:active {
+  transform: scale(0.95);
 }
 
 .bookmarks-overlay {
@@ -30,7 +35,7 @@
   z-index: 99;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-speed);
+  transition: opacity var(--transition-speed) var(--transition-easing-smooth);
 }
 
 .bookmarks-overlay.open {
@@ -48,14 +53,16 @@
   background: var(--color-bg-elevated);
   z-index: 100;
   box-shadow: -4px 0 20px var(--color-shadow);
-  transition: right var(--transition-speed) var(--transition-easing);
+  transition: right var(--transition-speed) var(--transition-easing-smooth);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  will-change: right;
 }
 
 .bookmarks-panel.open {
   right: 0;
+  will-change: auto;
 }
 
 .bookmarks-header {
@@ -133,7 +140,7 @@
 .expand-icon {
   font-size: 12px;
   margin-right: var(--spacing-sm);
-  transition: transform 0.2s;
+  transition: transform var(--transition-speed-fast);
   flex-shrink: 0;
 }
 
@@ -234,7 +241,7 @@
   background: var(--color-border);
 }
 
-.btn-icon {
+.bookmark-btn-icon {
   background: none;
   border: none;
   cursor: pointer;
@@ -244,7 +251,7 @@
   border-radius: var(--radius-sm);
 }
 
-.btn-icon:hover {
+.bookmark-btn-icon:hover {
   background: var(--color-border);
   color: var(--color-text);
 }
@@ -304,15 +311,17 @@
     height: auto;
     max-height: 80vh;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    transition: transform var(--transition-speed) var(--transition-easing);
+    transition: transform var(--transition-speed) var(--transition-easing-smooth);
     transform: translateY(100%);
     width: 100%;
     max-width: 100%;
+    will-change: transform;
   }
 
   .bookmarks-panel.open {
     transform: translateY(0);
     right: 0;
+    will-change: auto;
   }
 
   .bookmarks-trigger {

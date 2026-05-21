@@ -47,7 +47,7 @@
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: var(--color-border, #ccc);
-  transition: 0.3s;
+  transition: background-color var(--transition-speed) var(--transition-easing);
   border-radius: 24px;
 }
 
@@ -59,7 +59,7 @@
   left: 3px;
   bottom: 3px;
   background-color: white;
-  transition: 0.3s;
+  transition: transform var(--transition-speed) var(--transition-easing);
   border-radius: 50%;
 }
 
@@ -87,7 +87,7 @@
   padding: 6px 12px;
   border: 1px solid var(--color-border, #ddd);
   border-radius: 8px;
-  transition: 0.2s;
+  transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed);
 }
 
 .wallpaper-mode-group label:has(input:checked) {

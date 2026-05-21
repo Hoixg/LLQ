@@ -1,6 +1,6 @@
 import { createElement } from './utils.js';
 import {
-  getData, addCategory, updateCategory, deleteCategory,
+  addCategory, updateCategory, deleteCategory,
   addBookmark, updateBookmark, deleteBookmark,
   getBookmarksByCategory, searchBookmarks, getAllCategories,
   getCategoryById, reorderBookmarks, reorderCategories
@@ -22,8 +22,16 @@ function getFaviconUrl(url) {
 export function closePanel() {
   if (!isOpen) return;
   isOpen = false;
-  if (panelEl) panelEl.classList.remove('open');
-  if (overlayEl) overlayEl.classList.remove('open');
+  if (panelEl) panelEl.classList.add('closing');
+  if (overlayEl) overlayEl.classList.add('closing');
+  setTimeout(() => {
+    if (panelEl) panelEl.classList.remove('open');
+    if (overlayEl) overlayEl.classList.remove('open');
+    setTimeout(() => {
+      if (panelEl) panelEl.classList.remove('closing');
+      if (overlayEl) overlayEl.classList.remove('closing');
+    }, 350);
+  }, 200);
 }
 
 export function openPanel() {
@@ -100,11 +108,11 @@ function renderCategoryItem(cat) {
 
   if (!isDefault) {
     actions.appendChild(createElement('button', {
-      className: 'btn-icon', title: '编辑',
+      className: 'bookmark-btn-icon', title: '编辑',
       onclick: (e) => { e.stopPropagation(); showEditCategoryDialog(cat); }
     }, '✎'));
     actions.appendChild(createElement('button', {
-      className: 'btn-icon', title: '删除',
+      className: 'bookmark-btn-icon', title: '删除',
       onclick: (e) => { e.stopPropagation(); deleteCategoryWithConfirm(cat.id); }
     }, '✕'));
   }
@@ -167,12 +175,12 @@ function renderBookmarksList(container, catId) {
 
       const actions = createElement('div', { className: 'bookmark-actions' });
       actions.appendChild(createElement('button', {
-        className: 'btn-icon', title: '编辑',
+        className: 'bookmark-btn-icon', title: '编辑',
         onclick: (e) => { e.stopPropagation(); showEditBookmarkDialog(bm); }
       }, '✎'));
       actions.appendChild(createElement('button', {
-        className: 'btn-icon', title: '删除',
-        onclick: (e) => { e.stopPropagation(); deleteBookmarkHandler(bm.id, catId); }
+        className: 'bookmark-btn-icon', title: '删除',
+        onclick: (e) => { e.stopPropagation(); deleteBookmarkHandler(bm.id); }
       }, '✕'));
 
       bmItem.appendChild(handle);
@@ -324,7 +332,7 @@ function showBookmarkForm(defaultCatId, editData) {
   content.appendChild(form);
 }
 
-function deleteBookmarkHandler(bookmarkId, catId) {
+function deleteBookmarkHandler(bookmarkId) {
   if (confirm('确定删除该网站？')) {
     deleteBookmark(bookmarkId);
     renderMainView();

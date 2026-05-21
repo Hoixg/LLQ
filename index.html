@@ -4,16 +4,112 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>极简主页</title>
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/search-bar.css">
-  <link rel="stylesheet" href="css/settings.css">
-  <link rel="stylesheet" href="css/layout-toggle.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  <link rel="stylesheet" href="css/wallpaper.css">
-  <link rel="stylesheet" href="css/bookmarks.css">
-  <link rel="stylesheet" href="css/clock.css">
+  <link rel="stylesheet" href="css/reset.css?v=067a">
+  <link rel="stylesheet" href="css/variables.css?v=067a">
+  <link rel="stylesheet" href="css/base.css?v=067a">
+  <link rel="stylesheet" href="css/search-bar.css?v=067a">
+  <link rel="stylesheet" href="css/settings.css?v=067a">
+  <link rel="stylesheet" href="css/layout-toggle.css?v=067a">
+  <link rel="stylesheet" href="css/responsive.css?v=067a">
+  <link rel="stylesheet" href="css/wallpaper.css?v=067a">
+  <link rel="stylesheet" href="css/bookmarks.css?v=067a">
+  <link rel="stylesheet" href="css/animations.css?v=067a">
+  <style>
+.version-info { font-size: 0; color: transparent; }
+.version-info::before { content: 'v0.67 (交互动画)'; font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
+.clock {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  user-select: none;
+}
+.clock-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.clock-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  font-size: 72px;
+  font-weight: 200;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  letter-spacing: 2px;
+  line-height: 1;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.clock-card-sec {
+  width: 100px;
+  height: 110px;
+  font-size: 48px;
+  font-weight: 250;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+.clock-colon {
+  font-size: 48px;
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+  animation: colonPulse 1s step-end infinite;
+}
+@keyframes colonPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.clock-date {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  letter-spacing: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 24px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+}
+[data-theme="dark"] .clock-card {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+[data-theme="dark"] .clock-card-sec {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.04);
+}
+[data-theme="dark"] .clock-date {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+@media (max-width: 768px) {
+  .clock { margin-bottom: var(--spacing-lg); }
+  .clock-card-row { gap: 6px; }
+  .clock-card {
+    width: 80px; height: 100px; font-size: 48px;
+    letter-spacing: 1px; border-radius: 14px;
+  }
+  .clock-card-sec { width: 68px; height: 78px; font-size: 32px; }
+  .clock-colon { font-size: 32px; }
+  .clock-date { font-size: 15px; margin-top: 16px; padding: 4px 18px; }
+}
+  </style>
 </head>
 <body>
   <div id="wallpaperLayer"></div>
@@ -22,7 +118,6 @@
       <div class="clock" id="clock"></div>
       <section class="search-section"></section>
       <div class="expandable-area" id="expandableArea">
-        <!-- 未来扩展模块区域 -->
       </div>
     </main>
 
@@ -38,6 +133,6 @@
   <div class="settings-overlay" id="settingsOverlay"></div>
   <div class="settings-panel" id="settingsPanel"></div>
 
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js?v=067b"></script>
 </body>
 </html>
