@@ -5,7 +5,7 @@
   background: linear-gradient(135deg, var(--color-bg) 0%, color-mix(in srgb, var(--color-primary) 6%, var(--color-bg)) 50%, var(--color-bg) 100%);
 }
 
-/* --- 固定悬浮按钮 --- */
+/* --- 固定悬浮按钮（面板外部，保留 backdrop-filter） --- */
 [data-ui-style="glass"] .settings-trigger,
 [data-ui-style="glass"] .bookmarks-trigger {
   background: rgba(255, 255, 255, 0.55);
@@ -32,7 +32,7 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
-/* --- 展开/收起按钮 --- */
+/* --- 展开/收起按钮（面板外部，保留 backdrop-filter） --- */
 [data-ui-style="glass"] .toggle-btn {
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(12px) saturate(160%);
@@ -55,7 +55,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* --- 设置面板 + 收藏面板 --- */
+/* --- 设置面板 + 收藏面板（仅面板本体保留 backdrop-filter） --- */
 [data-ui-style="glass"] .settings-panel,
 [data-ui-style="glass"] .bookmarks-panel {
   background: rgba(255, 255, 255, 0.72);
@@ -101,7 +101,7 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-/* --- 面板内按钮: btn-small, btn-add-source 等 --- */
+/* --- 面板内按钮（半透明背景即可，不叠加 backdrop-filter） --- */
 [data-ui-style="glass"] .btn-small,
 [data-ui-style="glass"] .btn-add-source,
 [data-ui-style="glass"] .btn-add-category,
@@ -109,8 +109,6 @@
 [data-ui-style="glass"] .bookmark-btn-icon,
 [data-ui-style="glass"] .btn-icon {
   background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -142,7 +140,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* --- 表单输入框 --- */
+/* --- 表单输入框（半透明即可） --- */
 [data-ui-style="glass"] .source-form input,
 [data-ui-style="glass"] .source-form select,
 [data-ui-style="glass"] .sync-input,
@@ -152,8 +150,6 @@
 [data-ui-style="glass"] .form-field input,
 [data-ui-style="glass"] .form-field select {
   background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -212,8 +208,6 @@
 
 [data-ui-style="glass"] .suggest-item {
   background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   border-color: rgba(0, 0, 0, 0.06);
 }
 
@@ -241,8 +235,6 @@
 /* --- 同步区块 --- */
 [data-ui-style="glass"] .sync-section {
   background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.06);
 }
 
@@ -254,8 +246,6 @@
 /* --- 收藏夹列表 --- */
 [data-ui-style="glass"] .bookmark-list {
   background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 
 [data-theme="dark"][data-ui-style="glass"] .bookmark-list {
@@ -266,8 +256,6 @@
 [data-ui-style="glass"] .checkbox-label {
   background: rgba(255, 255, 255, 0.35);
   border-color: rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 
 [data-ui-style="glass"] .checkbox-label:hover {
@@ -295,8 +283,6 @@
 /* --- 设置面板内 current-badge --- */
 [data-ui-style="glass"] .current-badge {
   background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 
 [data-theme="dark"][data-ui-style="glass"] .current-badge {
@@ -306,8 +292,6 @@
 /* --- 面板底部表单按钮 --- */
 [data-ui-style="glass"] .form-actions .btn-cancel {
   background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -328,8 +312,6 @@
 [data-ui-style="glass"] .setting-section select,
 [data-ui-style="glass"] .setting-section input {
   background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-sm);
   padding: 4px 8px;
@@ -341,4 +323,19 @@
 [data-theme="dark"][data-ui-style="glass"] .setting-section input {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* --- 移动端：降低模糊半径，减少 GPU 计算量 --- */
+@media (max-width: 768px) {
+  [data-ui-style="glass"] .settings-panel,
+  [data-ui-style="glass"] .bookmarks-panel {
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+  }
+
+  [data-theme="dark"][data-ui-style="glass"] .settings-panel,
+  [data-theme="dark"][data-ui-style="glass"] .bookmarks-panel {
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+  }
 }
