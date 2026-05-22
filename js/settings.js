@@ -46,11 +46,12 @@ function openSettings(tab = 'general') {
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
   setActiveTab(tab);
-  // 立即启动 CSS 动画（compositor-only，0ms JS）
+  if (currentTab !== tab || !contentEl.firstChild) {
+    renderContent(tab);
+  }
+  currentTab = tab;
   panelEl.classList.add('open');
   overlayEl.classList.add('open');
-  // 内容异步渲染，不阻塞动画
-  requestAnimationFrame(() => renderContent(tab));
 }
 
 function closeSettings() {
@@ -72,7 +73,7 @@ document.addEventListener('close-all-panels', (e) => {
 function switchTab(tab) {
   setActiveTab(tab);
   contentEl.textContent = '';
-  requestAnimationFrame(() => renderContent(tab));
+  renderContent(tab);
 }
 
 function setActiveTab(tab) {
@@ -93,70 +94,41 @@ function renderContent(tab) {
 }
 
 function renderGeneral(container) {
-  container.innerHTML = '';
+  const theme = getFromStorage('themeStyle', 'blue');
+  const ui = getFromStorage('uiStyle', 'default');
+  const expand = getFromStorage('defaultExpand', false);
+  const searchStyle = getFromStorage('searchBarStyle', 'pill');
+  const clockStyle = getFromStorage('clockStyle', 'default');
+  const clockBg = getFromStorage('showClockBg', true);
 
-  const colorSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '主题风格')]);
-  const colorSelect = createElement('select', {
-    onchange: (e) => {
-      setToStorage('themeStyle', e.target.value);
-      applyThemeStyle(e.target.value);
-    },
-  }, Object.entries(THEME_STYLES).map(([val, label]) =>
-    createElement('option', { value: val }, label)
-  ));
-  colorSelect.value = getFromStorage('themeStyle', 'blue');
-  colorSec.appendChild(colorSelect);
+  const themeOpts = Object.entries(THEME_STYLES).map(([v, l]) =>
+    `<option value="${v}" ${v === theme ? 'selected' : ''}>${l}</option>`
+  ).join('');
+  const uiOpts = Object.entries(UI_STYLES).map(([v, l]) =>
+    `<option value="${v}" ${v === ui ? 'selected' : ''}>${l}</option>`
+  ).join('');
+  const searchOpts = Object.entries(SEARCH_BAR_STYLES).map(([v, l]) =>
+    `<option value="${v}" ${v === searchStyle ? 'selected' : ''}>${l}</option>`
+  ).join('');
+  const clockOpts = Object.entries(CLOCK_STYLES).map(([v, l]) =>
+    `<option value="${v}" ${v === clockStyle ? 'selected' : ''}>${l}</option>`
+  ).join('');
 
-  const uiSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, 'UI 风格')]);
-  const uiSelect = createElement('select', {
-    onchange: (e) => {
-      setToStorage('uiStyle', e.target.value);
-      applyUIStyle(e.target.value);
-    },
-  }, Object.entries(UI_STYLES).map(([val, label]) =>
-    createElement('option', { value: val }, label)
-  ));
-  uiSelect.value = getFromStorage('uiStyle', 'default');
-  uiSec.appendChild(uiSelect);
+  container.innerHTML = `
+    <div class="setting-section"><label>主题风格</label><select id="set-theme">${themeOpts}</select></div>
+    <div class="setting-section"><label>UI 风格</label><select id="set-ui">${uiOpts}</select></div>
+    <div class="setting-section"><label>默认展开扩展区</label><input type="checkbox" id="set-expand" ${expand ? 'checked' : ''}></div>
+    <div class="setting-section"><label>搜索框风格</label><select id="set-search">${searchOpts}</select></div>
+    <div class="setting-section"><label>时间风格</label><select id="set-clock">${clockOpts}</select></div>
+    <div class="setting-section"><label>显示时间背景</label><input type="checkbox" id="set-clockbg" ${clockBg ? 'checked' : ''}></div>
+  `;
 
-  const expandSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '默认展开扩展区')]);
-  const cb = createElement('input', { type: 'checkbox', onchange: (e) => setToStorage('defaultExpand', e.target.checked) });
-  cb.checked = getFromStorage('defaultExpand', false);
-  expandSec.appendChild(cb);
-
-  const styleSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '搜索框风格')]);
-  const styleSelect = createElement('select', {
-    onchange: (e) => {
-      setToStorage('searchBarStyle', e.target.value);
-      applySearchBarStyle(e.target.value);
-    },
-  }, Object.entries(SEARCH_BAR_STYLES).map(([val, label]) =>
-    createElement('option', { value: val }, label)
-  ));
-  styleSelect.value = getFromStorage('searchBarStyle', 'pill');
-  styleSec.appendChild(styleSelect);
-
-  const clockSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '时间风格')]);
-  const clockSelect = createElement('select', {
-    onchange: (e) => {
-      setToStorage('clockStyle', e.target.value);
-      applyClockStyle(e.target.value);
-    },
-  }, Object.entries(CLOCK_STYLES).map(([val, label]) =>
-    createElement('option', { value: val }, label)
-  ));
-  clockSelect.value = getFromStorage('clockStyle', 'default');
-  clockSec.appendChild(clockSelect);
-
-  const clockBgSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '显示时间背景')]);
-  const clockBgCb = createElement('input', { type: 'checkbox', onchange: (e) => {
-    setToStorage('showClockBg', e.target.checked);
-    applyClockBg(e.target.checked);
-  }});
-  clockBgCb.checked = getFromStorage('showClockBg', true);
-  clockBgSec.appendChild(clockBgCb);
-
-  container.append(colorSec, uiSec, expandSec, styleSec, clockSec, clockBgSec);
+  container.querySelector('#set-theme').onchange = e => { setToStorage('themeStyle', e.target.value); applyThemeStyle(e.target.value); };
+  container.querySelector('#set-ui').onchange = e => { setToStorage('uiStyle', e.target.value); applyUIStyle(e.target.value); };
+  container.querySelector('#set-expand').onchange = e => { setToStorage('defaultExpand', e.target.checked); };
+  container.querySelector('#set-search').onchange = e => { setToStorage('searchBarStyle', e.target.value); applySearchBarStyle(e.target.value); };
+  container.querySelector('#set-clock').onchange = e => { setToStorage('clockStyle', e.target.value); applyClockStyle(e.target.value); };
+  container.querySelector('#set-clockbg').onchange = e => { setToStorage('showClockBg', e.target.checked); applyClockBg(e.target.checked); };
 }
 
 function reinitClockIfNeeded(newStyle) {

@@ -44,6 +44,10 @@
      opacity: 0;
    }
 
+  .settings-overlay { transition: opacity 0.08s ease-out; }
+  .settings-overlay.open { transition: opacity 0.08s ease-out; }
+  .settings-overlay.closing { transition: opacity 0.08s ease-in; }
+
   .toggle-bar {
     padding-bottom: calc(var(--spacing-md) + var(--safe-inset-bottom));
   }
