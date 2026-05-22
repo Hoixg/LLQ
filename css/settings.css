@@ -46,6 +46,8 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   transform: translate3d(100%, 0, 0);
   opacity: 0;
   pointer-events: none;
@@ -91,7 +93,7 @@
 }
 .tab-btn.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
 
-.settings-content { flex: 1; padding: var(--spacing-md); overflow-y: auto; }
+.settings-content { flex: 1; padding: var(--spacing-md); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 
 .setting-section { margin-bottom: var(--spacing-lg); display: flex; align-items: center; justify-content: space-between; }
 .setting-section label { font-size: var(--font-size-sm); }

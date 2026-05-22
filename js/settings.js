@@ -22,8 +22,8 @@ function openSettings(tab = 'general') {
   overlayEl.classList.remove('closing');
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
-  renderPanel(tab);
   requestAnimationFrame(() => {
+    renderPanel(tab);
     requestAnimationFrame(() => {
       panelEl.classList.add('open');
       overlayEl.classList.add('open');
