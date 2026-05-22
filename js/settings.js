@@ -1,4 +1,4 @@
-import { createElement, applyTheme, getFromStorage, setToStorage } from './utils.js';
+import { createElement, getFromStorage, setToStorage } from './utils.js';
 import { getCurrentSource, setCurrentSource, getAllSources, addCustomSource, removeCustomSource, updateCustomSource, isPresetSource, modifyPreset, hidePreset, reorderEngines, getSourcesByTrack, getCurrentTrack } from './search-sources.js';
 import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSource as setCurrentSuggest, addCustomSource as addCustomSuggest, removeCustomSource as removeCustomSuggest, updateCustomSource as updateCustomSuggest, isPresetSource as isSuggestPreset, modifyPreset as modifySuggestPreset, hidePreset as hideSuggestPreset, reorderEngines as reorderSuggestEngines } from './suggest-sources.js';
 import { renderWallpaperTab } from './wallpaper.js';
@@ -48,7 +48,7 @@ function renderPanel(tab) {
   const header = createElement('div', { className: 'settings-header' }, [
     createElement('div', { className: 'title-group' }, [
       createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.68 (动画优化)'),
+      createElement('span', { className: 'version-info' }, 'v0.71 (UI 风格大扩展)'),
     ]),
     createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
   ]);
@@ -67,19 +67,176 @@ function renderPanel(tab) {
 
 function renderGeneral(container) {
   container.innerHTML = '';
-  const themeSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '主题')]);
-  const select = createElement('select', { onchange: (e) => { applyTheme(e.target.value); setToStorage('theme', e.target.value); } }, [
-    createElement('option', { value: 'light' }, '浅色'),
-    createElement('option', { value: 'dark' }, '深色'),
-    createElement('option', { value: 'auto' }, '跟随系统'),
-  ]);
-  select.value = getFromStorage('theme', 'light');
-  themeSec.appendChild(select);
+
+  const colorSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '主题风格')]);
+  const colorSelect = createElement('select', {
+    onchange: (e) => {
+      setToStorage('themeStyle', e.target.value);
+      applyThemeStyle(e.target.value);
+    },
+  }, Object.entries(THEME_STYLES).map(([val, label]) =>
+    createElement('option', { value: val }, label)
+  ));
+  colorSelect.value = getFromStorage('themeStyle', 'blue');
+  colorSec.appendChild(colorSelect);
+
+  const uiSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, 'UI 风格')]);
+  const uiSelect = createElement('select', {
+    onchange: (e) => {
+      setToStorage('uiStyle', e.target.value);
+      applyUIStyle(e.target.value);
+    },
+  }, Object.entries(UI_STYLES).map(([val, label]) =>
+    createElement('option', { value: val }, label)
+  ));
+  uiSelect.value = getFromStorage('uiStyle', 'default');
+  uiSec.appendChild(uiSelect);
+
   const expandSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '默认展开扩展区')]);
   const cb = createElement('input', { type: 'checkbox', onchange: (e) => setToStorage('defaultExpand', e.target.checked) });
   cb.checked = getFromStorage('defaultExpand', false);
   expandSec.appendChild(cb);
-  container.append(themeSec, expandSec);
+
+  const styleSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '搜索框风格')]);
+  const styleSelect = createElement('select', {
+    onchange: (e) => {
+      setToStorage('searchBarStyle', e.target.value);
+      applySearchBarStyle(e.target.value);
+    },
+  }, Object.entries(SEARCH_BAR_STYLES).map(([val, label]) =>
+    createElement('option', { value: val }, label)
+  ));
+  styleSelect.value = getFromStorage('searchBarStyle', 'pill');
+  styleSec.appendChild(styleSelect);
+
+  const clockSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '时间风格')]);
+  const clockSelect = createElement('select', {
+    onchange: (e) => {
+      setToStorage('clockStyle', e.target.value);
+      applyClockStyle(e.target.value);
+    },
+  }, Object.entries(CLOCK_STYLES).map(([val, label]) =>
+    createElement('option', { value: val }, label)
+  ));
+  clockSelect.value = getFromStorage('clockStyle', 'default');
+  clockSec.appendChild(clockSelect);
+
+  const clockBgSec = createElement('div', { className: 'setting-section' }, [createElement('label', {}, '显示时间背景')]);
+  const clockBgCb = createElement('input', { type: 'checkbox', onchange: (e) => {
+    setToStorage('showClockBg', e.target.checked);
+    applyClockBg(e.target.checked);
+  }});
+  clockBgCb.checked = getFromStorage('showClockBg', true);
+  clockBgSec.appendChild(clockBgCb);
+
+  container.append(colorSec, uiSec, expandSec, styleSec, clockSec, clockBgSec);
+}
+
+function reinitClockIfNeeded(newStyle) {
+  window.dispatchEvent(new CustomEvent('clock-style-changed', { detail: { style: newStyle } }));
+}
+
+const CLOCK_STYLES = {
+  'default': '默认',
+  'mosaic': '马赛克',
+  'minimal': '极简',
+  'cutout': '镂空',
+  'terminal': '终端',
+  'emboss': '浮雕',
+  'flip': '翻页钟',
+};
+
+export function applyClockStyle(style) {
+  if (style && style !== 'default') {
+    document.documentElement.setAttribute('data-clock-style', style);
+  } else {
+    document.documentElement.removeAttribute('data-clock-style');
+  }
+  reinitClockIfNeeded(style);
+}
+
+export function applyClockBg(show) {
+  if (show === false) {
+    document.documentElement.setAttribute('data-clock-bg', 'off');
+  } else {
+    document.documentElement.removeAttribute('data-clock-bg');
+  }
+}
+
+const UI_STYLES = {
+  'default': '默认',
+  'glass': '蒙版玻璃',
+  'neo': '新拟态',
+  'noir': '暗夜无边',
+  'line': '极简线框',
+  'mint': '柔和渐变',
+  'paper': '纸质层叠',
+  'cyber': '赛博',
+  'brutal': '粗野',
+  'frost': '冰霜',
+  'ink': '水墨',
+  'aurora': '极光',
+  'dot': '点阵',
+  'switch': '掌机',
+  'pixel': '像素',
+};
+
+export function applyUIStyle(style) {
+  if (style && style !== 'default') {
+    document.documentElement.setAttribute('data-ui-style', style);
+  } else {
+    document.documentElement.removeAttribute('data-ui-style');
+  }
+}
+
+const THEME_STYLES = {
+  'blue': '经典蓝（跟随系统）',
+  'blue-light': '经典蓝（浅色）',
+  'blue-dark': '经典蓝（深色）',
+  'forest': '翡翠绿（跟随系统）',
+  'forest-light': '翡翠绿（浅色）',
+  'forest-dark': '翡翠绿（深色）',
+  'violet': '紫罗兰（跟随系统）',
+  'violet-light': '紫罗兰（浅色）',
+  'violet-dark': '紫罗兰（深色）',
+  'slate': '石墨灰（跟随系统）',
+  'slate-light': '石墨灰（浅色）',
+  'slate-dark': '石墨灰（深色）',
+};
+
+export function applyThemeStyle(style) {
+  const match = style.match(/^(.*?)-(light|dark)$/);
+  let isDark;
+  if (match) {
+    isDark = match[2] === 'dark';
+  } else {
+    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  const baseStyle = match ? match[1] : style;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme-style', baseStyle);
+  console.log('[主题风格]', style, '→ data-theme=' + (isDark ? 'dark' : 'light'), 'data-theme-style=' + baseStyle);
+}
+
+const SEARCH_BAR_STYLES = {
+  pill: '经典胶囊',
+  glass: '毛玻璃',
+  neon: '霓虹发光',
+  dark: '深色浮空',
+  outline: '细线框',
+  terminal: '终端复古',
+  dotted: '虚线圈',
+  aurora: '极光渐变',
+};
+
+function applySearchBarStyle(style) {
+  const searchBox = document.querySelector('.search-box');
+  if (!searchBox) return;
+  const allStyles = ['style-glass', 'style-neon', 'style-dark', 'style-outline', 'style-terminal', 'style-dotted', 'style-aurora'];
+  searchBox.classList.remove(...allStyles);
+  if (style && style !== 'pill') {
+    searchBox.classList.add('style-' + style);
+  }
 }
 
 // ===================== 搜索引擎 =====================

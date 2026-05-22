@@ -1,0 +1,295 @@
+/* ============ 纸质层叠 UI 风格 ============ */
+
+/* --- 按钮 - z3 --- */
+[data-ui-style="paper"] .settings-trigger,
+[data-ui-style="paper"] .bookmarks-trigger {
+  background: var(--color-bg-elevated);
+  border: none;
+  border-radius: 50%;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 3px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s;
+}
+[data-ui-style="paper"] .settings-trigger:hover,
+[data-ui-style="paper"] .bookmarks-trigger:hover {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 6px 16px rgba(0, 0, 0, 0.08);
+  transform: scale(1.08);
+}
+
+[data-theme="dark"][data-ui-style="paper"] .settings-trigger,
+[data-theme="dark"][data-ui-style="paper"] .bookmarks-trigger {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 3px 8px rgba(0, 0, 0, 0.15);
+}
+[data-theme="dark"][data-ui-style="paper"] .settings-trigger:hover,
+[data-theme="dark"][data-ui-style="paper"] .bookmarks-trigger:hover {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* --- 展开/收起 - z2 --- */
+[data-ui-style="paper"] .toggle-btn {
+  background: var(--color-bg-elevated);
+  border: none;
+  border-radius: var(--radius-full);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.25s;
+}
+[data-ui-style="paper"] .toggle-btn:hover {
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"][data-ui-style="paper"] .toggle-btn {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* --- 面板 - z16 --- */
+[data-ui-style="paper"] .settings-panel,
+[data-ui-style="paper"] .bookmarks-panel {
+  background: var(--color-bg-elevated);
+  border-left: none;
+  box-shadow:
+    0 16px 24px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"][data-ui-style="paper"] .settings-panel,
+[data-theme="dark"][data-ui-style="paper"] .bookmarks-panel {
+  box-shadow:
+    0 16px 24px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* --- 面板头部 --- */
+[data-ui-style="paper"] .settings-header,
+[data-ui-style="paper"] .bookmarks-header {
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* --- Tab 按钮 --- */
+[data-ui-style="paper"] .settings-tabs {
+  border-bottom: 1px solid var(--color-border);
+}
+[data-ui-style="paper"] .tab-btn {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  margin-bottom: -1px;
+}
+[data-ui-style="paper"] .tab-btn:hover {
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+[data-ui-style="paper"] .tab-btn.active {
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* --- 小按钮 - z1 --- */
+[data-ui-style="paper"] .btn-small,
+[data-ui-style="paper"] .btn-add-source,
+[data-ui-style="paper"] .btn-add-category,
+[data-ui-style="paper"] .btn-add-bookmark,
+[data-ui-style="paper"] .btn-icon,
+[data-ui-style="paper"] .bookmark-btn-icon {
+  background: var(--color-bg-elevated);
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s, background-color 0.2s;
+}
+[data-ui-style="paper"] .btn-small:hover,
+[data-ui-style="paper"] .btn-add-source:hover,
+[data-ui-style="paper"] .btn-add-category:hover,
+[data-ui-style="paper"] .btn-add-bookmark:hover,
+[data-ui-style="paper"] .btn-icon:hover,
+[data-ui-style="paper"] .bookmark-btn-icon:hover {
+  background: var(--color-bg-elevated);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.06);
+}
+[data-ui-style="paper"] .btn-small:active,
+[data-ui-style="paper"] .btn-add-source:active,
+[data-ui-style="paper"] .btn-add-category:active,
+[data-ui-style="paper"] .btn-add-bookmark:active,
+[data-ui-style="paper"] .btn-icon:active,
+[data-ui-style="paper"] .bookmark-btn-icon:active {
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"][data-ui-style="paper"] .btn-small,
+[data-theme="dark"][data-ui-style="paper"] .btn-add-source,
+[data-theme="dark"][data-ui-style="paper"] .btn-add-category,
+[data-theme="dark"][data-ui-style="paper"] .btn-add-bookmark,
+[data-theme="dark"][data-ui-style="paper"] .btn-icon,
+[data-theme="dark"][data-ui-style="paper"] .bookmark-btn-icon {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* --- 建议列表项 - z1 --- */
+[data-ui-style="paper"] .suggest-item {
+  background: var(--color-bg-elevated);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 1px 4px rgba(0, 0, 0, 0.03);
+}
+[data-ui-style="paper"] .suggest-item:hover {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.05);
+}
+[data-ui-style="paper"] .suggest-item.active {
+  border: 1px solid var(--color-primary);
+  box-shadow:
+    0 2px 4px rgba(13, 110, 253, 0.12),
+    0 4px 12px rgba(13, 110, 253, 0.08);
+}
+
+[data-theme="dark"][data-ui-style="paper"] .suggest-item {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* --- 表单输入框 - 轻微凹陷 --- */
+[data-ui-style="paper"] .source-form input,
+[data-ui-style="paper"] .source-form select,
+[data-ui-style="paper"] .sync-input,
+[data-ui-style="paper"] .bookmarks-search-input,
+[data-ui-style="paper"] .bookmark-form input,
+[data-ui-style="paper"] .bookmark-form select,
+[data-ui-style="paper"] .form-field input,
+[data-ui-style="paper"] .form-field select {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) inset;
+  color: var(--color-text);
+  transition: border-color 0.2s;
+}
+[data-ui-style="paper"] .source-form input:focus,
+[data-ui-style="paper"] .source-form select:focus,
+[data-ui-style="paper"] .sync-input:focus,
+[data-ui-style="paper"] .bookmarks-search-input:focus,
+[data-ui-style="paper"] .bookmark-form input:focus,
+[data-ui-style="paper"] .bookmark-form select:focus,
+[data-ui-style="paper"] .form-field input:focus,
+[data-ui-style="paper"] .form-field select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* --- 同步区块 - z2 --- */
+[data-ui-style="paper"] .sync-section {
+  background: var(--color-bg-elevated);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"][data-ui-style="paper"] .sync-section {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* --- checkbox label - z1 --- */
+[data-ui-style="paper"] .checkbox-label {
+  background: var(--color-bg-elevated);
+  border: none;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.03);
+}
+[data-ui-style="paper"] .checkbox-label:hover {
+  background: var(--color-border);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* --- 表单按钮 --- */
+[data-ui-style="paper"] .form-actions .btn-cancel {
+  background: var(--color-bg-elevated);
+  border: none;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+}
+[data-ui-style="paper"] .form-actions .btn-cancel:hover {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.06);
+}
+[data-ui-style="paper"] .form-actions .btn-save {
+  border: none;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* --- 收藏夹 --- */
+[data-ui-style="paper"] .category-item {
+  border: none;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 1px 4px rgba(0, 0, 0, 0.03);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  overflow: hidden;
+}
+
+[data-theme="dark"][data-ui-style="paper"] .category-item {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-ui-style="paper"] .bookmark-list {
+  background: var(--color-bg);
+}
+
+/* --- 面板内 select / input --- */
+[data-ui-style="paper"] .setting-section select,
+[data-ui-style="paper"] .setting-section input {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  color: var(--color-text);
+  padding: 5px 10px;
+  transition: border-color 0.2s;
+}
+[data-ui-style="paper"] .setting-section select:focus,
+[data-ui-style="paper"] .setting-section input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* --- 列表分割线 --- */
+[data-ui-style="paper"] .engine-item,
+[data-ui-style="paper"] .bookmark-item,
+[data-ui-style="paper"] .search-result-item {
+  border-bottom: 1px solid var(--color-border);
+}
+[data-ui-style="paper"] .section-toggle-header {
+  border-bottom: 1px solid var(--color-border);
+}

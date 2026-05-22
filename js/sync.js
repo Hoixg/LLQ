@@ -1,4 +1,5 @@
-import { getFromStorage, setToStorage, createElement, applyTheme } from './utils.js';
+import { getFromStorage, setToStorage, createElement } from './utils.js';
+import { applyThemeStyle, applyUIStyle, applyClockStyle, applyClockBg } from './settings.js';
 
 const DATA_KEYS = [
   { key: 'custom_sources',        label: '自定义搜索引擎', icon: '🔍' },
@@ -14,7 +15,10 @@ const DATA_KEYS = [
   { key: 'suggest_engine_order',  label: '建议源排序', icon: '↕️' },
   { key: 'wallpaperSettings',     label: '壁纸设置', icon: '🖼️' },
   { key: 'bookmarks',             label: '收藏夹', icon: '⭐' },
-  { key: 'theme',                 label: '主题', icon: '🎨' },
+  { key: 'themeStyle',           label: '主题风格', icon: '🎨' },
+  { key: 'uiStyle',              label: 'UI 风格', icon: '✨' },
+  { key: 'clockStyle',          label: '时间风格', icon: '⏱️' },
+  { key: 'showClockBg',        label: '显示时间背景', icon: '🕰️' },
   { key: 'defaultExpand',         label: '默认展开状态', icon: '📂' },
   { key: 'layout_expanded',       label: '当前展开状态', icon: '📐' },
   { key: 'webdav_config',         label: 'WebDAV 配置', icon: '☁️' },
@@ -69,7 +73,9 @@ function previewImportData(jsonStr) {
       expandable = true;
     } else if (key === 'wallpaperSettings') {
       summary = `模式: ${value?.mode || '默认'}, 自动切换: ${value?.autoSwitch ? '是' : '否'}`;
-    } else if (key === 'theme') {
+    } else if (key === 'themeStyle') {
+      summary = value;
+    } else if (key === 'uiStyle') {
       summary = value;
     } else if (key === 'current_track') {
       summary = value === 'platform' ? '平台搜索' : '常规搜索';
@@ -102,9 +108,21 @@ function applyImport(selectedKeys, jsonStr) {
   if (selectedKeys.includes('wallpaperSettings')) {
     setTimeout(() => document.dispatchEvent(new CustomEvent('wallpaper-update')), 50);
   }
-  if (selectedKeys.includes('theme')) {
-    const theme = getFromStorage('theme', 'light');
-    applyTheme(theme);
+  if (selectedKeys.includes('themeStyle')) {
+    const style = getFromStorage('themeStyle', 'blue');
+    applyThemeStyle(style);
+  }
+  if (selectedKeys.includes('uiStyle')) {
+    const uiStyle = getFromStorage('uiStyle', 'default');
+    applyUIStyle(uiStyle);
+  }
+  if (selectedKeys.includes('clockStyle')) {
+    const clockStyle = getFromStorage('clockStyle', 'default');
+    applyClockStyle(clockStyle);
+  }
+  if (selectedKeys.includes('showClockBg')) {
+    const show = getFromStorage('showClockBg', true);
+    applyClockBg(show);
   }
 }
 

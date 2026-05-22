@@ -1,4 +1,4 @@
-import { createElement, isMobile } from './utils.js';
+import { createElement, isMobile, getFromStorage } from './utils.js';
 import { getCurrentSource, setCurrentSource, getSourcesByTrack, getCurrentTrack, setCurrentTrack } from './search-sources.js';
 import { initSuggestions } from './suggestions.js';
 
@@ -166,6 +166,12 @@ export function initSearch(container) {
     document.body.appendChild(overlay);
 
     mobileSheet = createElement('div', { className: 'mobile-source-sheet' });
+
+    const searchStyle = [...searchBox.classList].find(c => c.startsWith('style-'));
+    if (searchStyle) {
+      mobileSheet.classList.add(searchStyle);
+    }
+
     const sheetContent = createElement('div', { className: 'sheet-content' });
     sheetContent.appendChild(createElement('div', { className: 'sheet-title' }, '选择' + TRACK_LABELS[currentTrack]));
     const listContainer = createElement('div', { className: 'source-list-mobile' });
@@ -237,6 +243,11 @@ export function initSearch(container) {
   };
 
   container.appendChild(searchBox);
+
+  const searchBarStyle = getFromStorage('searchBarStyle', 'pill');
+  if (searchBarStyle && searchBarStyle !== 'pill') {
+    searchBox.classList.add('style-' + searchBarStyle);
+  }
 }
 
 function updateSourceIcon(btn, source) {

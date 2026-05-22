@@ -1,0 +1,246 @@
+/* ============ 柔和渐变 UI 风格 ============ */
+
+/* --- 按钮 —— 微弱渐变底色 --- */
+[data-ui-style="mint"] .settings-trigger,
+[data-ui-style="mint"] .bookmarks-trigger {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--color-primary) 4%, var(--color-bg-elevated)) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-primary) 8%, transparent);
+  transition: all 0.25s ease;
+}
+[data-ui-style="mint"] .settings-trigger:hover,
+[data-ui-style="mint"] .bookmarks-trigger:hover {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 18%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-elevated)) 100%);
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--color-primary) 14%, transparent);
+  transform: scale(1.08);
+}
+
+[data-theme="dark"][data-ui-style="mint"] .settings-trigger,
+[data-theme="dark"][data-ui-style="mint"] .bookmarks-trigger {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 10%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--color-primary) 3%, var(--color-bg-elevated)) 100%);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-primary) 5%, rgba(0,0,0,0.2));
+}
+
+/* --- 展开/收起按钮 --- */
+[data-ui-style="mint"] .toggle-btn {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--color-primary) 2%, var(--color-bg-elevated)) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 8px color-mix(in srgb, var(--color-primary) 6%, transparent);
+  transition: all 0.25s;
+}
+[data-ui-style="mint"] .toggle-btn:hover {
+  box-shadow: 0 2px 14px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+[data-theme="dark"][data-ui-style="mint"] .toggle-btn {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--color-primary) 2%, var(--color-bg-elevated)) 100%);
+  box-shadow: 0 1px 8px color-mix(in srgb, var(--color-primary) 4%, rgba(0,0,0,0.15));
+}
+
+/* --- 面板 --- */
+[data-ui-style="mint"] .settings-panel,
+[data-ui-style="mint"] .bookmarks-panel {
+  background: linear-gradient(180deg,
+    var(--color-bg-elevated) 0%,
+    color-mix(in srgb, var(--color-primary) 3%, var(--color-bg-elevated)) 100%);
+  border-left: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  box-shadow: -4px 0 24px color-mix(in srgb, var(--color-primary) 6%, rgba(0,0,0,0.04));
+}
+
+[data-theme="dark"][data-ui-style="mint"] .settings-panel,
+[data-theme="dark"][data-ui-style="mint"] .bookmarks-panel {
+  background: linear-gradient(180deg,
+    var(--color-bg-elevated) 0%,
+    color-mix(in srgb, var(--color-primary) 4%, var(--color-bg-elevated)) 100%);
+}
+
+/* --- 面板头部 --- */
+[data-ui-style="mint"] .settings-header,
+[data-ui-style="mint"] .bookmarks-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--color-primary) 6%, var(--color-bg-elevated)) 0%,
+    transparent 100%);
+}
+
+/* --- Tab 按钮 --- */
+[data-ui-style="mint"] .settings-tabs {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+[data-ui-style="mint"] .tab-btn {
+  border-bottom: 2px solid transparent;
+}
+[data-ui-style="mint"] .tab-btn:hover {
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg));
+}
+[data-ui-style="mint"] .tab-btn.active {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+  border-bottom-color: var(--color-primary);
+}
+
+/* --- 小按钮 --- */
+[data-ui-style="mint"] .btn-small,
+[data-ui-style="mint"] .btn-add-source,
+[data-ui-style="mint"] .btn-add-category,
+[data-ui-style="mint"] .btn-add-bookmark,
+[data-ui-style="mint"] .btn-icon,
+[data-ui-style="mint"] .bookmark-btn-icon {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 8%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-primary) 2%, var(--color-bg)) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--color-primary) 5%, transparent);
+  transition: all 0.2s;
+}
+[data-ui-style="mint"] .btn-small:hover,
+[data-ui-style="mint"] .btn-add-source:hover,
+[data-ui-style="mint"] .btn-add-category:hover,
+[data-ui-style="mint"] .btn-add-bookmark:hover,
+[data-ui-style="mint"] .btn-icon:hover,
+[data-ui-style="mint"] .bookmark-btn-icon:hover {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 14%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-primary) 5%, var(--color-bg)) 100%);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+/* --- 建议列表项 --- */
+[data-ui-style="mint"] .suggest-item {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 6%, var(--color-bg)) 0%,
+    var(--color-bg) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 8%, transparent);
+  border-radius: var(--radius-md);
+}
+[data-ui-style="mint"] .suggest-item:hover {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-elevated)) 0%,
+    var(--color-bg-elevated) 100%);
+  border-color: var(--color-primary);
+}
+[data-ui-style="mint"] .suggest-item.active {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 14%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--color-primary) 4%, var(--color-bg-elevated)) 100%);
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+/* --- 表单输入框 --- */
+[data-ui-style="mint"] .source-form input,
+[data-ui-style="mint"] .source-form select,
+[data-ui-style="mint"] .sync-input,
+[data-ui-style="mint"] .bookmarks-search-input,
+[data-ui-style="mint"] .bookmark-form input,
+[data-ui-style="mint"] .bookmark-form select,
+[data-ui-style="mint"] .form-field input,
+[data-ui-style="mint"] .form-field select {
+  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+[data-ui-style="mint"] .source-form input:focus,
+[data-ui-style="mint"] .source-form select:focus,
+[data-ui-style="mint"] .sync-input:focus,
+[data-ui-style="mint"] .bookmarks-search-input:focus,
+[data-ui-style="mint"] .bookmark-form input:focus,
+[data-ui-style="mint"] .bookmark-form select:focus,
+[data-ui-style="mint"] .form-field input:focus,
+[data-ui-style="mint"] .form-field select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  outline: none;
+}
+
+/* --- 同步区块 --- */
+[data-ui-style="mint"] .sync-section {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 5%, var(--color-bg)) 0%,
+    var(--color-bg) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: var(--radius-md);
+}
+
+/* --- checkbox label --- */
+[data-ui-style="mint"] .checkbox-label {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 6%, var(--color-bg)) 0%,
+    var(--color-bg) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 8%, transparent);
+  box-shadow: none;
+}
+[data-ui-style="mint"] .checkbox-label:hover {
+  border-color: var(--color-primary);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 12%, var(--color-bg)) 0%,
+    var(--color-bg) 100%);
+}
+
+/* --- 表单按钮 --- */
+[data-ui-style="mint"] .form-actions .btn-cancel {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 6%, var(--color-bg)) 0%,
+    var(--color-bg) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: var(--radius-sm);
+}
+[data-ui-style="mint"] .form-actions .btn-cancel:hover {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--color-primary) 12%, var(--color-bg)) 0%,
+    var(--color-bg) 100%);
+}
+[data-ui-style="mint"] .form-actions .btn-save {
+  border: none;
+}
+
+/* --- 收藏夹 --- */
+[data-ui-style="mint"] .category-item {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 8%, transparent);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  overflow: hidden;
+}
+[data-ui-style="mint"] .bookmark-list {
+  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-bg));
+}
+
+/* --- 面板内 select / input --- */
+[data-ui-style="mint"] .setting-section select,
+[data-ui-style="mint"] .setting-section input {
+  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  padding: 5px 10px;
+  transition: border-color 0.2s;
+}
+[data-ui-style="mint"] .setting-section select:focus,
+[data-ui-style="mint"] .setting-section input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* --- 列表分割线 --- */
+[data-ui-style="mint"] .engine-item,
+[data-ui-style="mint"] .bookmark-item,
+[data-ui-style="mint"] .search-result-item {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+[data-ui-style="mint"] .section-toggle-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 8%, transparent);
+}

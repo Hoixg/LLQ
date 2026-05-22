@@ -381,3 +381,593 @@
   from { transform: translateY(8px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* ============ 搜索框风格变体 ============ */
+
+/* --- 经典胶囊（默认）: 50px 全圆 + 彩虹光效 --- */
+/* 无额外 class，由基础 .search-box 定义 */
+
+/* --- 毛玻璃：冰霜磨砂 + 微紫调 --- */
+.search-box.style-glass {
+  background: rgba(245, 245, 255, 0.6);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 28px;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .search-box.style-glass {
+  background: rgba(22, 24, 50, 0.5);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.search-box.style-glass:focus-within {
+  border-color: rgba(85, 104, 212, 0.5);
+  box-shadow:
+    0 6px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(85, 104, 212, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  animation: none;
+}
+
+[data-theme="dark"] .search-box.style-glass:focus-within {
+  border-color: rgba(107, 128, 240, 0.3);
+  box-shadow:
+    0 6px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 3px rgba(107, 128, 240, 0.1);
+}
+
+/* --- 霓虹发光：赛博朋克紫青渐变 --- */
+.search-box.style-neon {
+  background: rgba(12, 10, 30, 0.85);
+  backdrop-filter: blur(12px) brightness(0.7);
+  -webkit-backdrop-filter: blur(12px) brightness(0.7);
+  border: 1.5px solid transparent;
+  border-radius: 50px;
+  box-shadow:
+    0 0 16px rgba(138, 43, 226, 0.3),
+    0 0 40px rgba(6, 182, 212, 0.1),
+    0 4px 20px rgba(0, 0, 0, 0.4);
+  background-clip: padding-box;
+  position: relative;
+}
+
+.search-box.style-neon::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #a855f7, #06b6d4, #ec4899, #a855f7);
+  background-size: 300% 300%;
+  z-index: -1;
+  animation: neonShift 4s ease-in-out infinite;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.search-box.style-neon .search-input { color: #e8e6f8; font-weight: 350; }
+.search-box.style-neon .search-input::placeholder { color: #8888b8; }
+.search-box.style-neon .track-toggle-btn,
+.search-box.style-neon .search-btn { color: #9999c0; }
+.search-box.style-neon .track-toggle-btn:hover,
+.search-box.style-neon .search-btn:hover { color: #c8c0f0; background: rgba(124, 58, 237, 0.18); }
+.search-box.style-neon .track-divider { background: rgba(255, 255, 255, 0.06); }
+.search-box.style-neon .source-icon { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1); }
+
+.search-box.style-neon:focus-within {
+  box-shadow:
+    0 0 28px rgba(168, 85, 247, 0.45),
+    0 0 60px rgba(6, 182, 212, 0.2),
+    0 6px 28px rgba(0, 0, 0, 0.45);
+  animation: none;
+}
+.search-box.style-neon:focus-within::before { opacity: 1; }
+.search-box.style-neon:focus-within::after { display: none; }
+
+[data-theme="dark"] .search-box.style-neon {
+  background: rgba(8, 6, 22, 0.88);
+}
+
+@keyframes neonShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* --- 深色浮空：深邃夜蓝 + 巨型阴影 --- */
+.search-box.style-dark {
+  background: linear-gradient(180deg, rgba(30, 30, 55, 0.92) 0%, rgba(20, 20, 42, 0.92) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  box-shadow:
+    0 8px 48px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 2px var(--spacing-sm);
+}
+
+.search-box.style-dark .search-input { color: #e0e0f4; font-weight: 360; }
+.search-box.style-dark .search-input::placeholder { color: #8088a8; }
+.search-box.style-dark .track-toggle-btn,
+.search-box.style-dark .search-btn { color: #8088a8; }
+.search-box.style-dark .track-toggle-btn:hover,
+.search-box.style-dark .search-btn:hover { color: #c0c0e8; background: rgba(255, 255, 255, 0.06); }
+.search-box.style-dark .source-icon { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08); }
+.search-box.style-dark .track-divider { background: rgba(255, 255, 255, 0.06); }
+
+.search-box.style-dark:focus-within {
+  border-color: rgba(109, 136, 232, 0.3);
+  box-shadow:
+    0 12px 56px rgba(0, 0, 0, 0.6),
+    0 0 0 4px rgba(109, 136, 232, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: none;
+}
+
+[data-theme="dark"] .search-box.style-dark {
+  background: linear-gradient(180deg, rgba(16, 16, 36, 0.94) 0%, rgba(8, 8, 24, 0.94) 100%);
+}
+
+/* --- 细线框：极简勾勒 + 微毛玻璃 --- */
+.search-box.style-outline {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50px;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .search-box.style-outline {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.search-box.style-outline:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+  animation: none;
+}
+
+[data-theme="dark"] .search-box.style-outline:focus-within {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.03);
+}
+
+.search-box.style-outline:focus-within::after { display: none; }
+
+/* --- 终端复古：经典黑客终端 --- */
+.search-box.style-terminal {
+  background: #080808;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  box-shadow:
+    0 0 0 1px #0f0f0f,
+    0 0 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.search-box.style-terminal .search-input {
+  color: #33ff33;
+  font-family: "Courier New", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 14px;
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.3);
+}
+.search-box.style-terminal .search-input::placeholder {
+  color: #0f5510;
+  font-family: "Courier New", "Source Code Pro", Menlo, Consolas, monospace;
+  text-shadow: none;
+}
+.search-box.style-terminal .track-toggle-btn,
+.search-box.style-terminal .search-btn { color: #33ff33; text-shadow: 0 0 4px rgba(51, 255, 51, 0.3); }
+.search-box.style-terminal .track-toggle-btn:hover,
+.search-box.style-terminal .search-btn:hover { background: #0f220f; color: #66ff66; }
+.search-box.style-terminal .track-divider { background: #1a1a1a; }
+.search-box.style-terminal .source-icon { box-shadow: 0 0 0 1px #1a1a1a; }
+
+.search-box.style-terminal::before {
+  content: '>';
+  color: #33ff33;
+  font-family: "Courier New", monospace;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 6px;
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.4);
+  animation: cursorBlink 1s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.search-box.style-terminal:focus-within {
+  border-color: #33ff33;
+  box-shadow:
+    0 0 0 1px #0f0f0f,
+    0 0 36px rgba(51, 255, 51, 0.12),
+    inset 0 0 30px rgba(0, 0, 0, 0.3);
+  animation: none;
+}
+.search-box.style-terminal:focus-within::after { display: none; }
+
+/* --- 虚线圈：点线边框 + 通透 --- */
+.search-box.style-dotted {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 2px dashed rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .search-box.style-dotted {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.search-box.style-dotted:focus-within {
+  border-style: solid;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 6px rgba(74, 106, 158, 0.06);
+  animation: none;
+}
+
+[data-theme="dark"] .search-box.style-dotted:focus-within {
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.03);
+}
+
+.search-box.style-dotted:focus-within::after { display: none; }
+
+/* --- 极光渐变：粉紫蓝梦幻渐变 --- */
+.search-box.style-aurora {
+  border: none;
+  border-radius: 26px;
+  background: linear-gradient(135deg,
+    rgba(236, 72, 153, 0.12) 0%,
+    rgba(139, 92, 246, 0.14) 40%,
+    rgba(59, 130, 246, 0.12) 100%);
+  box-shadow:
+    0 2px 16px rgba(139, 92, 246, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .search-box.style-aurora {
+  background: linear-gradient(135deg,
+    rgba(236, 72, 153, 0.16) 0%,
+    rgba(139, 92, 246, 0.18) 40%,
+    rgba(59, 130, 246, 0.16) 100%);
+  box-shadow:
+    0 2px 20px rgba(139, 92, 246, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.search-box.style-aurora:focus-within {
+  background: linear-gradient(135deg,
+    rgba(236, 72, 153, 0.18) 0%,
+    rgba(139, 92, 246, 0.2) 40%,
+    rgba(59, 130, 246, 0.18) 100%);
+  box-shadow:
+    0 4px 24px rgba(139, 92, 246, 0.18),
+    0 0 0 4px rgba(139, 92, 246, 0.06);
+  animation: none;
+}
+
+.search-box.style-aurora:focus-within::after { display: none; }
+
+/* ============ 下拉面板 & 移动端底部弹出 风格适配 ============ */
+
+/* --- 深色浮空 --- */
+.search-box.style-dark .source-dropdown {
+  background: rgba(24, 24, 46, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.search-box.style-dark .source-item {
+  color: #c8c8e0;
+}
+
+.search-box.style-dark .source-item:hover,
+.search-box.style-dark .source-item.active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.search-box.style-dark .source-item .source-name {
+  color: #c8c8e0;
+}
+
+/* --- 霓虹发光 --- */
+.search-box.style-neon .source-dropdown {
+  background: rgba(16, 14, 36, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 0 24px rgba(138, 43, 226, 0.15), 0 8px 36px rgba(0, 0, 0, 0.5);
+}
+
+.search-box.style-neon .source-item {
+  color: #c4c4e8;
+}
+
+.search-box.style-neon .source-item:hover,
+.search-box.style-neon .source-item.active {
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.search-box.style-neon .source-item .source-name {
+  color: #c4c4e8;
+}
+
+/* --- 终端复古 --- */
+.search-box.style-terminal .source-dropdown {
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.8), 0 0 8px rgba(51, 255, 51, 0.06);
+}
+
+.search-box.style-terminal .source-item {
+  color: #2ecc2e;
+  font-family: "Courier New", "Source Code Pro", Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.search-box.style-terminal .source-item::before {
+  display: none;
+}
+
+.search-box.style-terminal .source-item:hover,
+.search-box.style-terminal .source-item.active {
+  background: #142814;
+}
+
+.search-box.style-terminal .source-item .source-name {
+  color: #2ecc2e;
+  font-family: "Courier New", "Source Code Pro", Menlo, Consolas, monospace;
+}
+
+/* --- 毛玻璃 --- */
+.search-box.style-glass .source-dropdown {
+  background: rgba(245, 245, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .search-box.style-glass .source-dropdown {
+  background: rgba(22, 24, 48, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
+.search-box.style-glass .source-item {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-glass .source-item {
+  color: #c8c8e0;
+}
+
+.search-box.style-glass .source-item:hover,
+.search-box.style-glass .source-item.active {
+  background: rgba(13, 110, 253, 0.08);
+}
+
+[data-theme="dark"] .search-box.style-glass .source-item:hover,
+[data-theme="dark"] .search-box.style-glass .source-item.active {
+  background: rgba(74, 158, 255, 0.12);
+}
+
+.search-box.style-glass .source-item .source-name {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-glass .source-item .source-name {
+  color: #c8c8e0;
+}
+
+/* --- 细线框 --- */
+.search-box.style-outline .source-dropdown {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--color-border);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .search-box.style-outline .source-dropdown {
+  background: rgba(22, 22, 44, 0.65);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.search-box.style-outline .source-item {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-outline .source-item {
+  color: #c0c0d8;
+}
+
+.search-box.style-outline .source-item:hover,
+.search-box.style-outline .source-item.active {
+  background: rgba(13, 110, 253, 0.06);
+}
+
+[data-theme="dark"] .search-box.style-outline .source-item:hover,
+[data-theme="dark"] .search-box.style-outline .source-item.active {
+  background: rgba(74, 158, 255, 0.1);
+}
+
+.search-box.style-outline .source-item .source-name {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-outline .source-item .source-name {
+  color: #c0c0d8;
+}
+
+/* --- 虚线圈 --- */
+.search-box.style-dotted .source-dropdown {
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px dashed var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .search-box.style-dotted .source-dropdown {
+  background: rgba(20, 20, 42, 0.58);
+  border: 2px dashed rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.search-box.style-dotted .source-item {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-dotted .source-item {
+  color: #c0c0d8;
+}
+
+.search-box.style-dotted .source-item:hover,
+.search-box.style-dotted .source-item.active {
+  background: rgba(13, 110, 253, 0.06);
+}
+
+[data-theme="dark"] .search-box.style-dotted .source-item:hover,
+[data-theme="dark"] .search-box.style-dotted .source-item.active {
+  background: rgba(74, 158, 255, 0.1);
+}
+
+.search-box.style-dotted .source-item .source-name {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-dotted .source-item .source-name {
+  color: #c0c0d8;
+}
+
+/* --- 极光渐变 --- */
+.search-box.style-aurora .source-dropdown {
+  background: linear-gradient(180deg, rgba(250, 242, 255, 0.7), rgba(240, 242, 255, 0.7));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  box-shadow: 0 6px 28px rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="dark"] .search-box.style-aurora .source-dropdown {
+  background: linear-gradient(180deg, rgba(35, 28, 60, 0.7), rgba(25, 28, 55, 0.7));
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 6px 28px rgba(139, 92, 246, 0.08);
+}
+
+.search-box.style-aurora .source-item {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-aurora .source-item {
+  color: #c8c0e8;
+}
+
+.search-box.style-aurora .source-item:hover,
+.search-box.style-aurora .source-item.active {
+  background: rgba(139, 92, 246, 0.08);
+}
+
+[data-theme="dark"] .search-box.style-aurora .source-item:hover,
+[data-theme="dark"] .search-box.style-aurora .source-item.active {
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.search-box.style-aurora .source-item .source-name {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .search-box.style-aurora .source-item .source-name {
+  color: #c8c0e8;
+}
+
+/* ============ 移动端底部弹出 风格适配 ============ */
+
+.mobile-source-sheet.style-glass {
+  background: rgba(245, 245, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .mobile-source-sheet.style-glass {
+  background: rgba(22, 24, 48, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mobile-source-sheet.style-outline {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1.5px solid var(--color-border);
+}
+
+[data-theme="dark"] .mobile-source-sheet.style-outline {
+  background: rgba(22, 22, 44, 0.65);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-source-sheet.style-dotted {
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 2px dashed var(--color-border);
+}
+
+[data-theme="dark"] .mobile-source-sheet.style-dotted {
+  background: rgba(20, 20, 42, 0.58);
+  border-top: 2px dashed rgba(255, 255, 255, 0.1);
+}
+
+.mobile-source-sheet.style-aurora {
+  background: linear-gradient(180deg, rgba(250, 242, 255, 0.7), rgba(240, 242, 255, 0.7));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+[data-theme="dark"] .mobile-source-sheet.style-aurora {
+  background: linear-gradient(180deg, rgba(35, 28, 60, 0.7), rgba(25, 28, 55, 0.7));
+}
+
+.mobile-source-sheet.style-dark {
+  background: rgba(24, 24, 46, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #c8c8e0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mobile-source-sheet.style-neon {
+  background: rgba(16, 14, 36, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #c4c4e8;
+  border-top: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.mobile-source-sheet.style-terminal {
+  background: #0a0a0a;
+  color: #2ecc2e;
+  font-family: "Courier New", monospace;
+  border-top: 1px solid #2a2a2a;
+}

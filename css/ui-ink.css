@@ -1,0 +1,197 @@
+/* ============ 水墨 UI 风格 ============ */
+[data-ui-style="ink"] html { background: #f5f0ea; }
+
+[data-ui-style="ink"] .settings-trigger,
+[data-ui-style="ink"] .bookmarks-trigger {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 50%;
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.04),
+    0 3px 12px rgba(0,0,0,0.03);
+  color: #555;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+[data-ui-style="ink"] .settings-trigger:hover,
+[data-ui-style="ink"] .bookmarks-trigger:hover {
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.06),
+    0 8px 24px rgba(0,0,0,0.05);
+  color: #333;
+  transform: scale(1.06);
+}
+[data-theme="dark"][data-ui-style="ink"] html { background: #1a1a18; }
+[data-theme="dark"][data-ui-style="ink"] .settings-trigger,
+[data-theme="dark"][data-ui-style="ink"] .bookmarks-trigger {
+  background: #2a2a28;
+  border-color: rgba(255,255,255,0.05);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 3px 12px rgba(0,0,0,0.15);
+  color: #aaa;
+}
+[data-theme="dark"][data-ui-style="ink"] .settings-trigger:hover,
+[data-theme="dark"][data-ui-style="ink"] .bookmarks-trigger:hover { color: #ddd; }
+
+[data-ui-style="ink"] .toggle-btn {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 50px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  color: #888;
+  font-weight: 300;
+  transition: all 0.4s;
+}
+[data-ui-style="ink"] .toggle-btn:hover { color: #555; }
+[data-theme="dark"][data-ui-style="ink"] .toggle-btn { background: #2a2a28; border-color: rgba(255,255,255,0.04); color: #777; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+
+[data-ui-style="ink"] .settings-panel,
+[data-ui-style="ink"] .bookmarks-panel {
+  background: rgba(255,255,255,0.95);
+  border-left: 1px solid rgba(0,0,0,0.04);
+  box-shadow: -2px 0 16px rgba(0,0,0,0.04);
+}
+[data-theme="dark"][data-ui-style="ink"] .settings-panel,
+[data-theme="dark"][data-ui-style="ink"] .bookmarks-panel { background: #1e1e1c; border-left-color: rgba(255,255,255,0.04); box-shadow: -2px 0 16px rgba(0,0,0,0.25); }
+
+[data-ui-style="ink"] .settings-header,
+[data-ui-style="ink"] .bookmarks-header { border-bottom: 1px solid rgba(0,0,0,0.04); }
+[data-theme="dark"][data-ui-style="ink"] .settings-header,
+[data-theme="dark"][data-ui-style="ink"] .bookmarks-header { border-bottom-color: rgba(255,255,255,0.04); }
+
+[data-ui-style="ink"] .settings-tabs { border-bottom: 1px solid rgba(0,0,0,0.04); }
+[data-theme="dark"][data-ui-style="ink"] .settings-tabs { border-bottom-color: rgba(255,255,255,0.04); }
+[data-ui-style="ink"] .tab-btn { font-weight: 300; transition: all 0.4s; }
+[data-ui-style="ink"] .tab-btn.active { border-bottom: 1px solid #888; color: #333; }
+[data-ui-style="ink"] .tab-btn:hover { color: #555; }
+[data-theme="dark"][data-ui-style="ink"] .tab-btn.active { border-bottom-color: #999; color: #ddd; }
+[data-theme="dark"][data-ui-style="ink"] .tab-btn:hover { color: #bbb; }
+
+[data-ui-style="ink"] .btn-small,
+[data-ui-style="ink"] .btn-add-source,
+[data-ui-style="ink"] .btn-add-category,
+[data-ui-style="ink"] .btn-add-bookmark,
+[data-ui-style="ink"] .btn-icon,
+[data-ui-style="ink"] .bookmark-btn-icon {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 8px;
+  color: #888;
+  font-weight: 300;
+  transition: all 0.5s ease;
+}
+[data-ui-style="ink"] .btn-small:hover,
+[data-ui-style="ink"] .btn-add-source:hover,
+[data-ui-style="ink"] .btn-add-category:hover,
+[data-ui-style="ink"] .btn-add-bookmark:hover,
+[data-ui-style="ink"] .btn-icon:hover,
+[data-ui-style="ink"] .bookmark-btn-icon:hover { border-color: rgba(0,0,0,0.15); color: #555; }
+[data-theme="dark"][data-ui-style="ink"] .btn-small,
+[data-theme="dark"][data-ui-style="ink"] .btn-add-source,
+[data-theme="dark"][data-ui-style="ink"] .btn-add-category,
+[data-theme="dark"][data-ui-style="ink"] .btn-add-bookmark,
+[data-theme="dark"][data-ui-style="ink"] .btn-icon,
+[data-theme="dark"][data-ui-style="ink"] .bookmark-btn-icon { border-color: rgba(255,255,255,0.06); color: #777; }
+[data-theme="dark"][data-ui-style="ink"] .btn-small:hover,
+[data-theme="dark"][data-ui-style="ink"] .btn-add-source:hover,
+[data-theme="dark"][data-ui-style="ink"] .btn-add-category:hover,
+[data-theme="dark"][data-ui-style="ink"] .btn-add-bookmark:hover,
+[data-theme="dark"][data-ui-style="ink"] .btn-icon:hover,
+[data-theme="dark"][data-ui-style="ink"] .bookmark-btn-icon:hover { border-color: rgba(255,255,255,0.15); color: #bbb; }
+
+[data-ui-style="ink"] .suggest-item {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 10px;
+  transition: all 0.5s ease;
+}
+[data-ui-style="ink"] .suggest-item:hover { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.08); }
+[data-ui-style="ink"] .suggest-item.active { border-color: #999; background: rgba(0,0,0,0.03); }
+[data-theme="dark"][data-ui-style="ink"] .suggest-item { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.03); }
+[data-theme="dark"][data-ui-style="ink"] .suggest-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"][data-ui-style="ink"] .suggest-item.active { border-color: #999; background: rgba(255,255,255,0.05); }
+
+[data-ui-style="ink"] .source-form input,
+[data-ui-style="ink"] .source-form select,
+[data-ui-style="ink"] .sync-input,
+[data-ui-style="ink"] .bookmarks-search-input,
+[data-ui-style="ink"] .bookmark-form input,
+[data-ui-style="ink"] .bookmark-form select,
+[data-ui-style="ink"] .form-field input,
+[data-ui-style="ink"] .form-field select,
+[data-ui-style="ink"] .setting-section select,
+[data-ui-style="ink"] .setting-section input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  border-radius: 0;
+  color: #555;
+  transition: border-color 0.5s;
+}
+[data-ui-style="ink"] .source-form input:focus,
+[data-ui-style="ink"] .source-form select:focus,
+[data-ui-style="ink"] .sync-input:focus,
+[data-ui-style="ink"] .bookmarks-search-input:focus,
+[data-ui-style="ink"] .bookmark-form input:focus,
+[data-ui-style="ink"] .bookmark-form select:focus,
+[data-ui-style="ink"] .form-field input:focus,
+[data-ui-style="ink"] .form-field select:focus,
+[data-ui-style="ink"] .setting-section select:focus,
+[data-ui-style="ink"] .setting-section input:focus { border-bottom-color: #666; outline: none; }
+[data-theme="dark"][data-ui-style="ink"] .source-form input,
+[data-theme="dark"][data-ui-style="ink"] .source-form select,
+[data-theme="dark"][data-ui-style="ink"] .sync-input,
+[data-theme="dark"][data-ui-style="ink"] .bookmarks-search-input,
+[data-theme="dark"][data-ui-style="ink"] .bookmark-form input,
+[data-theme="dark"][data-ui-style="ink"] .bookmark-form select,
+[data-theme="dark"][data-ui-style="ink"] .form-field input,
+[data-theme="dark"][data-ui-style="ink"] .form-field select,
+[data-theme="dark"][data-ui-style="ink"] .setting-section select,
+[data-theme="dark"][data-ui-style="ink"] .setting-section input { border-bottom-color: rgba(255,255,255,0.08); color: #aaa; }
+[data-theme="dark"][data-ui-style="ink"] .source-form input:focus,
+[data-theme="dark"][data-ui-style="ink"] .source-form select:focus,
+[data-theme="dark"][data-ui-style="ink"] .sync-input:focus,
+[data-theme="dark"][data-ui-style="ink"] .bookmarks-search-input:focus,
+[data-theme="dark"][data-ui-style="ink"] .bookmark-form input:focus,
+[data-theme="dark"][data-ui-style="ink"] .bookmark-form select:focus,
+[data-theme="dark"][data-ui-style="ink"] .form-field input:focus,
+[data-theme="dark"][data-ui-style="ink"] .form-field select:focus,
+[data-theme="dark"][data-ui-style="ink"] .setting-section select:focus,
+[data-theme="dark"][data-ui-style="ink"] .setting-section input:focus { border-bottom-color: #999; }
+
+[data-ui-style="ink"] .sync-section { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.04); border-radius: 10px; }
+[data-theme="dark"][data-ui-style="ink"] .sync-section { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.03); }
+
+[data-ui-style="ink"] .bookmark-list { background: transparent; }
+[data-theme="dark"][data-ui-style="ink"] .bookmark-list { background: transparent; }
+
+[data-ui-style="ink"] .checkbox-label { border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; }
+[data-theme="dark"][data-ui-style="ink"] .checkbox-label { border-color: rgba(255,255,255,0.06); }
+
+[data-ui-style="ink"] .current-badge { background: rgba(0,0,0,0.05); color: #666; }
+[data-theme="dark"][data-ui-style="ink"] .current-badge { background: rgba(255,255,255,0.06); color: #aaa; }
+
+[data-ui-style="ink"] .engine-item,
+[data-ui-style="ink"] .bookmark-item { border-bottom: 1px solid rgba(0,0,0,0.03); }
+[data-theme="dark"][data-ui-style="ink"] .engine-item,
+[data-theme="dark"][data-ui-style="ink"] .bookmark-item { border-bottom-color: rgba(255,255,255,0.03); }
+
+[data-ui-style="ink"] .category-item { border: 1px solid rgba(0,0,0,0.04); border-radius: 10px; }
+[data-theme="dark"][data-ui-style="ink"] .category-item { border-color: rgba(255,255,255,0.03); }
+
+[data-ui-style="ink"] .section-toggle-header { border-bottom: 1px solid rgba(0,0,0,0.04); }
+[data-theme="dark"][data-ui-style="ink"] .section-toggle-header { border-bottom-color: rgba(255,255,255,0.04); }
+
+[data-ui-style="ink"] .form-actions .btn-cancel { border-color: rgba(0,0,0,0.06); color: #888; }
+[data-ui-style="ink"] .form-actions .btn-save { border-color: #888; background: transparent; color: #555; }
+[data-theme="dark"][data-ui-style="ink"] .form-actions .btn-cancel { border-color: rgba(255,255,255,0.06); color: #777; }
+[data-theme="dark"][data-ui-style="ink"] .form-actions .btn-save { border-color: #999; color: #bbb; }
+
+[data-ui-style="ink"] .close-btn { color: #aaa; }
+[data-ui-style="ink"] .close-btn:hover { color: #555; }
+[data-theme="dark"][data-ui-style="ink"] .close-btn { color: #666; }
+[data-theme="dark"][data-ui-style="ink"] .close-btn:hover { color: #ccc; }
+
+[data-ui-style="ink"] .engine-search-input { border: none; border-bottom: 1px solid rgba(0,0,0,0.08); border-radius: 0; background: transparent; color: #555; }
+[data-theme="dark"][data-ui-style="ink"] .engine-search-input { border-bottom-color: rgba(255,255,255,0.08); color: #aaa; }
+
+[data-ui-style="ink"] .drag-over { background: rgba(0,0,0,0.02); }
+[data-theme="dark"][data-ui-style="ink"] .drag-over { background: rgba(255,255,255,0.02); }

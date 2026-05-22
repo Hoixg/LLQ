@@ -1,0 +1,209 @@
+/* ============ 极简线框 UI 风格 ============ */
+
+/* --- 按钮 --- */
+[data-ui-style="line"] .settings-trigger,
+[data-ui-style="line"] .bookmarks-trigger {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+[data-ui-style="line"] .settings-trigger:hover,
+[data-ui-style="line"] .bookmarks-trigger:hover {
+  border-color: var(--color-text-secondary);
+  transform: scale(1.05);
+}
+[data-ui-style="line"] .settings-trigger:active,
+[data-ui-style="line"] .bookmarks-trigger:active {
+  background: var(--color-border);
+  transform: scale(0.95);
+}
+
+/* --- 展开/收起按钮 --- */
+[data-ui-style="line"] .toggle-btn {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  transition: all 0.2s;
+}
+[data-ui-style="line"] .toggle-btn:hover {
+  border-color: var(--color-text-secondary);
+}
+
+/* --- 面板 --- */
+[data-ui-style="line"] .settings-panel,
+[data-ui-style="line"] .bookmarks-panel {
+  background: var(--color-bg-elevated);
+  border-left: 1px solid var(--color-border);
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* --- 面板头部 --- */
+[data-ui-style="line"] .settings-header,
+[data-ui-style="line"] .bookmarks-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--spacing-md);
+}
+
+/* --- Tab 按钮 --- */
+[data-ui-style="line"] .settings-tabs {
+  border-bottom: 1px solid var(--color-border);
+}
+[data-ui-style="line"] .tab-btn {
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+}
+[data-ui-style="line"] .tab-btn:hover {
+  background: var(--color-border);
+}
+[data-ui-style="line"] .tab-btn.active {
+  border-bottom: 1px solid var(--color-primary);
+}
+
+/* --- 小按钮 --- */
+[data-ui-style="line"] .btn-small,
+[data-ui-style="line"] .btn-add-source,
+[data-ui-style="line"] .btn-add-category,
+[data-ui-style="line"] .btn-add-bookmark,
+[data-ui-style="line"] .btn-icon,
+[data-ui-style="line"] .bookmark-btn-icon {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  transition: all 0.15s;
+}
+[data-ui-style="line"] .btn-small:hover,
+[data-ui-style="line"] .btn-add-source:hover,
+[data-ui-style="line"] .btn-add-category:hover,
+[data-ui-style="line"] .btn-add-bookmark:hover,
+[data-ui-style="line"] .btn-icon:hover,
+[data-ui-style="line"] .bookmark-btn-icon:hover {
+  border-color: var(--color-text-secondary);
+  background: var(--color-bg);
+}
+
+/* --- 建议列表项 --- */
+[data-ui-style="line"] .suggest-item {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+[data-ui-style="line"] .suggest-item:hover {
+  border-color: var(--color-text-secondary);
+  background: var(--color-bg);
+}
+[data-ui-style="line"] .suggest-item.active {
+  border-color: var(--color-primary);
+  background: var(--color-bg-elevated);
+}
+
+/* --- 收藏夹分类 --- */
+[data-ui-style="line"] .category-item {
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  margin-bottom: var(--spacing-sm);
+  overflow: hidden;
+}
+
+/* --- 列表分割线 --- */
+[data-ui-style="line"] .engine-item,
+[data-ui-style="line"] .bookmark-item,
+[data-ui-style="line"] .search-result-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+[data-ui-style="line"] .section-toggle-header {
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* --- 表单输入框 --- */
+[data-ui-style="line"] .source-form input,
+[data-ui-style="line"] .source-form select,
+[data-ui-style="line"] .sync-input,
+[data-ui-style="line"] .bookmarks-search-input,
+[data-ui-style="line"] .bookmark-form input,
+[data-ui-style="line"] .bookmark-form select,
+[data-ui-style="line"] .form-field input,
+[data-ui-style="line"] .form-field select {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  color: var(--color-text);
+  transition: border-color 0.15s;
+}
+[data-ui-style="line"] .source-form input:focus,
+[data-ui-style="line"] .source-form select:focus,
+[data-ui-style="line"] .sync-input:focus,
+[data-ui-style="line"] .bookmarks-search-input:focus,
+[data-ui-style="line"] .bookmark-form input:focus,
+[data-ui-style="line"] .bookmark-form select:focus,
+[data-ui-style="line"] .form-field input:focus,
+[data-ui-style="line"] .form-field select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* --- 同步区块 --- */
+[data-ui-style="line"] .sync-section {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+}
+
+/* --- checkbox label --- */
+[data-ui-style="line"] .checkbox-label {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+[data-ui-style="line"] .checkbox-label:hover {
+  border-color: var(--color-text-secondary);
+  background: var(--color-bg);
+}
+
+/* --- 表单按钮 --- */
+[data-ui-style="line"] .form-actions .btn-cancel {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+[data-ui-style="line"] .form-actions .btn-cancel:hover {
+  border-color: var(--color-text-secondary);
+  background: var(--color-bg);
+}
+[data-ui-style="line"] .form-actions .btn-save {
+  border: 1px solid var(--color-primary);
+  border-radius: 2px;
+}
+
+/* --- 面板内 select / input --- */
+[data-ui-style="line"] .setting-section select,
+[data-ui-style="line"] .setting-section input {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  color: var(--color-text);
+  padding: 5px 10px;
+  transition: border-color 0.15s;
+}
+[data-ui-style="line"] .setting-section select:focus,
+[data-ui-style="line"] .setting-section input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* --- 去掉所有圆角，统一锐利 --- */
+[data-ui-style="line"] .btn-add-source,
+[data-ui-style="line"] .checkbox-label,
+[data-ui-style="line"] .current-badge {
+  border-radius: 2px;
+}

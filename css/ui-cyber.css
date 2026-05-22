@@ -1,0 +1,241 @@
+/* ============ 赛博 UI 风格 ============ */
+[data-ui-style="cyber"] html {
+  background: linear-gradient(135deg, #0a0a0f 0%, #0d1117 50%, #0a0a0f 100%);
+}
+
+[data-ui-style="cyber"] .settings-trigger,
+[data-ui-style="cyber"] .bookmarks-trigger {
+  background: #0d1117;
+  border: 1px solid #0ff;
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(0,255,255,0.3), inset 0 0 4px rgba(0,255,255,0.1);
+  color: #0ff;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition: all 0.2s;
+}
+[data-ui-style="cyber"] .settings-trigger:hover,
+[data-ui-style="cyber"] .bookmarks-trigger:hover {
+  background: #1a1a2e;
+  box-shadow: 0 0 16px rgba(0,255,255,0.5), inset 0 0 8px rgba(0,255,255,0.15);
+  transform: scale(1.08);
+}
+[data-theme="dark"][data-ui-style="cyber"] .settings-trigger,
+[data-theme="dark"][data-ui-style="cyber"] .bookmarks-trigger {
+  background: #0d1117;
+  border-color: #f0f;
+  box-shadow: 0 0 8px rgba(255,0,255,0.3), inset 0 0 4px rgba(255,0,255,0.1);
+  color: #f0f;
+}
+[data-theme="dark"][data-ui-style="cyber"] .settings-trigger:hover,
+[data-theme="dark"][data-ui-style="cyber"] .bookmarks-trigger:hover {
+  box-shadow: 0 0 20px rgba(255,0,255,0.5), inset 0 0 8px rgba(255,0,255,0.15);
+}
+
+[data-ui-style="cyber"] .toggle-btn {
+  background: #0d1117;
+  border: 1px solid #0ff;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(0,255,255,0.2);
+  color: #0ff;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+[data-ui-style="cyber"] .toggle-btn:hover {
+  box-shadow: 0 0 12px rgba(0,255,255,0.4);
+  background: #1a1a2e;
+}
+[data-theme="dark"][data-ui-style="cyber"] .toggle-btn { border-color: #f0f; color: #f0f; box-shadow: 0 0 6px rgba(255,0,255,0.2); }
+[data-theme="dark"][data-ui-style="cyber"] .toggle-btn:hover { box-shadow: 0 0 14px rgba(255,0,255,0.4); }
+
+[data-ui-style="cyber"] .settings-panel,
+[data-ui-style="cyber"] .bookmarks-panel {
+  background: #0d1117;
+  border-left: 1px solid #0ff;
+  box-shadow: -4px 0 20px rgba(0,255,255,0.15);
+}
+[data-theme="dark"][data-ui-style="cyber"] .settings-panel,
+[data-theme="dark"][data-ui-style="cyber"] .bookmarks-panel {
+  border-color: #f0f;
+  box-shadow: -4px 0 20px rgba(255,0,255,0.12);
+}
+
+[data-ui-style="cyber"] .settings-header,
+[data-ui-style="cyber"] .bookmarks-header {
+  border-bottom: 1px solid rgba(0,255,255,0.3);
+  background: rgba(0,255,255,0.03);
+}
+[data-theme="dark"][data-ui-style="cyber"] .settings-header,
+[data-theme="dark"][data-ui-style="cyber"] .bookmarks-header { border-bottom-color: rgba(255,0,255,0.3); background: rgba(255,0,255,0.03); }
+
+[data-ui-style="cyber"] .settings-tabs { border-bottom: 1px solid rgba(0,255,255,0.2); }
+[data-theme="dark"][data-ui-style="cyber"] .settings-tabs { border-bottom-color: rgba(255,0,255,0.2); }
+[data-ui-style="cyber"] .tab-btn.active {
+  background: rgba(0,255,255,0.08);
+  border-bottom: 2px solid #0ff;
+  color: #0ff;
+}
+[data-ui-style="cyber"] .tab-btn:hover { background: rgba(0,255,255,0.04); }
+[data-theme="dark"][data-ui-style="cyber"] .tab-btn.active { border-bottom-color: #f0f; color: #f0f; background: rgba(255,0,255,0.08); }
+[data-theme="dark"][data-ui-style="cyber"] .tab-btn:hover { background: rgba(255,0,255,0.04); }
+
+[data-ui-style="cyber"] .btn-small,
+[data-ui-style="cyber"] .btn-add-source,
+[data-ui-style="cyber"] .btn-add-category,
+[data-ui-style="cyber"] .btn-add-bookmark,
+[data-ui-style="cyber"] .btn-icon,
+[data-ui-style="cyber"] .bookmark-btn-icon {
+  background: transparent;
+  border: 1px solid rgba(0,255,255,0.4);
+  border-radius: 2px;
+  color: #0ff;
+  transition: all 0.15s;
+}
+[data-ui-style="cyber"] .btn-small:hover,
+[data-ui-style="cyber"] .btn-add-source:hover,
+[data-ui-style="cyber"] .btn-add-category:hover,
+[data-ui-style="cyber"] .btn-add-bookmark:hover,
+[data-ui-style="cyber"] .btn-icon:hover,
+[data-ui-style="cyber"] .bookmark-btn-icon:hover {
+  background: rgba(0,255,255,0.1);
+  box-shadow: 0 0 10px rgba(0,255,255,0.25);
+}
+[data-theme="dark"][data-ui-style="cyber"] .btn-small,
+[data-theme="dark"][data-ui-style="cyber"] .btn-add-source,
+[data-theme="dark"][data-ui-style="cyber"] .btn-add-category,
+[data-theme="dark"][data-ui-style="cyber"] .btn-add-bookmark,
+[data-theme="dark"][data-ui-style="cyber"] .btn-icon,
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-btn-icon { border-color: rgba(255,0,255,0.4); color: #f0f; }
+[data-theme="dark"][data-ui-style="cyber"] .btn-small:hover,
+[data-theme="dark"][data-ui-style="cyber"] .btn-add-source:hover,
+[data-theme="dark"][data-ui-style="cyber"] .btn-add-category:hover,
+[data-theme="dark"][data-ui-style="cyber"] .btn-add-bookmark:hover,
+[data-theme="dark"][data-ui-style="cyber"] .btn-icon:hover,
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-btn-icon:hover { background: rgba(255,0,255,0.1); box-shadow: 0 0 10px rgba(255,0,255,0.25); }
+
+[data-ui-style="cyber"] .suggest-item {
+  background: rgba(0,255,255,0.02);
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 2px;
+}
+[data-ui-style="cyber"] .suggest-item:hover { border-color: #0ff; background: rgba(0,255,255,0.06); }
+[data-ui-style="cyber"] .suggest-item.active { border-color: #0ff; box-shadow: 0 0 12px rgba(0,255,255,0.2); }
+[data-theme="dark"][data-ui-style="cyber"] .suggest-item { border-color: rgba(255,0,255,0.15); background: rgba(255,0,255,0.02); }
+[data-theme="dark"][data-ui-style="cyber"] .suggest-item:hover { border-color: #f0f; background: rgba(255,0,255,0.06); }
+[data-theme="dark"][data-ui-style="cyber"] .suggest-item.active { border-color: #f0f; box-shadow: 0 0 12px rgba(255,0,255,0.2); }
+
+[data-ui-style="cyber"] .source-form input,
+[data-ui-style="cyber"] .source-form select,
+[data-ui-style="cyber"] .sync-input,
+[data-ui-style="cyber"] .bookmarks-search-input,
+[data-ui-style="cyber"] .bookmark-form input,
+[data-ui-style="cyber"] .bookmark-form select,
+[data-ui-style="cyber"] .form-field input,
+[data-ui-style="cyber"] .form-field select,
+[data-ui-style="cyber"] .setting-section select,
+[data-ui-style="cyber"] .setting-section input {
+  background: #0a0a0f;
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 2px;
+  color: #0ff;
+}
+[data-ui-style="cyber"] .source-form input:focus,
+[data-ui-style="cyber"] .source-form select:focus,
+[data-ui-style="cyber"] .sync-input:focus,
+[data-ui-style="cyber"] .bookmarks-search-input:focus,
+[data-ui-style="cyber"] .bookmark-form input:focus,
+[data-ui-style="cyber"] .bookmark-form select:focus,
+[data-ui-style="cyber"] .form-field input:focus,
+[data-ui-style="cyber"] .form-field select:focus,
+[data-ui-style="cyber"] .setting-section select:focus,
+[data-ui-style="cyber"] .setting-section input:focus {
+  border-color: #0ff;
+  box-shadow: 0 0 8px rgba(0,255,255,0.25);
+  outline: none;
+}
+[data-theme="dark"][data-ui-style="cyber"] .source-form input,
+[data-theme="dark"][data-ui-style="cyber"] .source-form select,
+[data-theme="dark"][data-ui-style="cyber"] .sync-input,
+[data-theme="dark"][data-ui-style="cyber"] .bookmarks-search-input,
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-form input,
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-form select,
+[data-theme="dark"][data-ui-style="cyber"] .form-field input,
+[data-theme="dark"][data-ui-style="cyber"] .form-field select,
+[data-theme="dark"][data-ui-style="cyber"] .setting-section select,
+[data-theme="dark"][data-ui-style="cyber"] .setting-section input { border-color: rgba(255,0,255,0.3); color: #f0f; }
+[data-theme="dark"][data-ui-style="cyber"] .source-form input:focus,
+[data-theme="dark"][data-ui-style="cyber"] .source-form select:focus,
+[data-theme="dark"][data-ui-style="cyber"] .sync-input:focus,
+[data-theme="dark"][data-ui-style="cyber"] .bookmarks-search-input:focus,
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-form input:focus,
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-form select:focus,
+[data-theme="dark"][data-ui-style="cyber"] .form-field input:focus,
+[data-theme="dark"][data-ui-style="cyber"] .form-field select:focus,
+[data-theme="dark"][data-ui-style="cyber"] .setting-section select:focus,
+[data-theme="dark"][data-ui-style="cyber"] .setting-section input:focus { border-color: #f0f; box-shadow: 0 0 8px rgba(255,0,255,0.25); }
+
+[data-ui-style="cyber"] .sync-section {
+  background: rgba(0,255,255,0.02);
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 2px;
+}
+[data-theme="dark"][data-ui-style="cyber"] .sync-section { border-color: rgba(255,0,255,0.15); }
+
+[data-ui-style="cyber"] .bookmark-list { background: rgba(0,255,255,0.02); }
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-list { background: rgba(255,0,255,0.02); }
+
+[data-ui-style="cyber"] .checkbox-label {
+  border: 1px solid rgba(0,255,255,0.2);
+  border-radius: 2px;
+}
+[data-ui-style="cyber"] .checkbox-label:hover { border-color: #0ff; }
+[data-theme="dark"][data-ui-style="cyber"] .checkbox-label { border-color: rgba(255,0,255,0.2); }
+[data-theme="dark"][data-ui-style="cyber"] .checkbox-label:hover { border-color: #f0f; }
+
+[data-ui-style="cyber"] .current-badge {
+  background: rgba(0,255,255,0.12);
+  border: 1px solid #0ff;
+  color: #0ff;
+}
+[data-theme="dark"][data-ui-style="cyber"] .current-badge { background: rgba(255,0,255,0.12); border-color: #f0f; color: #f0f; }
+
+[data-ui-style="cyber"] .engine-item,
+[data-ui-style="cyber"] .bookmark-item,
+[data-ui-style="cyber"] .search-result-item { border-bottom: 1px solid rgba(0,255,255,0.08); }
+[data-theme="dark"][data-ui-style="cyber"] .engine-item,
+[data-theme="dark"][data-ui-style="cyber"] .bookmark-item,
+[data-theme="dark"][data-ui-style="cyber"] .search-result-item { border-bottom-color: rgba(255,0,255,0.08); }
+
+[data-ui-style="cyber"] .category-item {
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 2px;
+}
+[data-theme="dark"][data-ui-style="cyber"] .category-item { border-color: rgba(255,0,255,0.15); }
+
+[data-ui-style="cyber"] .section-toggle-header { border-bottom: 1px solid rgba(0,255,255,0.1); }
+[data-theme="dark"][data-ui-style="cyber"] .section-toggle-header { border-bottom-color: rgba(255,0,255,0.1); }
+
+[data-ui-style="cyber"] .form-actions .btn-cancel {
+  border-color: rgba(0,255,255,0.3);
+  color: #0ff;
+  background: transparent;
+}
+[data-ui-style="cyber"] .form-actions .btn-cancel:hover { background: rgba(0,255,255,0.08); }
+[data-ui-style="cyber"] .form-actions .btn-save { border-color: #0ff; background: rgba(0,255,255,0.15); color: #0ff; }
+[data-ui-style="cyber"] .form-actions .btn-save:hover { background: rgba(0,255,255,0.25); }
+[data-theme="dark"][data-ui-style="cyber"] .form-actions .btn-cancel { border-color: rgba(255,0,255,0.3); color: #f0f; }
+[data-theme="dark"][data-ui-style="cyber"] .form-actions .btn-save { border-color: #f0f; background: rgba(255,0,255,0.15); color: #f0f; }
+
+[data-ui-style="cyber"] .close-btn { color: rgba(0,255,255,0.6); }
+[data-ui-style="cyber"] .close-btn:hover { color: #0ff; }
+[data-theme="dark"][data-ui-style="cyber"] .close-btn { color: rgba(255,0,255,0.6); }
+[data-theme="dark"][data-ui-style="cyber"] .close-btn:hover { color: #f0f; }
+
+[data-ui-style="cyber"] .engine-search-input {
+  background: #0a0a0f;
+  border: 1px solid rgba(0,255,255,0.25);
+  color: #0ff;
+}
+[data-theme="dark"][data-ui-style="cyber"] .engine-search-input { border-color: rgba(255,0,255,0.25); color: #f0f; }
+
+[data-ui-style="cyber"] .dragging { opacity: 0.5; }
+[data-ui-style="cyber"] .drag-over { background: rgba(0,255,255,0.06); }
+[data-theme="dark"][data-ui-style="cyber"] .drag-over { background: rgba(255,0,255,0.06); }
