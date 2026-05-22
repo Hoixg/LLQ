@@ -29,6 +29,7 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s var(--transition-easing-smooth);
+  will-change: opacity;
 }
 .settings-overlay.open { opacity: 1; pointer-events: auto; }
 .settings-overlay.closing { opacity: 0; transition: opacity 0.15s ease-in; }
@@ -51,6 +52,8 @@
   transform: translate3d(100%, 0, 0);
   opacity: 0;
   pointer-events: none;
+  will-change: transform, opacity;
+  contain: layout style paint;
 }
 .settings-panel.open {
   transition: transform 0.3s var(--transition-easing-smooth), opacity 0.25s var(--transition-easing);

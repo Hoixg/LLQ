@@ -28,9 +28,9 @@
     max-width: 100%;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    contain: layout style;
+    will-change: transform, opacity;
+    contain: layout style paint;
   }
 
   .settings-panel.open {
@@ -44,9 +44,9 @@
      opacity: 0;
    }
 
-  .settings-overlay { transition: opacity 0.08s ease-out; }
-  .settings-overlay.open { transition: opacity 0.08s ease-out; }
-  .settings-overlay.closing { transition: opacity 0.08s ease-in; }
+  .settings-overlay { transition: opacity 0.2s ease-out; }
+  .settings-overlay.open { transition: opacity 0.2s ease-out; }
+  .settings-overlay.closing { transition: opacity 0.12s ease-in; }
 
   .toggle-bar {
     padding-bottom: calc(var(--spacing-md) + var(--safe-inset-bottom));

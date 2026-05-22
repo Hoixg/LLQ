@@ -45,12 +45,19 @@ function openSettings(tab = 'general') {
   overlayEl.classList.remove('closing');
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
-  if (currentTab !== tab || !contentEl.firstChild) {
+  const needsRender = currentTab !== tab || !contentEl.firstChild;
+  if (needsRender) {
     renderContent(tab);
   }
   setActiveTab(tab);
-  panelEl.classList.add('open');
-  overlayEl.classList.add('open');
+  panelEl.style.willChange = 'transform, opacity';
+  overlayEl.style.willChange = 'opacity';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      panelEl.classList.add('open');
+      overlayEl.classList.add('open');
+    });
+  });
 }
 
 function closeSettings() {
@@ -62,6 +69,8 @@ function closeSettings() {
     closeTimer = null;
     panelEl.classList.remove('open', 'closing');
     overlayEl.classList.remove('open', 'closing');
+    panelEl.style.willChange = '';
+    overlayEl.style.willChange = '';
   }, 250);
 }
 
