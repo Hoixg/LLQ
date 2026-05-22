@@ -4,15 +4,38 @@ import { getAllSources as getAllSuggestSources, getCurrentSourceId, setCurrentSo
 import { renderWallpaperTab } from './wallpaper.js';
 import { renderSyncTab } from './sync.js';
 
-let panelEl, overlayEl, isOpen = false, closeTimer = null;
+let panelEl, overlayEl, contentEl, isOpen = false, closeTimer = null;
+let currentTab = 'general';
+const TAB_DEFS = [['general','常规'], ['engines','搜索引擎'], ['wallpaper','壁纸'], ['suggest','搜索建议'], ['sync','同步']];
 
 export function initSettings() {
   panelEl = document.getElementById('settingsPanel');
   overlayEl = document.getElementById('settingsOverlay');
+  buildPanelShell();
   const triggerBtn = document.getElementById('settingsTrigger');
   triggerBtn?.addEventListener('click', () => openSettings());
   overlayEl?.addEventListener('click', closeSettings);
   document.addEventListener('open-settings', (e) => openSettings(e.detail?.tab));
+}
+
+function buildPanelShell() {
+  panelEl.textContent = '';
+  const header = createElement('div', { className: 'settings-header' }, [
+    createElement('div', { className: 'title-group' }, [
+      createElement('h2', { className: 'settings-title' }, '设置'),
+      createElement('span', { className: 'version-info' }, 'v0.72 (动画丝滑)'),
+    ]),
+    createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
+  ]);
+  const tabs = createElement('div', { className: 'settings-tabs' });
+  TAB_DEFS.forEach(([key, label]) => {
+    tabs.appendChild(createElement('button', {
+      className: 'tab-btn',
+      onclick: () => switchTab(key),
+    }, label));
+  });
+  contentEl = createElement('div', { className: 'settings-content' });
+  panelEl.append(header, tabs, contentEl);
 }
 
 function openSettings(tab = 'general') {
@@ -22,13 +45,12 @@ function openSettings(tab = 'general') {
   overlayEl.classList.remove('closing');
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
-  requestAnimationFrame(() => {
-    renderPanel(tab);
-    requestAnimationFrame(() => {
-      panelEl.classList.add('open');
-      overlayEl.classList.add('open');
-    });
-  });
+  setActiveTab(tab);
+  // 立即启动 CSS 动画（compositor-only，0ms JS）
+  panelEl.classList.add('open');
+  overlayEl.classList.add('open');
+  // 内容异步渲染，不阻塞动画
+  requestAnimationFrame(() => renderContent(tab));
 }
 
 function closeSettings() {
@@ -47,26 +69,27 @@ document.addEventListener('close-all-panels', (e) => {
   if (e.detail?.source !== 'settings') closeSettings();
 });
 
-function renderPanel(tab) {
-  panelEl.innerHTML = '';
-  const header = createElement('div', { className: 'settings-header' }, [
-    createElement('div', { className: 'title-group' }, [
-      createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.72 (动画性能优化)'),
-    ]),
-    createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
-  ]);
-  const tabs = createElement('div', { className: 'settings-tabs' });
-  [['general','常规'], ['engines','搜索引擎'], ['wallpaper','壁纸'], ['suggest','搜索建议'], ['sync','同步']].forEach(([key, label]) => {
-    tabs.appendChild(createElement('button', { className: `tab-btn ${tab === key ? 'active' : ''}`, onclick: () => renderPanel(key) }, label));
+function switchTab(tab) {
+  setActiveTab(tab);
+  contentEl.textContent = '';
+  requestAnimationFrame(() => renderContent(tab));
+}
+
+function setActiveTab(tab) {
+  currentTab = tab;
+  const btns = panelEl.querySelectorAll('.tab-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.toggle('active', TAB_DEFS[i][0] === tab);
   });
-  const content = createElement('div', { className: 'settings-content' });
-  panelEl.append(header, tabs, content);
-  if (tab === 'general') renderGeneral(content);
-  else if (tab === 'engines') renderEngines(content);
-  else if (tab === 'wallpaper') renderWallpaperTab(content);
-  else if (tab === 'suggest') renderSuggestTab(content);
-  else if (tab === 'sync') renderSyncTab(content);
+}
+
+function renderContent(tab) {
+  contentEl.textContent = '';
+  if (tab === 'general') renderGeneral(contentEl);
+  else if (tab === 'engines') renderEngines(contentEl);
+  else if (tab === 'wallpaper') renderWallpaperTab(contentEl);
+  else if (tab === 'suggest') renderSuggestTab(contentEl);
+  else if (tab === 'sync') renderSyncTab(contentEl);
 }
 
 function renderGeneral(container) {
