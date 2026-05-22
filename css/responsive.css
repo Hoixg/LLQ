@@ -29,7 +29,6 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     overscroll-behavior: contain;
-    will-change: transform, opacity;
     contain: layout style;
   }
 

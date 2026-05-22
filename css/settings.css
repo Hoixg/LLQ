@@ -29,7 +29,6 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s var(--transition-easing-smooth);
-  will-change: opacity;
 }
 .settings-overlay.open { opacity: 1; pointer-events: auto; }
 .settings-overlay.closing { opacity: 0; transition: opacity 0.15s ease-in; }
@@ -52,7 +51,6 @@
   transform: translate3d(100%, 0, 0);
   opacity: 0;
   pointer-events: none;
-  will-change: transform, opacity;
   contain: layout style;
 }
 .settings-panel.open {
@@ -96,7 +94,7 @@
 }
 .tab-btn.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
 
-.settings-content { flex: 1; padding: var(--spacing-md); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.settings-content { flex: 1; padding: var(--spacing-md); overflow-y: auto; overscroll-behavior: contain; }
 
 .setting-section { margin-bottom: var(--spacing-lg); display: flex; align-items: center; justify-content: space-between; }
 .setting-section label { font-size: var(--font-size-sm); }

@@ -49,9 +49,13 @@ function openSettings(tab = 'general') {
     renderContent(tab);
   }
   setActiveTab(tab);
+  panelEl.style.willChange = 'transform, opacity';
+  overlayEl.style.willChange = 'opacity';
   panelEl.getBoundingClientRect();
-  panelEl.classList.add('open');
-  overlayEl.classList.add('open');
+  requestAnimationFrame(() => {
+    panelEl.classList.add('open');
+    overlayEl.classList.add('open');
+  });
 }
 
 function closeSettings() {
@@ -63,6 +67,8 @@ function closeSettings() {
     closeTimer = null;
     panelEl.classList.remove('open', 'closing');
     overlayEl.classList.remove('open', 'closing');
+    panelEl.style.willChange = '';
+    overlayEl.style.willChange = '';
   }, 250);
 }
 
