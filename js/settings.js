@@ -45,11 +45,10 @@ function openSettings(tab = 'general') {
   overlayEl.classList.remove('closing');
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
-  setActiveTab(tab);
   if (currentTab !== tab || !contentEl.firstChild) {
     renderContent(tab);
   }
-  currentTab = tab;
+  setActiveTab(tab);
   panelEl.classList.add('open');
   overlayEl.classList.add('open');
 }
@@ -72,7 +71,6 @@ document.addEventListener('close-all-panels', (e) => {
 
 function switchTab(tab) {
   setActiveTab(tab);
-  contentEl.textContent = '';
   renderContent(tab);
 }
 
@@ -85,12 +83,15 @@ function setActiveTab(tab) {
 }
 
 function renderContent(tab) {
-  contentEl.textContent = '';
-  if (tab === 'general') renderGeneral(contentEl);
-  else if (tab === 'engines') renderEngines(contentEl);
-  else if (tab === 'wallpaper') renderWallpaperTab(contentEl);
-  else if (tab === 'suggest') renderSuggestTab(contentEl);
-  else if (tab === 'sync') renderSyncTab(contentEl);
+  const next = document.createElement('div');
+  next.className = 'settings-content';
+  if (tab === 'general') renderGeneral(next);
+  else if (tab === 'engines') renderEngines(next);
+  else if (tab === 'wallpaper') renderWallpaperTab(next);
+  else if (tab === 'suggest') renderSuggestTab(next);
+  else if (tab === 'sync') renderSyncTab(next);
+  contentEl.replaceWith(next);
+  contentEl = next;
 }
 
 function renderGeneral(container) {
