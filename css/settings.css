@@ -43,24 +43,22 @@
   background: var(--color-bg-elevated);
   z-index: 101;
   box-shadow: -4px 0 20px var(--color-shadow);
-  transition: transform 0.3s var(--transition-easing-smooth), opacity 0.25s var(--transition-easing);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  will-change: transform;
-  transform: translateX(100%);
+  transform: translate3d(100%, 0, 0);
   opacity: 0;
   pointer-events: none;
 }
 .settings-panel.open {
-  transform: translateX(0);
+  transition: transform 0.3s var(--transition-easing-smooth), opacity 0.25s var(--transition-easing);
+  transform: translate3d(0, 0, 0);
   opacity: 1;
-  will-change: auto;
   pointer-events: auto;
 }
 .settings-panel.closing {
   transition: transform 0.18s ease-in, opacity 0.15s ease-in;
-  transform: translateX(100%);
+  transform: translate3d(100%, 0, 0);
   opacity: 0;
   pointer-events: none;
 }

@@ -23,8 +23,12 @@ function openSettings(tab = 'general') {
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
   renderPanel(tab);
-  panelEl.classList.add('open');
-  overlayEl.classList.add('open');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      panelEl.classList.add('open');
+      overlayEl.classList.add('open');
+    });
+  });
 }
 
 function closeSettings() {
@@ -48,7 +52,7 @@ function renderPanel(tab) {
   const header = createElement('div', { className: 'settings-header' }, [
     createElement('div', { className: 'title-group' }, [
       createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.71 (UI 风格大扩展)'),
+      createElement('span', { className: 'version-info' }, 'v0.72 (动画性能优化)'),
     ]),
     createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
   ]);
