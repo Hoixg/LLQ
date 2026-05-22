@@ -53,7 +53,7 @@
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
-  contain: layout style paint;
+  contain: layout style;
 }
 .settings-panel.open {
   transition: transform 0.3s var(--transition-easing-smooth), opacity 0.25s var(--transition-easing);

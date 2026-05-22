@@ -45,19 +45,13 @@ function openSettings(tab = 'general') {
   overlayEl.classList.remove('closing');
   document.dispatchEvent(new CustomEvent('close-all-panels', { detail: { source: 'settings' } }));
   isOpen = true;
-  const needsRender = currentTab !== tab || !contentEl.firstChild;
-  if (needsRender) {
+  if (currentTab !== tab || !contentEl.firstChild) {
     renderContent(tab);
   }
   setActiveTab(tab);
-  panelEl.style.willChange = 'transform, opacity';
-  overlayEl.style.willChange = 'opacity';
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      panelEl.classList.add('open');
-      overlayEl.classList.add('open');
-    });
-  });
+  panelEl.getBoundingClientRect();
+  panelEl.classList.add('open');
+  overlayEl.classList.add('open');
 }
 
 function closeSettings() {
@@ -69,8 +63,6 @@ function closeSettings() {
     closeTimer = null;
     panelEl.classList.remove('open', 'closing');
     overlayEl.classList.remove('open', 'closing');
-    panelEl.style.willChange = '';
-    overlayEl.style.willChange = '';
   }, 250);
 }
 
