@@ -16,6 +16,12 @@ const PARSERS = {
     if (!Array.isArray(data)) return [];
     return data.map(item => item.phrase || item.text || '').filter(Boolean).slice(0, 8);
   },
+  sogou(data) {
+    if (!Array.isArray(data)) return [];
+    const sugArr = data[1] || data[2];
+    if (Array.isArray(sugArr)) return sugArr.filter(function(s) { return typeof s === 'string'; }).slice(0, 8);
+    return [];
+  },
   string_array(data) {
     if (Array.isArray(data) && data.every(item => typeof item === 'string')) return data.slice(0, 8);
     return [];

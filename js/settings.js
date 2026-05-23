@@ -209,6 +209,7 @@ export function applyUIStyle(style) {
   } else {
     document.documentElement.removeAttribute('data-ui-style');
   }
+  if (window.__loadUIStyleCSS) window.__loadUIStyleCSS(style || '');
 }
 
 const THEME_STYLES = {

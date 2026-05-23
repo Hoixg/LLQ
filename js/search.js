@@ -122,10 +122,16 @@ export function initSearch(container) {
   }
 
   function switchTrack() {
-    currentTrack = currentTrack === 'engine' ? 'platform' : 'engine';
-    setCurrentTrack(currentTrack);
-    currentSource = getCurrentSource();
-    if (!currentSource) return;
+    var newTrack = currentTrack === 'engine' ? 'platform' : 'engine';
+    setCurrentTrack(newTrack);
+    var src = getCurrentSource();
+    if (!src) {
+      setCurrentTrack(currentTrack);
+      getCurrentSource();
+      return;
+    }
+    currentTrack = newTrack;
+    currentSource = src;
     updateSourceIcon(sourceIconBtn, currentSource);
     input.placeholder = `${currentSource.name} 搜索`;
     trackToggleBtn.title = TRACK_TITLES[currentTrack];
