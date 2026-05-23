@@ -12,7 +12,6 @@
 [data-ui-style="glass"] .bookmarks-trigger {
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
 }
@@ -31,7 +30,6 @@
 [data-ui-style="glass"] .toggle-btn {
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(12px) saturate(160%);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 }
@@ -48,7 +46,6 @@
 [data-ui-style="glass"] .bookmarks-panel {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-left: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
 }
@@ -56,7 +53,6 @@
 [data-theme="dark"][data-ui-style="glass"] .bookmarks-panel {
   background: rgba(20, 20, 40, 0.78);
   backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
 }
@@ -83,7 +79,6 @@
 [data-ui-style="glass"] .btn-icon {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.08);
 }
 [data-ui-style="glass"] .btn-small:hover,
@@ -119,7 +114,6 @@
 [data-ui-style="glass"] .form-field select {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.1);
 }
 [data-ui-style="glass"] .source-form input:focus,
@@ -154,7 +148,6 @@
 [data-ui-style="glass"] .suggest-item {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   border-color: rgba(0, 0, 0, 0.06);
 }
 [data-ui-style="glass"] .suggest-item:hover { background: rgba(255, 255, 255, 0.6); }
@@ -169,7 +162,6 @@
 [data-ui-style="glass"] .sync-section {
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.06);
 }
 [data-theme="dark"][data-ui-style="glass"] .sync-section {
@@ -180,7 +172,6 @@
 [data-ui-style="glass"] .bookmark-list {
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 [data-theme="dark"][data-ui-style="glass"] .bookmark-list { background: rgba(255, 255, 255, 0.03); }
 
@@ -188,7 +179,6 @@
   background: rgba(255, 255, 255, 0.35);
   border-color: rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 [data-ui-style="glass"] .checkbox-label:hover { background: rgba(255, 255, 255, 0.55); }
 [data-theme="dark"][data-ui-style="glass"] .checkbox-label {
@@ -200,14 +190,12 @@
 [data-ui-style="glass"] .current-badge {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 [data-theme="dark"][data-ui-style="glass"] .current-badge { background: rgba(255, 255, 255, 0.06); }
 
 [data-ui-style="glass"] .form-actions .btn-cancel {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-color: rgba(0, 0, 0, 0.08);
 }
 [data-ui-style="glass"] .form-actions .btn-cancel:hover { background: rgba(255, 255, 255, 0.6); }
@@ -221,7 +209,6 @@
 [data-ui-style="glass"] .setting-section input {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-sm);
   padding: 4px 8px;
@@ -251,7 +238,7 @@
 [data-theme="dark"][data-ui-style="glass"] .section-toggle-header { border-bottom-color: rgba(255, 255, 255, 0.06); }
 
 
-/* ==================== 2. 新拟态 (neumorphism) ==================== */
+/* ==================== 2. 新拟�?(neumorphism) ==================== */
 [data-ui-style="neumorphism"] html {
   background: var(--color-bg);
 }

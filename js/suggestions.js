@@ -127,7 +127,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     }, 150);
   });
 
-  function fetchAndShow(query) {
+  async function fetchAndShow(query) {
     const source = getCurrentSource();
     if (!source || source.parser === 'none') {
       closeSuggestionsHandler();
@@ -135,6 +135,50 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     }
 
     const requestId = ++currentRequestId;
+
+    const fetchUrl = source.url
+      .replace('{query}', encodeURIComponent(query))
+      .replace(/[&?]cb=\{[^}]*\}/g, '')
+      .replace(/[&?]callback=\{[^}]*\}/g, '')
+      .replace(/[&?]JsonCallback=\{[^}]*\}/g, '')
+      .replace(/&JsonType=callback/g, '');
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    try {
+      const response = await fetch(fetchUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (requestId !== currentRequestId) return;
+
+      const text = await response.text();
+      if (requestId !== currentRequestId) return;
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        const cleaned = text.replace(/^[/\s*]*/g, '').replace(/^\w+\s*\(/, '').replace(/\)\s*;?\s*$/, '');
+        try {
+          data = JSON.parse(cleaned);
+        } catch {
+          closeSuggestionsHandler();
+          return;
+        }
+      }
+
+      const suggestions = parseSuggestions(data, source.parser);
+      if (requestId === currentRequestId) {
+        showSuggestions(suggestions);
+      }
+    } catch {
+      clearTimeout(timeoutId);
+      if (requestId !== currentRequestId) return;
+      fetchWithJSONP(query, source, requestId);
+    }
+  }
+
+  function fetchWithJSONP(query, source, requestId) {
     const callbackName = '__suggest_cb_' + Date.now() + '_' + requestId;
     let settled = false;
     let timeoutId;
@@ -203,20 +247,22 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
     clearTimeout(closeDropdownTimer);
     closeDropdownTimer = null;
     dropdown.style.display = 'block';
-    dropdown.offsetHeight;
-    dropdown.classList.add('active');
-    activeDropdown = dropdown;
-    if (!wasActive) {
-      document.dispatchEvent(new CustomEvent('suggestions-open'));
-    }
-    if (window.innerWidth <= 768) {
-      clearTimeout(closeOverlayTimer);
-      closeOverlayTimer = null;
-      overlay.style.display = 'block';
-      overlay.offsetHeight;
-      overlay.classList.add('active');
-      activeOverlay = overlay;
-    }
+    requestAnimationFrame(() => {
+      dropdown.classList.add('active');
+      activeDropdown = dropdown;
+      if (!wasActive) {
+        document.dispatchEvent(new CustomEvent('suggestions-open'));
+      }
+      if (window.innerWidth <= 768) {
+        clearTimeout(closeOverlayTimer);
+        closeOverlayTimer = null;
+        overlay.style.display = 'block';
+        requestAnimationFrame(() => {
+          overlay.classList.add('active');
+          activeOverlay = overlay;
+        });
+      }
+    });
   }
 
   function updateHighlight(items) {

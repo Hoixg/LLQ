@@ -640,7 +640,7 @@ function renderSuggestSourceForm(container, src, { isAdd, isPreset } = {}) {
   parserField.appendChild(parserSel);
 
   form.append(nameField, urlField, parserField);
-  form.appendChild(createElement('p', { className: 'form-hint' }, 'URL 中需包含 {query} 和 {callback} 占位符。{query} 被替换为搜索词，{callback} 被替换为 JSONP 回调函数名。'));
+  form.appendChild(createElement('p', { className: 'form-hint' }, 'URL 中需包含 {query} 占位符。{callback} 为 JSONP 回调占位符（非必填），接口支持 CORS 时优先使用 fetch 获取数据。'));
 
   if (isPreset) {
     form.appendChild(createElement('p', { className: 'form-hint' }, '修改预设建议源将保存为本地数据，可通过"恢复所有预设"撤销。'));
@@ -650,7 +650,6 @@ function renderSuggestSourceForm(container, src, { isAdd, isPreset } = {}) {
     const name = nameInp.value.trim(), url = urlInp.value.trim(), parser = parserSel.value;
     if (!name || !url) return alert('名称和URL必填');
     if (!url.includes('{query}')) return alert('URL 需包含 {query} 占位符');
-    if (!url.includes('{callback}') && parser !== 'none') return alert('URL 需包含 {callback} 占位符');
     const data = { name, url, parser };
     if (isAdd) addCustomSuggest(data);
     else if (isPreset) modifySuggestPreset(src.id, data);

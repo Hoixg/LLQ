@@ -62,14 +62,14 @@ function beginRoundedPath(ctx, x, y, w, h, r) {
 }
 
 function drawFlipCard(ctx, ch, prevCh, x, y, w, h, animT) {
-  var r = 6;
-  var midY = y + h / 2;
+  const r = 6;
+  const midY = y + h / 2;
 
   beginRoundedPath(ctx, x, y, w, h, r);
   ctx.fillStyle = '#1a1a1a';
   ctx.fill();
 
-  var grad = ctx.createLinearGradient(x, y, x + w, y + h);
+  const grad = ctx.createLinearGradient(x, y, x + w, y + h);
   grad.addColorStop(0, 'rgba(255,255,255,0.07)');
   grad.addColorStop(0.48, 'rgba(255,255,255,0)');
   grad.addColorStop(0.5, 'rgba(0,0,0,0.3)');
@@ -92,14 +92,14 @@ function drawFlipCard(ctx, ch, prevCh, x, y, w, h, animT) {
   ctx.lineTo(x + w - r, midY + 1);
   ctx.stroke();
 
-  var fontSize = Math.round(w * 0.52);
+  const fontSize = Math.round(w * 0.52);
   ctx.font = 'bold ' + fontSize + 'px "Courier New", Consolas, monospace';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  var textCX = x + w / 2;
-  var textCY = y + h / 2 + 1;
+  const textCX = x + w / 2;
+  const textCY = y + h / 2 + 1;
 
-  var isAnimating = animT < 1 && prevCh && prevCh !== ch;
+  const isAnimating = animT < 1 && prevCh && prevCh !== ch;
 
   ctx.save();
   ctx.beginPath();
@@ -118,8 +118,8 @@ function drawFlipCard(ctx, ch, prevCh, x, y, w, h, animT) {
     ctx.fillText(ch, textCX, textCY);
     ctx.restore();
   } else {
-    var topCenterOffset = -(midY - (y + h / 4));
-    var oldScale = 1 - animT;
+    const topCenterOffset = -(midY - (y + h / 4));
+    const oldScale = 1 - animT;
     if (oldScale > 0.01) {
       ctx.save();
       ctx.beginPath();
@@ -131,7 +131,7 @@ function drawFlipCard(ctx, ch, prevCh, x, y, w, h, animT) {
       ctx.fillText(prevCh, 0, topCenterOffset);
       ctx.restore();
     }
-    var newScale = animT;
+    const newScale = animT;
     if (newScale > 0.01) {
       ctx.save();
       ctx.beginPath();
@@ -147,24 +147,24 @@ function drawFlipCard(ctx, ch, prevCh, x, y, w, h, animT) {
 }
 
 function drawFlipPair(canvas, cur, prev, animT) {
-  var SCALE = 2;
-  var DW = 54, DH = 76;
-  var GAP = 5;
+  const SCALE = 2;
+  const DW = 54, DH = 76;
+  const GAP = 5;
   canvas.width = (DW * 2 + GAP) * SCALE;
   canvas.height = DH * SCALE;
   canvas.style.width = (DW * 2 + GAP) + 'px';
   canvas.style.height = DH + 'px';
-  var ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (var di = 0; di < 2; di++) {
-    var ch = cur[di] || '';
-    var prevCh = prev && prev[di] ? prev[di] : '';
+  for (let di = 0; di < 2; di++) {
+    const ch = cur[di] || '';
+    const prevCh = prev && prev[di] ? prev[di] : '';
     drawFlipCard(ctx, ch, prevCh, di * (DW + GAP) * SCALE, 0, DW * SCALE, DH * SCALE, animT);
   }
 }
 
 export function initClock() {
-  var clockEl = document.getElementById('clock');
+  const clockEl = document.getElementById('clock');
   if (!clockEl) return;
   if (timerId) { clearInterval(timerId); timerId = null; }
   if (flipRafId) { cancelAnimationFrame(flipRafId); flipRafId = null; }
@@ -174,12 +174,13 @@ export function initClock() {
   }
   clockEl.innerHTML = '';
 
-  var style = getFromStorage('clockStyle', 'default');
-  var cardRow = createElement('div', { className: 'clock-card-row' });
-  var dateLine = createElement('div', { className: 'clock-date' });
+  const style = getFromStorage('clockStyle', 'default');
+  const cardRow = createElement('div', { className: 'clock-card-row' });
+  const dateLine = createElement('div', { className: 'clock-date' });
   clockEl.append(cardRow, dateLine);
 
-  var hCanvas, mCanvas, sCanvas;
+  let hCanvas, mCanvas, sCanvas;
+  let _hourCard, _minCard, _secCard;
 
   if (style === 'mosaic' || style === 'flip') {
     hCanvas = createElement('canvas');
@@ -191,31 +192,31 @@ export function initClock() {
       createElement('span', { className: 'clock-card clock-card-sec' }, [sCanvas])
     );
   } else {
-    var hourCard = createElement('span', { className: 'clock-card' });
-    var colon1 = createElement('span', { className: 'clock-colon' }, ':');
-    var minCard = createElement('span', { className: 'clock-card' });
-    var colon2 = createElement('span', { className: 'clock-colon' }, ':');
-    var secCard = createElement('span', { className: 'clock-card clock-card-sec' });
+    const hourCard = createElement('span', { className: 'clock-card' });
+    const colon1 = createElement('span', { className: 'clock-colon' }, ':');
+    const minCard = createElement('span', { className: 'clock-card' });
+    const colon2 = createElement('span', { className: 'clock-colon' }, ':');
+    const secCard = createElement('span', { className: 'clock-card clock-card-sec' });
     cardRow.append(hourCard, colon1, minCard, colon2, secCard);
-    var _hourCard = hourCard, _minCard = minCard, _secCard = secCard;
+    _hourCard = hourCard, _minCard = minCard, _secCard = secCard;
   }
 
   if (style === 'flip') {
-    var flipState = { hh: { cur: '', prev: '', t: 1 }, mm: { cur: '', prev: '', t: 1 }, ss: { cur: '', prev: '', t: 1 } };
-    var FLIP_DUR = 280;
-    var lastTime = 0;
-    var lastSecondKey = '';
+    const flipState = { hh: { cur: '', prev: '', t: 1 }, mm: { cur: '', prev: '', t: 1 }, ss: { cur: '', prev: '', t: 1 } };
+    const FLIP_DUR = 280;
+    let lastTime = 0;
+    let lastSecondKey = '';
 
     function flipLoop(ts) {
       if (!lastTime) lastTime = ts;
-      var dt = Math.min(50, ts - lastTime);
+      const dt = Math.min(50, ts - lastTime);
       lastTime = ts;
 
-      var now = new Date();
-      var hh = pad(now.getHours());
-      var mm = pad(now.getMinutes());
-      var ss = pad(now.getSeconds());
-      var sk = hh + mm + ss;
+      const now = new Date();
+      const hh = pad(now.getHours());
+      const mm = pad(now.getMinutes());
+      const ss = pad(now.getSeconds());
+      const sk = hh + mm + ss;
 
       if (sk !== lastSecondKey) {
         lastSecondKey = sk;
@@ -230,7 +231,7 @@ export function initClock() {
         dateLine.textContent = (now.getMonth() + 1) + '\u6708' + now.getDate() + '\u65e5 ' + WEEKDAYS[now.getDay()];
       }
 
-      var inc = dt / FLIP_DUR;
+      const inc = dt / FLIP_DUR;
       ['hh', 'mm', 'ss'].forEach(function(k) {
         if (flipState[k].t < 1) flipState[k].t = Math.min(1, flipState[k].t + inc);
       });
@@ -242,10 +243,10 @@ export function initClock() {
       flipRafId = requestAnimationFrame(flipLoop);
     }
 
-    var nowInit = new Date();
-    var hhI = pad(nowInit.getHours());
-    var mmI = pad(nowInit.getMinutes());
-    var ssI = pad(nowInit.getSeconds());
+    const nowInit = new Date();
+    const hhI = pad(nowInit.getHours());
+    const mmI = pad(nowInit.getMinutes());
+    const ssI = pad(nowInit.getSeconds());
     flipState.hh.cur = hhI; flipState.hh.prev = hhI; flipState.hh.t = 1;
     flipState.mm.cur = mmI; flipState.mm.prev = mmI; flipState.mm.t = 1;
     flipState.ss.cur = ssI; flipState.ss.prev = ssI; flipState.ss.t = 1;
@@ -269,10 +270,10 @@ export function initClock() {
   }
 
   function update() {
-    var now = new Date();
-    var hh = pad(now.getHours());
-    var mm = pad(now.getMinutes());
-    var ss = pad(now.getSeconds());
+    const now = new Date();
+    const hh = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    const ss = pad(now.getSeconds());
 
     if (style === 'mosaic') {
       drawMosaicTwo(hCanvas, hh);

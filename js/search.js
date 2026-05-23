@@ -122,9 +122,9 @@ export function initSearch(container) {
   }
 
   function switchTrack() {
-    var newTrack = currentTrack === 'engine' ? 'platform' : 'engine';
+    const newTrack = currentTrack === 'engine' ? 'platform' : 'engine';
     setCurrentTrack(newTrack);
-    var src = getCurrentSource();
+    const src = getCurrentSource();
     if (!src) {
       setCurrentTrack(currentTrack);
       getCurrentSource();
@@ -156,8 +156,9 @@ export function initSearch(container) {
       expandSearchBox();
       renderList(dropdown);
       dropdown.style.display = 'block';
-      dropdown.offsetHeight;
-      dropdown.classList.add('active');
+      requestAnimationFrame(() => {
+        dropdown.classList.add('active');
+      });
     }
   }
 

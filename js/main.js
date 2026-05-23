@@ -57,20 +57,23 @@ function start() {
 
   bookmarkBtn.addEventListener('click', function bounce() {
     this.classList.remove('bouncing');
-    void this.offsetWidth;
-    this.classList.add('bouncing');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.classList.add('bouncing');
+      });
+    });
   });
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      var input = document.querySelector('.search-input');
+      const input = document.querySelector('.search-input');
       if (input === document.activeElement) { input.blur(); return; }
       document.dispatchEvent(new CustomEvent('close-all-panels'));
       return;
     }
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
       e.preventDefault();
-      var input = document.querySelector('.search-input');
+      const input = document.querySelector('.search-input');
       if (input) input.focus();
     }
   });
