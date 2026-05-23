@@ -22,10 +22,11 @@ function setDeviceClass() {
   document.body.className = isMobile() ? 'is-mobile' : 'is-desktop';
 }
 setDeviceClass();
-window.addEventListener('resize', setDeviceClass);
+window.matchMedia('(max-width: 768px)').addEventListener('change', setDeviceClass);
 
 let timerId = null;
 let flipRafId = null;
+let flipVisHandler = null;
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
 function pad(n) { return n.toString().padStart(2, '0'); }
@@ -192,6 +193,10 @@ function initClock() {
   if (!clockEl) return;
   if (timerId) { clearInterval(timerId); timerId = null; }
   if (flipRafId) { cancelAnimationFrame(flipRafId); flipRafId = null; }
+  if (flipVisHandler) {
+    document.removeEventListener('visibilitychange', flipVisHandler);
+    flipVisHandler = null;
+  }
   clockEl.innerHTML = '';
 
   var style = getFromStorage('clockStyle', 'default');
@@ -274,6 +279,17 @@ function initClock() {
     drawFlipPair(mCanvas, mmI, mmI, 1);
     drawFlipPair(sCanvas, ssI, ssI, 1);
     flipRafId = requestAnimationFrame(flipLoop);
+
+    function onVisibility() {
+      if (document.hidden) {
+        if (flipRafId) { cancelAnimationFrame(flipRafId); flipRafId = null; }
+      } else {
+        lastTime = 0;
+        if (!flipRafId) flipRafId = requestAnimationFrame(flipLoop);
+      }
+    }
+    flipVisHandler = onVisibility;
+    document.addEventListener('visibilitychange', onVisibility);
     return;
   }
 

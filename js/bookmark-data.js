@@ -128,3 +128,89 @@ export function getAllCategories() {
     return a.order - b.order;
   });
 }
+
+// ==================== 浏览器书签导入 ====================
+
+const ROOT_FOLDER_NAMES = /^(Bookmarks|书签|Bookmarks Bar|书签栏|Other Bookmarks|其他书签|Mobile Bookmarks|移动书签)$/i;
+
+export function importBookmarksFromHTML(htmlString) {
+  const lines = htmlString.split(/\r?\n/);
+  const existingUrls = new Set(data.bookmarks.map(b => b.url));
+  let orderCounter = Date.now();
+
+  let currentFolder = null;
+  const folders = [];
+  const topLevelBookmarks = [];
+
+  for (const line of lines) {
+    const h3Match = line.match(/<H3[^>]*>([^<]*)<\/H3>/i);
+    if (h3Match) {
+      const name = h3Match[1].trim();
+      if (name && !ROOT_FOLDER_NAMES.test(name)) {
+        currentFolder = { name, bookmarks: [] };
+        folders.push(currentFolder);
+      } else {
+        currentFolder = null;
+      }
+      continue;
+    }
+
+    const aMatch = line.match(/<A\s+[^>]*HREF="([^"]*)"([^>]*)>([^<]*)<\/A>/i);
+    if (aMatch) {
+      const url = aMatch[1];
+      const restAttrs = aMatch[2] || '';
+      const title = aMatch[3].trim();
+      if (!url || !title) continue;
+
+      let icon = '';
+      const iconMatch = restAttrs.match(/ICON="([^"]*)"/i);
+      if (iconMatch) icon = iconMatch[1];
+
+      const bm = { title, url, icon };
+      if (currentFolder) {
+        currentFolder.bookmarks.push(bm);
+      } else {
+        topLevelBookmarks.push(bm);
+      }
+    }
+  }
+
+  const result = { categoriesCreated: 0, bookmarksImported: 0, duplicatesSkipped: 0 };
+  const catMap = {};
+
+  for (const folder of folders) {
+    let cat = data.categories.find(c => c.name === folder.name);
+    if (!cat) {
+      cat = { id: genId('cat'), name: folder.name, order: data.categories.length };
+      data.categories.push(cat);
+      result.categoriesCreated++;
+    }
+    catMap[folder.name] = cat.id;
+  }
+
+  function importOne(bm, catId) {
+    if (existingUrls.has(bm.url)) {
+      result.duplicatesSkipped++;
+      return;
+    }
+    data.bookmarks.push({
+      id: genId('bkm'),
+      title: bm.title,
+      url: bm.url,
+      categoryId: catId,
+      iconUrl: bm.icon || '',
+      order: orderCounter++,
+    });
+    existingUrls.add(bm.url);
+    result.bookmarksImported++;
+  }
+
+  for (const bm of topLevelBookmarks) importOne(bm, 'default');
+  for (const folder of folders) {
+    const catId = catMap[folder.name];
+    for (const bm of folder.bookmarks) importOne(bm, catId);
+  }
+
+  save();
+  return result;
+}

@@ -3,7 +3,8 @@ import {
   addCategory, updateCategory, deleteCategory,
   addBookmark, updateBookmark, deleteBookmark,
   getBookmarksByCategory, searchBookmarks, getAllCategories,
-  getCategoryById, reorderBookmarks, reorderCategories
+  getCategoryById, reorderBookmarks, reorderCategories,
+  importBookmarksFromHTML
 } from './bookmark-data.js';
 
 let panelEl = null;
@@ -93,6 +94,13 @@ function renderMainView() {
     onclick: () => showAddCategoryDialog()
   }, '+ 新建分区');
   content.appendChild(addCatBtn);
+
+  const importBtn = createElement('button', {
+    className: 'btn-add-category',
+    style: { marginTop: '4px' },
+    onclick: () => triggerBookmarkImport()
+  }, '📥 导入浏览器书签');
+  content.appendChild(importBtn);
 }
 
 function renderCategoryItem(cat) {
@@ -251,6 +259,36 @@ function handleSearch(query, resultsContainer) {
     item.appendChild(infoDiv);
     resultsContainer.appendChild(item);
   });
+}
+
+function triggerBookmarkImport() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.html,.htm';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const result = importBookmarksFromHTML(text);
+      if (result.bookmarksImported === 0 && result.categoriesCreated === 0) {
+        alert(result.duplicatesSkipped > 0
+          ? `未导入新书签，${result.duplicatesSkipped} 条已存在（重复跳过）。`
+          : '未找到可导入的书签，请检查文件格式。');
+      } else {
+        const parts = [];
+        if (result.categoriesCreated > 0) parts.push(`新增分区：${result.categoriesCreated}`);
+        if (result.bookmarksImported > 0) parts.push(`导入书签：${result.bookmarksImported}`);
+        if (result.duplicatesSkipped > 0) parts.push(`跳过重复：${result.duplicatesSkipped}`);
+        alert('导入完成！\n' + parts.join('\n'));
+      }
+      renderMainView();
+    } catch (err) {
+      alert('导入失败：文件格式不正确或无法读取。');
+      console.error('书签导入错误：', err);
+    }
+  };
+  input.click();
 }
 
 function showAddCategoryDialog() {

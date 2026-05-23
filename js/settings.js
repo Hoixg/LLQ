@@ -12,10 +12,25 @@ export function initSettings() {
   panelEl = document.getElementById('settingsPanel');
   overlayEl = document.getElementById('settingsOverlay');
   buildPanelShell();
+  prewarmPanel();
   const triggerBtn = document.getElementById('settingsTrigger');
   triggerBtn?.addEventListener('click', () => openSettings());
   overlayEl?.addEventListener('click', closeSettings);
   document.addEventListener('open-settings', (e) => openSettings(e.detail?.tab));
+}
+
+function prewarmPanel() {
+  renderContent('general');
+  panelEl.style.willChange = 'backdrop-filter';
+  panelEl.style.transition = 'none';
+  panelEl.style.opacity = '0.001';
+  panelEl.classList.add('open');
+  panelEl.getBoundingClientRect();
+  panelEl.classList.remove('open');
+  panelEl.style.transition = '';
+  panelEl.style.opacity = '';
+  panelEl.style.willChange = '';
+  currentTab = 'general';
 }
 
 function buildPanelShell() {

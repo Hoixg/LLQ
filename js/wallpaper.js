@@ -18,10 +18,19 @@ function saveWallpaperConfig(config) {
   setToStorage(STORAGE_KEY, config);
 }
 
+function isValidImageUrl(url) {
+  try {
+    const u = new URL(String(url).trim());
+    return ['http:', 'https:'].includes(u.protocol);
+  } catch {
+    return false;
+  }
+}
+
 function setBackgroundImage(url) {
   const layer = document.getElementById('wallpaperLayer');
   if (!layer) return;
-  if (url && url.trim()) {
+  if (url && url.trim() && isValidImageUrl(url)) {
     layer.style.backgroundImage = `url("${url.trim()}")`;
     document.documentElement.style.backgroundColor = 'transparent';
     document.body.style.backgroundColor = 'transparent';
@@ -183,7 +192,7 @@ function createUrlItem(key, labelText, currentValue, hintText) {
     oninput: (e) => {
       const url = e.target.value.trim();
       const preview = document.getElementById(`wallpaper-${key}-preview`);
-      if (url) {
+      if (url && isValidImageUrl(url)) {
         preview.style.backgroundImage = `url("${url}")`;
         const img = new Image();
         img.src = url;
