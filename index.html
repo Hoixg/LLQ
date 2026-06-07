@@ -32,14 +32,11 @@
         'line': 'css/ui-hairline.css?v=071',
         'mint': 'css/ui-gradient.css?v=071',
         'paper': 'css/ui-material.css?v=071',
-        'cyber': 'css/ui-cyber.css?v=071',
-        'brutal': 'css/ui-brutal.css?v=071',
         'frost': 'css/ui-frost.css?v=071',
         'ink': 'css/ui-ink.css?v=071',
         'aurora': 'css/ui-aurora.css?v=071',
         'dot': 'css/ui-dot.css?v=071',
         'switch': 'css/ui-switch.css?v=071',
-        'pixel': 'css/ui-pixel.css?v=071',
       };
       window.__loadUIStyleCSS = function(style) {
         document.querySelectorAll('link[data-ui-css]').forEach(function(el) { el.remove(); });
@@ -53,35 +50,28 @@
         }
       };
       window.__loadUIStyleCSS(uiStyle);
-
-      var clockStyle = getStored('clockStyle', 'default');
-      if (clockStyle !== 'default') document.documentElement.setAttribute('data-clock-style', clockStyle);
-
-      var showClockBg = getStored('showClockBg', true);
-      if (showClockBg === false) document.documentElement.setAttribute('data-clock-bg', 'off');
     })();
   </script>
   <link rel="stylesheet" href="css/reset.css?v=069">
   <link rel="stylesheet" href="css/variables.css?v=069">
   <link rel="stylesheet" href="css/base.css?v=069">
-  <link rel="stylesheet" href="css/search-bar.css?v=069">
+  <link rel="stylesheet" href="css/search-bar.css?v=075">
   <link rel="stylesheet" href="css/settings.css?v=072">
   <link rel="stylesheet" href="css/layout-toggle.css?v=069">
   <link rel="stylesheet" href="css/responsive.css?v=072">
   <link rel="stylesheet" href="css/wallpaper.css?v=069">
   <link rel="stylesheet" href="css/bookmarks.css?v=069">
   <link rel="stylesheet" href="css/animations.css?v=069">
-  <link rel="stylesheet" href="css/clock.css?v=073">
+
   <style>
 .version-info { font-size: 0; color: transparent; }
-.version-info::before { content: 'v0.73 (时钟模块化)'; font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
+.version-info::before { content: 'v0.75'; font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
   </style>
 </head>
 <body>
   <div id="wallpaperLayer"></div>
   <div class="app-container">
     <main class="main-content">
-      <div class="clock" id="clock"></div>
       <section class="search-section"></section>
       <div class="expandable-area" id="expandableArea">
       </div>

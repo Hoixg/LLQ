@@ -38,7 +38,7 @@ function buildPanelShell() {
   const header = createElement('div', { className: 'settings-header' }, [
     createElement('div', { className: 'title-group' }, [
       createElement('h2', { className: 'settings-title' }, '设置'),
-      createElement('span', { className: 'version-info' }, 'v0.72 (动画丝滑)'),
+      createElement('span', { className: 'version-info' }, 'v0.75 (动画丝滑)'),
     ]),
     createElement('button', { className: 'close-btn', onclick: closeSettings }, '\u2715'),
   ]);
@@ -121,9 +121,6 @@ function renderGeneral(container) {
   const ui = getFromStorage('uiStyle', 'default');
   const expand = getFromStorage('defaultExpand', false);
   const searchStyle = getFromStorage('searchBarStyle', 'pill');
-  const clockStyle = getFromStorage('clockStyle', 'default');
-  const clockBg = getFromStorage('showClockBg', true);
-
   const themeOpts = Object.entries(THEME_STYLES).map(([v, l]) =>
     `<option value="${v}" ${v === theme ? 'selected' : ''}>${l}</option>`
   ).join('');
@@ -133,56 +130,17 @@ function renderGeneral(container) {
   const searchOpts = Object.entries(SEARCH_BAR_STYLES).map(([v, l]) =>
     `<option value="${v}" ${v === searchStyle ? 'selected' : ''}>${l}</option>`
   ).join('');
-  const clockOpts = Object.entries(CLOCK_STYLES).map(([v, l]) =>
-    `<option value="${v}" ${v === clockStyle ? 'selected' : ''}>${l}</option>`
-  ).join('');
-
   container.innerHTML = `
     <div class="setting-section"><label>主题风格</label><select id="set-theme">${themeOpts}</select></div>
     <div class="setting-section"><label>UI 风格</label><select id="set-ui">${uiOpts}</select></div>
     <div class="setting-section"><label>默认展开扩展区</label><input type="checkbox" id="set-expand" ${expand ? 'checked' : ''}></div>
     <div class="setting-section"><label>搜索框风格</label><select id="set-search">${searchOpts}</select></div>
-    <div class="setting-section"><label>时间风格</label><select id="set-clock">${clockOpts}</select></div>
-    <div class="setting-section"><label>显示时间背景</label><input type="checkbox" id="set-clockbg" ${clockBg ? 'checked' : ''}></div>
   `;
 
   container.querySelector('#set-theme').onchange = e => { setToStorage('themeStyle', e.target.value); applyThemeStyle(e.target.value); };
   container.querySelector('#set-ui').onchange = e => { setToStorage('uiStyle', e.target.value); applyUIStyle(e.target.value); };
   container.querySelector('#set-expand').onchange = e => { setToStorage('defaultExpand', e.target.checked); };
   container.querySelector('#set-search').onchange = e => { setToStorage('searchBarStyle', e.target.value); applySearchBarStyle(e.target.value); };
-  container.querySelector('#set-clock').onchange = e => { setToStorage('clockStyle', e.target.value); applyClockStyle(e.target.value); };
-  container.querySelector('#set-clockbg').onchange = e => { setToStorage('showClockBg', e.target.checked); applyClockBg(e.target.checked); };
-}
-
-function reinitClockIfNeeded(newStyle) {
-  window.dispatchEvent(new CustomEvent('clock-style-changed', { detail: { style: newStyle } }));
-}
-
-const CLOCK_STYLES = {
-  'default': '默认',
-  'mosaic': '马赛克',
-  'minimal': '极简',
-  'cutout': '镂空',
-  'terminal': '终端',
-  'emboss': '浮雕',
-  'flip': '翻页钟',
-};
-
-export function applyClockStyle(style) {
-  if (style && style !== 'default') {
-    document.documentElement.setAttribute('data-clock-style', style);
-  } else {
-    document.documentElement.removeAttribute('data-clock-style');
-  }
-  reinitClockIfNeeded(style);
-}
-
-export function applyClockBg(show) {
-  if (show === false) {
-    document.documentElement.setAttribute('data-clock-bg', 'off');
-  } else {
-    document.documentElement.removeAttribute('data-clock-bg');
-  }
 }
 
 const UI_STYLES = {
@@ -193,14 +151,11 @@ const UI_STYLES = {
   'line': '极简线框',
   'mint': '柔和渐变',
   'paper': '纸质层叠',
-  'cyber': '赛博',
-  'brutal': '粗野',
   'frost': '冰霜',
   'ink': '水墨',
   'aurora': '极光',
   'dot': '点阵',
   'switch': '掌机',
-  'pixel': '像素',
 };
 
 export function applyUIStyle(style) {
@@ -213,32 +168,16 @@ export function applyUIStyle(style) {
 }
 
 const THEME_STYLES = {
-  'blue': '经典蓝（跟随系统）',
-  'blue-light': '经典蓝（浅色）',
-  'blue-dark': '经典蓝（深色）',
-  'forest': '翡翠绿（跟随系统）',
-  'forest-light': '翡翠绿（浅色）',
-  'forest-dark': '翡翠绿（深色）',
-  'violet': '紫罗兰（跟随系统）',
-  'violet-light': '紫罗兰（浅色）',
-  'violet-dark': '紫罗兰（深色）',
-  'slate': '石墨灰（跟随系统）',
-  'slate-light': '石墨灰（浅色）',
-  'slate-dark': '石墨灰（深色）',
+  'blue': '经典蓝',
+  'forest': '翡翠绿',
+  'violet': '紫罗兰',
+  'slate': '石墨灰',
 };
 
 export function applyThemeStyle(style) {
-  const match = style.match(/^(.*?)-(light|dark)$/);
-  let isDark;
-  if (match) {
-    isDark = match[2] === 'dark';
-  } else {
-    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-  const baseStyle = match ? match[1] : style;
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.documentElement.setAttribute('data-theme-style', baseStyle);
-  console.log('[主题风格]', style, '→ data-theme=' + (isDark ? 'dark' : 'light'), 'data-theme-style=' + baseStyle);
+  document.documentElement.setAttribute('data-theme-style', style);
 }
 
 const SEARCH_BAR_STYLES = {
@@ -635,7 +574,7 @@ function renderSuggestSourceForm(container, src, { isAdd, isPreset } = {}) {
     { value: 'string_array', label: '纯字符串数组 (string_array)' },
   ];
   const parserSel = createElement('select', {}, parserOptions.map(opt =>
-    createElement('option', { value: opt.value, selected: src && src.parser === opt.value }, opt.label)
+    createElement('option', { value: opt.value, selected: src?.parser === opt.value }, opt.label)
   ));
   parserField.appendChild(parserSel);
 

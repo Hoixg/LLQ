@@ -22,25 +22,5 @@
 
 /* ============ Focus Shadow Pulse ============ */
 
-@keyframes shadowPulse {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15); }
-  50% { box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.06); }
-}
-
-/* ============ Border Glow ============ */
-
-@keyframes borderGlow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 300% 50%; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .search-box:focus-within,
-  .search-box:focus-within::after {
-    animation: none !important;
-  }
-  .clock-colon,
-  .clock-card-sec::after {
-    animation: none !important;
-  }
 }

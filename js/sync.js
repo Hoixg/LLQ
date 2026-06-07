@@ -1,5 +1,5 @@
 import { getFromStorage, setToStorage, createElement } from './utils.js';
-import { applyThemeStyle, applyUIStyle, applyClockStyle, applyClockBg } from './settings.js';
+import { applyThemeStyle, applyUIStyle } from './settings.js';
 
 const DATA_KEYS = [
   { key: 'custom_sources',        label: '自定义搜索引擎', icon: '🔍' },
@@ -17,9 +17,8 @@ const DATA_KEYS = [
   { key: 'bookmarks',             label: '收藏夹', icon: '⭐' },
   { key: 'themeStyle',           label: '主题风格', icon: '🎨' },
   { key: 'uiStyle',              label: 'UI 风格', icon: '✨' },
-  { key: 'clockStyle',          label: '时间风格', icon: '⏱️' },
-  { key: 'showClockBg',        label: '显示时间背景', icon: '🕰️' },
   { key: 'defaultExpand',         label: '默认展开状态', icon: '📂' },
+  { key: 'searchBarStyle',        label: '搜索框风格', icon: '🔍' },
   { key: 'layout_expanded',       label: '当前展开状态', icon: '📐' },
   { key: 'webdav_config',         label: 'WebDAV 配置', icon: '☁️' },
   { key: 'gist_config',           label: 'Gist 配置', icon: '🐙' },
@@ -116,13 +115,14 @@ function applyImport(selectedKeys, jsonStr) {
     const uiStyle = getFromStorage('uiStyle', 'default');
     applyUIStyle(uiStyle);
   }
-  if (selectedKeys.includes('clockStyle')) {
-    const clockStyle = getFromStorage('clockStyle', 'default');
-    applyClockStyle(clockStyle);
-  }
-  if (selectedKeys.includes('showClockBg')) {
-    const show = getFromStorage('showClockBg', true);
-    applyClockBg(show);
+  if (selectedKeys.includes('searchBarStyle')) {
+    const searchBox = document.querySelector('.search-box');
+    if (searchBox) {
+      const allStyles = ['style-glass', 'style-neon', 'style-dark', 'style-outline', 'style-terminal', 'style-dotted', 'style-aurora'];
+      searchBox.classList.remove(...allStyles);
+      const style = getFromStorage('searchBarStyle', 'pill');
+      if (style && style !== 'pill') searchBox.classList.add('style-' + style);
+    }
   }
 }
 
@@ -338,7 +338,7 @@ function renderWebDAV(container) {
   const urlInp = createElement('input', { placeholder: 'https://dav.example.com/', value: cfg.url, className: 'sync-input' });
   const fileInp = createElement('input', { placeholder: '文件名', value: cfg.filename || 'homepage-config.json', className: 'sync-input' });
   const userInp = createElement('input', { placeholder: '用户名', value: cfg.username, className: 'sync-input' });
-  const passInp = createElement('input', { type: 'text', placeholder: '密码', value: cfg.password, className: 'sync-input' });
+  const passInp = createElement('input', { type: 'password', placeholder: '密码', value: cfg.password, className: 'sync-input' });
   const form = createElement('div', { className: 'sync-config-form' });
   for (const [label, inp] of [['根地址',urlInp], ['文件名',fileInp], ['用户名',userInp], ['密码',passInp]]) {
     form.appendChild(createElement('label', { style: { display:'flex', flexDirection:'column', gap:'2px', fontSize:'13px' } }, label));

@@ -113,6 +113,7 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       closeSuggestionsHandler();
       if (searchText) {
         inputEl.value = searchText;
+        clearTimeout(debounceTimer);
         onSearch(searchText);
       }
     }
@@ -238,9 +239,17 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       item.textContent = text;
       item.addEventListener('mousedown', (e) => {
         e.preventDefault();
-        closeSuggestionsHandler();
+        // 阻止 blur 定时器在移动端提前关闭建议
+        clearTimeout(blurTimer);
+        blurTimer = null;
+      });
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
         inputEl.value = text;
-        onSearch(text);
+        // 取消设置 value 触发的 input 事件重新拉取建议的定时器
+        clearTimeout(debounceTimer);
+        closeSuggestionsHandler();
+        inputEl.focus();
       });
       dropdown.appendChild(item);
     });

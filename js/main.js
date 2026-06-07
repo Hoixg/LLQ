@@ -1,22 +1,16 @@
 import { initSearch, getUpdateSourceDisplay } from './search.js';
 import { getCurrentSource } from './search-sources.js';
-import { initSettings, applyThemeStyle, applyUIStyle, applyClockStyle, applyClockBg } from './settings.js';
+import { initSettings, applyThemeStyle, applyUIStyle } from './settings.js';
 import { initLayoutToggle } from './layout-toggle.js';
 import { initWallpaper } from './wallpaper.js';
 import { isMobile, createElement, getFromStorage } from './utils.js';
 import { initBookmarkPanel } from './bookmark-panel.js';
-import { initClock } from './clock.js';
 
 applyThemeStyle(getFromStorage('themeStyle', 'blue'));
 applyUIStyle(getFromStorage('uiStyle', 'default'));
-applyClockStyle(getFromStorage('clockStyle', 'default'));
-applyClockBg(getFromStorage('showClockBg', true));
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  const style = getFromStorage('themeStyle', 'blue');
-  if (!style.endsWith('-dark') && !style.endsWith('-light')) {
-    applyThemeStyle(style);
-  }
+  applyThemeStyle(getFromStorage('themeStyle', 'blue'));
 });
 
 function setDeviceClass() {
@@ -32,11 +26,6 @@ function start() {
   initSettings();
   initLayoutToggle();
   initWallpaper();
-  initClock();
-
-  window.addEventListener('clock-style-changed', () => {
-    initClock();
-  });
 
   document.addEventListener('source-changed', () => {
     const input = document.querySelector('.search-input');
