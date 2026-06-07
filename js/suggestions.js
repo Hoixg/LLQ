@@ -243,6 +243,12 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
         clearTimeout(blurTimer);
         blurTimer = null;
       });
+      item.addEventListener('touchstart', () => {
+        // 移动端 touchstart 先于 click 触发，同样清除 blur 定时器
+        // 不使用 preventDefault，否则会阻止后续 click 事件
+        clearTimeout(blurTimer);
+        blurTimer = null;
+      }, { passive: true });
       item.addEventListener('click', (e) => {
         e.preventDefault();
         inputEl.value = text;
