@@ -58,6 +58,8 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
 
   let debounceTimer;
   let blurTimer;
+  let pendingSuggestionClick = false;
+  let pendingClickTimer = null;
 
   document.addEventListener('close-suggestions', () => closeSuggestionsHandler());
 
@@ -121,6 +123,10 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
 
   inputEl.addEventListener('blur', () => {
     clearTimeout(blurTimer);
+    // 移动端点击候补词时，blur 先于 click 触发，若正在等待点击则不关闭
+    if (pendingSuggestionClick) {
+      return;
+    }
     blurTimer = setTimeout(() => {
       if (!document.activeElement || !searchBox.contains(document.activeElement)) {
         closeSuggestionsHandler();
@@ -239,18 +245,28 @@ export function initSuggestions(searchBox, inputEl, toggleBtn, onSearch) {
       item.textContent = text;
       item.addEventListener('mousedown', (e) => {
         e.preventDefault();
-        // 阻止 blur 定时器在移动端提前关闭建议
+        pendingSuggestionClick = true;
+        clearTimeout(pendingClickTimer);
         clearTimeout(blurTimer);
         blurTimer = null;
       });
       item.addEventListener('touchstart', () => {
-        // 移动端 touchstart 先于 click 触发，同样清除 blur 定时器
-        // 不使用 preventDefault，否则会阻止后续 click 事件
+        // 移动端 touchstart 先于 blur 触发，设置标志阻止 blur 关闭建议
+        pendingSuggestionClick = true;
+        clearTimeout(pendingClickTimer);
         clearTimeout(blurTimer);
         blurTimer = null;
+        // 安全超时：若 600ms 内 click 未触发，重置标志位
+        pendingClickTimer = setTimeout(() => {
+          pendingSuggestionClick = false;
+          pendingClickTimer = null;
+        }, 600);
       }, { passive: true });
       item.addEventListener('click', (e) => {
         e.preventDefault();
+        pendingSuggestionClick = false;
+        clearTimeout(pendingClickTimer);
+        pendingClickTimer = null;
         inputEl.value = text;
         // 取消设置 value 触发的 input 事件重新拉取建议的定时器
         clearTimeout(debounceTimer);
